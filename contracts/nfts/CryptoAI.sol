@@ -11,13 +11,13 @@ import "../libs/helpers/Errors.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../interfaces/ICryptoAIData.sol";
 import {IMintableAgent} from "../interfaces/IAgentNFT.sol";
-import {AgentUpgradeable} from "./agent/AgentUpgradeable.sol";
+import {Agent} from "./agent/Agent.sol";
 
 contract CryptoAI is
     Initializable,
     ERC721Upgradeable,
+    Agent,
     ERC721URIStorageUpgradeable,
-    AgentUpgradeable,
     IERC2981Upgradeable,
     OwnableUpgradeable
 {

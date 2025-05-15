@@ -7,7 +7,7 @@ import {IAgent} from "./IAgent.sol";
 import {IFileStore, File} from "./IFileStore.sol";
 import {RatingSystem} from "./RatingSystem.sol";
 
-abstract contract AgentUpgradeable is
+abstract contract Agent is
     IAgent,
     Initializable,
     ERC721Upgradeable,
