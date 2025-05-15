@@ -99,7 +99,8 @@ abstract contract Agent is
         uint256 agentId,
         string calldata codeLanguage,
         CodePointer[] calldata pointers,
-        uint256[] calldata depsAgents
+        uint256[] calldata depsAgents,
+        uint256 subscriptionFee
     ) external virtual onlyAgentOwner(agentId) returns (uint16) {
         return _publishAgentCode(agentId, codeLanguage, pointers, depsAgents);
     }
@@ -109,7 +110,8 @@ abstract contract Agent is
         string calldata codeLanguage,
         CodePointer[] calldata pointers,
         uint256[] calldata depsAgents,
-        bytes calldata signature
+        bytes calldata signature,
+        uint256 subscriptionFee
     ) external virtual returns (uint16) {
         bytes32 digest = getHashToSign(agentId, pointers, depsAgents);
 

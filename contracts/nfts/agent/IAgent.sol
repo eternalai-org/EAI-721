@@ -42,7 +42,8 @@ interface IAgent {
         uint256 agentId,
         string calldata codeLanguage,
         CodePointer[] calldata pointers,
-        uint256[] calldata depsAgents
+        uint256[] calldata depsAgents,
+        uint256 subscriptionFee
     ) external returns (uint16 version);
 
     function publishAgentCodeWithSignature(
@@ -50,7 +51,8 @@ interface IAgent {
         string calldata codeLanguage,
         CodePointer[] calldata pointers,
         uint256[] calldata depsAgents,
-        bytes calldata signature
+        bytes calldata signature,
+        uint256 subscriptionFee
     ) external returns (uint16 version);
 
     function updateAgentName(uint256 agentId, string calldata name) external;
