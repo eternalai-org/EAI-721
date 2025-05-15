@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "sourceMap": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "useUnknownInCatchVariables": false
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
