@@ -1,4 +1,4 @@
-# EAI-721: NON-FUNGIBLE AGENT STANDARD
+# EAI-721: Non-Fungible Agent Standard
 EAI-721 extends ERC-721 to represent AI agents as NFTs. It supports onchain storage of agent capabilities, visual representation, and monetization features — enabling secure ownership and interaction.
 
 ## Core Architecture
