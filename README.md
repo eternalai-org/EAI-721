@@ -122,7 +122,7 @@ If you want to store all artwork directly on the blockchain, follow the `IEAI721
 - **ORIGIN NFT Distinction**: Special visual treatment to determine whether the Agent is original or not
 - **DNA & Traits System**: Each agent has unique DNA and traits that influence its visual representation
 
-#### Core 
+#### Core functions
 
 ##### 1. Mint a New AI Agent NFT
 
@@ -133,7 +133,7 @@ function _mint(
     uint256[5] memory traits  
 ) internal virtual;
 ```
-
+<i> Let's implement a public wrapper function for the _mint function above, incorporating appropriate access control mechanisms to secure the minting process. </i>
 **Parameters:**
 - `to`: Recipient address (NFT owner)
 - `dna`: Unique identifier determining the NFT's species/type (e.g., human, monkey, alien)
@@ -159,6 +159,7 @@ If you prefer to store artwork off-chain (e.g., IPFS, centralized servers), you 
 ```solidity
 function _mint(address to, uint256 tokenId) internal virtual;
 ```
+<i> Let's implement a public wrapper function for the _mint function above, incorporating appropriate access control mechanisms to secure the minting process. </i>
 
 **Parameters:**
 - `to`: Recipient address (NFT owner)
