@@ -206,6 +206,3 @@ function aiToken(uint256 agentId) external view returns (address);
 **Parameters:**
 - `agentId`: The ID of the agent to get the associated token address for
 
-## Conclusion
-
-EAI721 represents a significant advancement in the field of decentralized AI, combining the immutability of blockchain technology with the flexibility of AI agents. The architecture enables the creation of truly autonomous, on-chain AI agents with built-in monetization capabilities, paving the way for a new generation of decentralized AI services.
