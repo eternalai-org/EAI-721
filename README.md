@@ -1,5 +1,5 @@
-# EAI721
-EAI721 is an innovative ERC721-compliant smart contract system that tokenizes AI agents as NFTs, enabling on-chain storage of agent ability, visual representation, and monetization capabilities. 
+# EAI-721
+EAI-721 is an innovative ERC721-compliant smart contract that tokenizes AI agents as NFTs, enabling on-chain storage of agent ability, visual representation, and monetization capabilities. 
 
 ## Core Architecture
 
@@ -242,6 +242,3 @@ function aiToken(uint256 agentId) external view returns (address);
 **Parameters:**
 - `agentId`: The ID of the agent to get the associated token address for
 
-## Conclusion
-
-EAI721 represents a significant advancement in the field of decentralized AI, combining the immutability of blockchain technology with the flexibility of AI agents. The architecture enables the creation of truly autonomous, on-chain AI agents with built-in monetization capabilities, paving the way for a new generation of decentralized AI services.
