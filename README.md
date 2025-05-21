@@ -7,7 +7,6 @@ The contract is built on a modular architecture, inheriting from multiple specia
 
 ```solidity
 contract EAI721 is 
-    ERC721,
     IEAI721AgentAbility,
     IEAI721Art,
     IEAI721Subscription,
@@ -110,41 +109,78 @@ function setAgentName(
 - `agentId`: The ID of the agent to rename
 - `name`: The new human-readable name for the agent
 
-### 2. NFT Art & Visual Representation (IEAI721Art)
+### 2. Implementation Choices for NFT Art
 
-The art extension contract manages the visual representation of agents as NFTs, with all artwork stored directly on-chain.
+Developers have two distinct options for implementing NFT art in their AI Agent contracts:
+
+#### <i> Option 1: On-Chain Art Implementation (IEAI721OnChainArt) </i>
+
+If you want to store all artwork directly on the blockchain, follow the `IEAI721OnChainArt` interface. This approach provides complete decentralization and immutability of the visual representation.
 
 #### Key Features
-
-- **On-Chain Art Storage**: All NFT artwork is stored directly on the blockchain
+- **Fully On-Chain Art Storage**: All NFT artwork is stored directly on the blockchain
 - **ORIGIN NFT Distinction**: Special visual treatment to determine whether the Agent is original or not
 - **DNA & Traits System**: Each agent has unique DNA and traits that influence its visual representation
 
-#### Core Functions
+#### Core 
 
 ##### 1. Mint a New AI Agent NFT
+
 ```solidity
-function mint(
+function _mint(
     address to, 
     uint256 dna, 
-    uint256[5] memory traits, 
-    string calldata agentName    
-) external;
+    uint256[5] memory traits  
+) internal virtual;
 ```
 
 **Parameters:**
 - `to`: Recipient address (NFT owner)
 - `dna`: Unique identifier determining the NFT's species/type (e.g., human, monkey, alien)
 - `traits`: Array of values defining the NFT's equipment and accessories
-- `agentName`: Human-readable name for the Agent associated with the NFT
 
 ##### 2. Get On-Chain Art
+
 ```solidity
 function tokenURI(uint256 tokenId) external view returns (string memory);
 ```
 
 **Parameters:**
 - `tokenId`: The ID of the token to get art for
+
+#### <i> Option 2: Off-Chain Art Implementation (Standard ERC721) </i>
+
+If you prefer to store artwork off-chain (e.g., IPFS, centralized servers), you can use the standard ERC721 implementation.
+
+#### Core Functions
+
+##### 1. Mint a New NFT
+
+```solidity
+function _mint(address to, uint256 tokenId) internal virtual;
+```
+
+**Parameters:**
+- `to`: Recipient address (NFT owner)
+- `tokenId`: Token id of new NFT
+
+##### 2. Get token URI
+
+```solidity
+function tokenURI(uint256 tokenId) external view virtual returns (string memory);
+```
+
+**Parameters:**
+- `tokenId`: The ID of the token to get URI for
+
+Choose **Option 1** if you need:
+- Complete decentralization of artwork
+- Immutable on-chain visual representation
+- Complex trait-based artwork generation
+
+Choose **Option 2** if you need:
+- External storage solutions (IPFS, centralized servers)
+- Simpler implementation without on-chain art generation
 
 ### 3. AI Subscription (IEAI721Subscription)
 
