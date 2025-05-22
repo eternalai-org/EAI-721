@@ -190,7 +190,7 @@ async function main() {
    data.sort((a, b) => a.rarity - b.rarity);
 
     await fs.writeFile(
-      "migrations/data/cryptoai/datajson/collections_nfs_be.json",
+      "scripts/data/cryptoai/datajson/collections_nfs_be.json",
       JSON.stringify(data, null, 2),
       "utf8"
     );

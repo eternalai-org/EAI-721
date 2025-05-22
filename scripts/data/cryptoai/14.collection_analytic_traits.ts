@@ -80,7 +80,7 @@ async function main() {
   // Write rarity data to JSON file
   try {
     await fs.writeFile(
-      "migrations/data/cryptoai/datajson/check-rarity.json",
+      "scripts/data/cryptoai/datajson/check-rarity.json",
       JSON.stringify(print, null, 2),
       "utf8"
     );

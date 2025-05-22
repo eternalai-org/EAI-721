@@ -45,7 +45,7 @@ async function main() {
    }
 
     await fs.writeFile(
-      "migrations/data/cryptoai/datajson/collections-duplicate.json",
+      "scripts/data/cryptoai/datajson/collections-duplicate.json",
       JSON.stringify(fsc, null, 2),
       "utf8"
     );

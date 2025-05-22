@@ -1,13 +1,13 @@
 import { promises as fs } from 'fs';
 import { ELEMENT } from "./data";
 
-const dataCompress = require("./../../data/cryptoai/datajson/data-compressed.json");
+const dataCompress = require("./datajson/data-compressed.json");
 
-const inputAlien = require("./../../data/cryptoai/datajson/input/alien.json");
-const inputKong = require("./../../data/cryptoai/datajson/input/kong.json");
-const inputXType = require("./../../data/cryptoai/datajson/input/x-type.json");
-const inputNeoHuman = require("./../../data/cryptoai/datajson/input/neo_human_output_swapped.json");
-const inputRobot = require("./../../data/cryptoai/datajson/input/robot_nft_output_swapped.json");
+const inputAlien = require("./datajson/input/alien.json");
+const inputKong = require("./datajson/input/kong.json");
+const inputXType = require("./datajson/input/x-type.json");
+const inputNeoHuman = require("./datajson/input/neo_human_output_swapped.json");
+const inputRobot = require("./datajson/input/robot_nft_output_swapped.json");
 
 
 const errorData: any[] = [];
@@ -167,17 +167,17 @@ async function main() {
     }
 
     
-    const collectionPath = "migrations/data/cryptoai/datajson/collections.json";
+    const collectionPath = "scripts/data/cryptoai/datajson/collections.json";
     await fs.writeFile(collectionPath, JSON.stringify(data_mintings, null, 2));
     console.log('____Collection rendered');
 
 
     if (errorData.length) {
-        const collectionPathError = "migrations/data/cryptoai/datajson/collections_error.json";
+        const collectionPathError = "scripts/data/cryptoai/datajson/collections_error.json";
        await fs.writeFile(collectionPathError, JSON.stringify(errorData, null, 2));
        console.log('____has Error:', errorData);
     } else {
-      const collectionPathError = "migrations/data/cryptoai/datajson/collections_error.json";
+      const collectionPathError = "scripts/data/cryptoai/datajson/collections_error.json";
       try {
         await fs.access(collectionPathError);
         await fs.unlink(collectionPathError);
