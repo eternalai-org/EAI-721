@@ -1,11 +1,11 @@
-import {CryptoAI} from "./cryptoAI";
-import {initConfig} from "../../data/cryptoai";
+import { initConfig } from "../../data/cryptoai";
+import { CryptoAI } from "./cryptoAI";
 
 async function main() {
-    if (process.env.NETWORK != "local") {
-        console.log("wrong network");
-        return;
-    }
+    // if (process.env.NETWORK != "local") {
+    //     console.log("wrong network");
+    //     return;
+    // }
 
     let config = await initConfig();
     const args = process.argv.slice(2);

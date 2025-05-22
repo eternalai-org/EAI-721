@@ -5,10 +5,10 @@ import { DNA, ELEMENT, KEY_DNA, PALETTE_COLOR, TRAITS_DNA } from "./data";
 import * as data from "./datajson/data-compressed.json";
 
 async function main() {
-  if (process.env.NETWORK != "base_mainnet") {
-    console.log("wrong network");
-    return;
-  }
+  //   if (process.env.NETWORK != "base_testnet") {
+  //     console.log("wrong network");
+  //     return;
+  //   }
 
   try {
     let configaaa = await initConfig();
@@ -34,10 +34,10 @@ async function main() {
       }
     });
 
-    data.elements.Body.positions.forEach((pos: any[], index: number) => {
+    data.elements.Earring.positions.forEach((pos: any[], index: number) => {
       if (pos.find((p) => p === null) === null) {
         throw new Error(
-          `Null position found in Body element - Name: ${data.elements.Body.names[index]}, Trait: ${data.elements.Body.traits[index]}`
+          `Null position found in Earring element - Name: ${data.elements.Earring.names[index]}, Trait: ${data.elements.Earring.traits[index]}`
         );
       }
     });
@@ -59,26 +59,19 @@ async function main() {
     });
 
     // Check positions for each DNA variant
-    data.DNA.Dog.positions.forEach((pos: any[], index: number) => {
+
+    data.DNA.Alien.positions.forEach((pos: any[], index: number) => {
       if (pos.find((p) => p === null) === null) {
         throw new Error(
-          `Null position found in Dog DNA - Name: ${data.DNA.Dog.names[index]}, Trait: ${data.DNA.Dog.traits[index]}`
+          `Null position found in Alien DNA - Name: ${data.DNA.Alien.names[index]}, Trait: ${data.DNA.Alien.traits[index]}`
         );
       }
     });
 
-    data.DNA.Cat.positions.forEach((pos: any[], index: number) => {
+    data.DNA.Kong.positions.forEach((pos: any[], index: number) => {
       if (pos.find((p) => p === null) === null) {
         throw new Error(
-          `Null position found in Cat DNA - Name: ${data.DNA.Cat.names[index]}, Trait: ${data.DNA.Cat.traits[index]}`
-        );
-      }
-    });
-
-    data.DNA.Frog.positions.forEach((pos: any[], index: number) => {
-      if (pos.find((p) => p === null) === null) {
-        throw new Error(
-          `Null position found in Frog DNA - Name: ${data.DNA.Frog.names[index]}, Trait: ${data.DNA.Frog.traits[index]}`
+          `Null position found in Kong DNA - Name: ${data.DNA.Kong.names[index]}, Trait: ${data.DNA.Kong.traits[index]}`
         );
       }
     });
@@ -91,93 +84,98 @@ async function main() {
       }
     });
 
-    data.DNA.Human.positions.forEach((pos: any[], index: number) => {
+    data.DNA["Neo-Human"].positions.forEach((pos: any[], index: number) => {
       if (pos.find((p) => p === null) === null) {
         throw new Error(
-          `Null position found in Human DNA - Name: ${data.DNA.Human.names[index]}, Trait: ${data.DNA.Human.traits[index]}`
+          `Null position found in Human DNA - Name: ${data.DNA["Neo-Human"].names[index]}, Trait: ${data.DNA["Neo-Human"].traits[index]}`
         );
       }
     });
 
-    data.DNA.Monkey.positions.forEach((pos: any[], index: number) => {
+    data.DNA.Kong.positions.forEach((pos: any[], index: number) => {
       if (pos.find((p) => p === null)) {
         throw new Error(
-          `Null position found in Monkey DNA - Name: ${data.DNA.Monkey.names[index]}, Trait: ${data.DNA.Monkey.traits[index]}`
+          `Null position found in Kong DNA - Name: ${data.DNA.Kong.names[index]}, Trait: ${data.DNA.Kong.traits[index]}`
         );
       }
     });
 
     //ADD DNA
     await dataContract.addDNA(address, 0, KEY_DNA, TRAITS_DNA);
+    console.log("add item TRAITS_DNA", TRAITS_DNA);
     //ADD DNA Variant
     await dataContract.addDNAVariant(
       address,
       0,
-      DNA.DOG,
-      data.DNA.Dog.names,
-      data.DNA.Dog.traits,
-      data.DNA.Dog.positions
+      DNA.ALIEN,
+      data.DNA.Alien.names,
+      data.DNA.Alien.traits,
+      data.DNA.Alien.positions
     );
     await dataContract.addDNAVariant(
       address,
       0,
-      DNA.CAT,
-      data.DNA.Cat.names,
-      data.DNA.Cat.traits,
-      data.DNA.Cat.positions
+      DNA.KONG,
+      data.DNA.Kong.names,
+      data.DNA.Kong.traits,
+      data.DNA.Kong.positions
     );
     await dataContract.addDNAVariant(
       address,
       0,
-      DNA.FROG,
-      data.DNA.Frog.names,
-      data.DNA.Frog.traits,
-      data.DNA.Frog.positions
+      DNA.X_TYPE,
+      data.DNA["X-Type"].names,
+      data.DNA["X-Type"].traits,
+      data.DNA["X-Type"].positions
     );
     await dataContract.addDNAVariant(
       address,
       0,
-      DNA.HUMAN,
-      data.DNA.Human.names,
-      data.DNA.Human.traits,
-      data.DNA.Human.positions
-    );
-    await dataContract.addDNAVariant(
-      address,
-      0,
-      DNA.MONKEY,
-      data.DNA.Monkey.names,
-      data.DNA.Monkey.traits,
-      data.DNA.Monkey.positions
-    );
-    await dataContract.addDNAVariantRobot(
-      address,
-      0,
-      data.DNA.Robot.names,
-      data.DNA.Robot.traits
-    );
-    await dataContract.addDNAVariantRobotPosition(
-      address,
-      0,
-      data.DNA.Robot.positions.slice(0, 5),
-      0,
-      5
-    );
-    await dataContract.addDNAVariantRobotPosition(
-      address,
-      0,
-      data.DNA.Robot.positions.slice(5, 10),
-      5,
-      10
+      DNA.NEO_HUMAN,
+      data.DNA["Neo-Human"].names,
+      data.DNA["Neo-Human"].traits,
+      data.DNA["Neo-Human"].positions
     );
 
+    await dataContract.addDNAVariant(
+      address,
+      0,
+      DNA.ROBOT,
+      data.DNA.Robot.names,
+      data.DNA.Robot.traits,
+      data.DNA.Robot.positions
+    );
+
+    // await dataContract.addDNAVariantRobot(
+    //   address,
+    //   0,
+    //   data.DNA.Robot.names,
+    //   data.DNA.Robot.traits,
+    //   data.DNA.Robot.positions
+    // );
+    // console.log("add item DNA Robot 2");
+    // await dataContract.addDNAVariantRobotPosition(
+    //   address,
+    //   0,
+    //   data.DNA.Robot.positions.slice(0, 5),
+    //   0,
+    //   5
+    // );
+    // // console.log("add item DNA Robot 3");
+    // await dataContract.addDNAVariantRobotPosition(
+    //   address,
+    //   0,
+    //   data.DNA.Robot.positions.slice(5, 10),
+    //   5,
+    //   10
+    // );
     await dataContract.addItem(
       address,
       0,
-      ELEMENT.BODY,
-      data.elements.Body.names,
-      data.elements.Body.traits,
-      data.elements.Body.positions
+      ELEMENT.COLLAR,
+      data.elements.Collar.names,
+      data.elements.Collar.traits,
+      data.elements.Collar.positions
     );
     await dataContract.addItem(
       address,
@@ -202,6 +200,14 @@ async function main() {
       data.elements.Mouth.names,
       data.elements.Mouth.traits,
       data.elements.Mouth.positions
+    );
+    await dataContract.addItem(
+      address,
+      0,
+      ELEMENT.EARRING,
+      data.elements.Earring.names,
+      data.elements.Earring.traits,
+      data.elements.Earring.positions
     );
   } catch (error) {
     console.log("Error checking positions:", error);

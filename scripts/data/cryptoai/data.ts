@@ -4,24 +4,26 @@ var data = JSON.parse(fs.readFileSync('./datajson/data-compressed.json', 'utf-8'
 import * as data from "./datajson/data-compressed.json";
 
 export enum ELEMENT {
-  BODY = "Body",
+  EARRING = "Earring",
   MOUTH = "Mouth",
   EYES = "Eyes",
   HEAD = "Head",
+  COLLAR = "Collar",
 }
 
 const DATA_ELEMENTS_1 = [
   {
-    ele_type: ELEMENT.BODY,
-    names: data.elements.Body.names,
-    rarities: data.elements.Body.traits,
-    positions: data.elements.Body.positions,
+    ele_type: ELEMENT.COLLAR,
+    names: data.elements.Collar.names,
+    rarities: data.elements.Collar.traits,
+    positions: data.elements.Collar.positions,
   },
+
   {
-    ele_type: ELEMENT.MOUTH,
-    names: data.elements.Mouth.names,
-    rarities: data.elements.Mouth.traits,
-    positions: data.elements.Mouth.positions,
+    ele_type: ELEMENT.HEAD,
+    names: data.elements.Head.names,
+    rarities: data.elements.Head.traits,
+    positions: data.elements.Head.positions,
   },
   {
     ele_type: ELEMENT.EYES,
@@ -33,30 +35,34 @@ const DATA_ELEMENTS_1 = [
 
 const DATA_ELEMENTS_2 = [
   {
-    ele_type: ELEMENT.HEAD,
-    names: data.elements.Head.names,
-    rarities: data.elements.Head.traits,
-    positions: data.elements.Head.positions,
+    ele_type: ELEMENT.MOUTH,
+    names: data.elements.Mouth.names,
+    rarities: data.elements.Mouth.traits,
+    positions: data.elements.Mouth.positions,
+  },
+  {
+    ele_type: ELEMENT.EARRING,
+    names: data.elements.Earring.names,
+    rarities: data.elements.Earring.traits,
+    positions: data.elements.Earring.positions,
   },
 ];
 
 export enum DNA {
-  MONKEY = "Monkey",
-  CAT = "Cat",
-  DOG = "Dog",
-  FROG = "Frog",
+  ALIEN = "Alien",
+  KONG = "Kong",
+  X_TYPE = "X-Type",
+  NEO_HUMAN = "Neo-Human",
   ROBOT = "Robot",
-  HUMAN = "Human",
 }
 
-const KEY_DNA = [DNA.ROBOT, DNA.MONKEY, DNA.HUMAN, DNA.FROG, DNA.DOG, DNA.CAT];
+const KEY_DNA = [DNA.ALIEN, DNA.KONG, DNA.X_TYPE, DNA.NEO_HUMAN, DNA.ROBOT];
 const TRAITS_DNA = [
+  data.DNA.Alien.trait,
+  data.DNA.Kong.trait,
+  data.DNA["X-Type"].trait,
+  data.DNA["Neo-Human"].trait,
   data.DNA.Robot.trait,
-  data.DNA.Monkey.trait,
-  data.DNA.Human.trait,
-  data.DNA.Frog.trait,
-  data.DNA.Dog.trait,
-  data.DNA.Cat.trait,
 ].map((item) => Number(item));
 
 const PALETTE_COLOR = data.palette;
