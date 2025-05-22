@@ -15,8 +15,8 @@ contract CryptoAI is
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     
     // -- state variables --
+    // royalty receiver
     address private _royaltyReceiver;
-
     // deployer
     address public _deployer;
     // admins
@@ -68,12 +68,6 @@ contract CryptoAI is
         uint256[6] memory traits
     ) public virtual onlyAdmin {
         _mint(to, dna, traits);
-    }
-
-    function unlock(uint256 tokenId, uint256 dna, uint256[6] memory traits) public virtual payable {
-        require(cryptoAiDataAddr() != Errors.ZERO_ADDR, Errors.INV_ADD);
-        ICryptoAIData cryptoAIDataContract = ICryptoAIData(cryptoAiDataAddr());
-        cryptoAIDataContract.unlockRenderAgent(tokenId, dna, traits);
     }
 
     function tokenURI(uint256 agentId) public view override(ERC721Upgradeable, EAI721OnChainArt) returns (string memory) {
