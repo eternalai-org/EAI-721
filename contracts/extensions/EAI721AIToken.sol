@@ -17,7 +17,7 @@ abstract contract EAI721AIToken is IEAI721AIToken, Initializable, ERC721Upgradea
     // --- Initialization ---
     function __EAI721AIToken_init() internal onlyInitializing {
     }
-    
+
     function __EAI721AIToken_init_unchained() internal onlyInitializing {
     }
 
@@ -33,4 +33,9 @@ abstract contract EAI721AIToken is IEAI721AIToken, Initializable, ERC721Upgradea
     function aiToken(uint256 agentId) external virtual view returns (address) {
         return _aiTokens[agentId];
     }
+
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     */
+    uint256[44] private __gap;
 }

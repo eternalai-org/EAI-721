@@ -56,4 +56,8 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
         result = cryptoAIDataContract.tokenURI(tokenId);
     }
 
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     */
+    uint256[44] private __gap;
 }

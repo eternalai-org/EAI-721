@@ -33,4 +33,9 @@ abstract contract EAI721SubscriptionFee is IEAI721SubscriptionFee, ERC721Upgrade
         _subscriptionFees[agentId] = fee;
         emit SubscriptionFeeUpdated(agentId, fee);
     }
+
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     */
+    uint256[44] private __gap;
 }
