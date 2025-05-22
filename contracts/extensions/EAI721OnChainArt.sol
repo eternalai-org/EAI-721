@@ -7,7 +7,7 @@ import {ICryptoAIData} from "../interfaces/ICryptoAIData.sol";
 
 abstract contract EAI721OnChainArt is  ERC721Upgradeable {
     // --- Constants ---
-    uint256 public constant TOKEN_LIMIT = 10000;
+    uint256 public constant TOKEN_SUPPLY_LIMIT = 10000;
 
     // --- State Variables ---
     uint256 private _indexMint;
@@ -29,7 +29,7 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
         _cryptoAiDataAddr = newCryptoAiDataAddr;
     }
 
-    function cryptoAiDataAddr() external view returns (address) {
+    function cryptoAiDataAddr() public view virtual returns (address) {
         return _cryptoAiDataAddr;
     }
 
@@ -40,7 +40,7 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
     ) internal virtual {
         if (to == address(0) || _cryptoAiDataAddr == address(0)) revert InvalidAddr();
 
-        require(_indexMint <= TOKEN_LIMIT);
+        require(_indexMint <= TOKEN_SUPPLY_LIMIT);
         _safeMint(to, _indexMint);
         ICryptoAIData cryptoAIDataContract = ICryptoAIData(_cryptoAiDataAddr);
         cryptoAIDataContract.mintAgent(_indexMint);

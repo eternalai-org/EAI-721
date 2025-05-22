@@ -61,14 +61,14 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     function setAgentName(
         uint256 agentId,
         string calldata name
-    ) external virtual onlyAgentOwner(agentId) {
+    ) public virtual onlyAgentOwner(agentId) {
         _name[agentId] = name;
     }
 
     // {IEAI721AgentAbility-agentName}
     function agentName(
         uint256 agentId
-    ) external view returns (string memory) {
+    ) public view returns (string memory) {
         return _name[agentId];
     }
 
@@ -78,7 +78,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
         string calldata codeLanguageIn,
         CodePointer[] calldata pointersIn,
         uint256[] calldata depsAgentsIn
-    ) external virtual onlyAgentOwner(agentId) returns (uint16) {
+    ) public virtual onlyAgentOwner(agentId) returns (uint16) {
         return _publishAgentCode(agentId, codeLanguageIn, pointersIn, depsAgentsIn);
     }
 
@@ -133,7 +133,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     function depsAgents(
         uint256 agentId,
         uint16 version
-    ) external view checkVersion(agentId, version) returns (uint256[] memory) {
+    ) public view checkVersion(agentId, version) returns (uint256[] memory) {
         return _depsAgents[agentId][version];
     }
 
@@ -142,7 +142,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
         uint256 agentId,
         uint16 version
     )
-        external
+        public
         view
         checkVersion(agentId, version)
         returns (string memory code)
@@ -203,7 +203,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     }
 
     // {IEAI721AgentAbility-currentVersion}
-    function currentVersion(uint256 agentId) external view returns (uint16) {
+    function currentVersion(uint256 agentId) public view returns (uint16) {
         return _currentVersion[agentId];
     }
 
@@ -216,7 +216,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     // {IEAI721AgentAbility-codeLanguage}
     function codeLanguage(
         uint256 agentId
-    ) external view returns (string memory) {
+    ) public view returns (string memory) {
         return _codeLanguage[agentId];
     }
 

@@ -24,12 +24,12 @@ abstract contract EAI721SubscriptionFee is IEAI721SubscriptionFee, ERC721Upgrade
     }
 
     // {IEAI721SubscriptionFee-subscriptionFee}
-    function subscriptionFee(uint256 agentId) external view returns (uint256) {
+    function subscriptionFee(uint256 agentId) public virtual view returns (uint256) {
         return _subscriptionFees[agentId];
     }
 
     // {IEAI721SubscriptionFee-setSubscriptionFee}
-    function setSubscriptionFee(uint256 agentId, uint256 fee) external onlyAgentOwner(agentId) {
+    function setSubscriptionFee(uint256 agentId, uint256 fee) public virtual onlyAgentOwner(agentId) {
         _subscriptionFees[agentId] = fee;
         emit SubscriptionFeeUpdated(agentId, fee);
     }

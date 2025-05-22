@@ -22,7 +22,7 @@ abstract contract EAI721AIToken is IEAI721AIToken, Initializable, ERC721Upgradea
     }
 
     // {IEAI721AIToken-setAITokenAddress}
-    function setAITokenAddress(uint256 agentId, address newAIToken) external virtual onlyAgentOwner(agentId) {
+    function setAITokenAddress(uint256 agentId, address newAIToken) public virtual onlyAgentOwner(agentId) {
         if (newAIToken == address(0)) revert InvalidAddress();
         _aiTokens[agentId] = newAIToken;
 
@@ -30,7 +30,7 @@ abstract contract EAI721AIToken is IEAI721AIToken, Initializable, ERC721Upgradea
     }
 
     // {IEAI721AIToken-aiToken}
-    function aiToken(uint256 agentId) external virtual view returns (address) {
+    function aiToken(uint256 agentId) public virtual view returns (address) {
         return _aiTokens[agentId];
     }
 
