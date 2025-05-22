@@ -21,7 +21,7 @@ async function main() {
     process.env.PUBLIC_KEY
   );
 
-  const outputDir = "./migrations/nfts/cryptoai/data-mint";
+  const outputDir = "./scripts/nfts/cryptoai/data-mint";
   // Ensure the directory exists
   await fs.mkdir(outputDir, { recursive: true });
 
