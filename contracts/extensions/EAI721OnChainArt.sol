@@ -11,7 +11,7 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
 
     // --- State Variables ---
     uint256 private _indexMint;
-    address private _cryptoAiDataAddr;
+    address private _cryptoAIDataAddr;
 
     // --- Errors ---
     error InvalidAddr();
@@ -26,23 +26,23 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
     }
 
     function _setCryptoAiDataAddr(address newCryptoAiDataAddr) internal {
-        _cryptoAiDataAddr = newCryptoAiDataAddr;
+        _cryptoAIDataAddr = newCryptoAiDataAddr;
     }
 
     function cryptoAiDataAddr() public view virtual returns (address) {
-        return _cryptoAiDataAddr;
+        return _cryptoAIDataAddr;
     }
 
     function _mint(
         address to,
         uint256 dna,
-        uint256[6] memory traits
+        uint256[5] memory traits
     ) internal virtual {
-        if (to == address(0) || _cryptoAiDataAddr == address(0)) revert InvalidAddr();
+        if (to == address(0) || _cryptoAIDataAddr == address(0)) revert InvalidAddr();
 
         require(_indexMint <= TOKEN_SUPPLY_LIMIT);
         _safeMint(to, _indexMint);
-        ICryptoAIData cryptoAIDataContract = ICryptoAIData(_cryptoAiDataAddr);
+        ICryptoAIData cryptoAIDataContract = ICryptoAIData(_cryptoAIDataAddr);
         cryptoAIDataContract.mintAgent(_indexMint);
         cryptoAIDataContract.unlockRenderAgent(_indexMint, dna, traits);
 
@@ -52,7 +52,7 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
     // {IEAI721-tokenURI}
     function tokenURI(uint256 tokenId) public virtual view override returns (string memory result) {
         require(_exists(tokenId), 'ERC721: Token does not exist');
-        ICryptoAIData cryptoAIDataContract = ICryptoAIData(_cryptoAiDataAddr);
+        ICryptoAIData cryptoAIDataContract = ICryptoAIData(_cryptoAIDataAddr);
         result = cryptoAIDataContract.tokenURI(tokenId);
     }
 

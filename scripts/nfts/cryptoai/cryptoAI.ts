@@ -37,7 +37,7 @@ class CryptoAI {
         return proxy.address;
     }
 
-    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/nfts/CryptoAI.sol/CryptoAI.json") {
+    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/examples/CryptoAI.sol/CryptoAI.json") {
         console.log("Network run", this.network, hardhatConfig.networks[this.network].url);
         // if (this.network == "local") {
         //     console.log("not run local");

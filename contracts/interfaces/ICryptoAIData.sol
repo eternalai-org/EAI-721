@@ -26,6 +26,6 @@ interface ICryptoAIData {
     function unlockRenderAgent(
         uint256 tokenId,
         uint256 dna,
-        uint256[6] memory traits
+        uint256[5] memory traits
     ) external;
 }
