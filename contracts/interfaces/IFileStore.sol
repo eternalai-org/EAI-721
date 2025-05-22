@@ -1,11 +1,34 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import {File, BytecodeSlice} from "./File.sol";
-
 /// @title EthFS FileStore interface
 /// @notice Specifies a content-addressable onchain file store
 interface IFileStore {
+
+    /**
+     * @title EthFS File
+     * @notice A representation of an onchain file, composed of slices of contract bytecode and utilities to construct the file contents from those slices.
+     * @dev For best gas efficiency, it's recommended using `File.read()` as close to the output returned by the contract call as possible. Lots of gas is consumed every time a large data blob is passed between functions.
+     */
+
+    /**
+     * @dev Represents a reference to a slice of bytecode in a contract
+     */
+    struct BytecodeSlice {
+        address pointer;
+        uint32 start;
+        uint32 end;
+    }
+
+    /**
+     * @dev Represents a file composed of one or more bytecode slices
+     */
+    struct File {
+        // Total length of file contents (sum of all slice sizes). Useful when you want to use DynamicBuffer to build the file contents from the slices.
+        uint256 size;
+        BytecodeSlice[] slices;
+    }
+
     event Deployed();
 
     /**

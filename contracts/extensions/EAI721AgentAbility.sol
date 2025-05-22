@@ -1,19 +1,14 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
+import {IEAI721AgentAbility} from "../interfaces/IEAI721AgentAbility.sol";
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import {EIP712Upgradeable, ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
-import {IAgent} from "./IAgent.sol";
-import {IFileStore, File} from "./IFileStore.sol";
-import {RatingSystem} from "./RatingSystem.sol";
+import "../libs/helpers/File.sol";
 
-abstract contract Agent is
-    IAgent,
-    Initializable,
-    ERC721Upgradeable,
-    EIP712Upgradeable,
-    RatingSystem
-{
+abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC721Upgradeable {
+    using {read} for IFileStore.File;
+
     // --- Constants ---
     uint256 public constant TOKEN_LIMIT = 10000;
     bytes32 private constant IPFS_SIG = keccak256(bytes("ipfs"));
@@ -27,7 +22,6 @@ abstract contract Agent is
     mapping(uint256 agentId => uint16) private _currentVersion;
 
     mapping(uint256 agentId => string) private _name;
-    mapping(uint256 agentId => string) private _ability;
 
     mapping(bytes32 digest => bool) private _usedDigests;
     mapping(uint256 agentId => mapping(uint256 version => uint256))
@@ -36,8 +30,6 @@ abstract contract Agent is
         private _codePointers;
     mapping(uint256 agentId => mapping(uint256 version => uint256[]))
         private _depsAgents;
-
-    uint256[30] private __gap;
 
     // --- Modifiers ---
     modifier checkVersion(uint256 agentId, uint16 version) {
@@ -51,106 +43,70 @@ abstract contract Agent is
     }
 
     // --- Initialization ---
-    function __Agent_init(
-        string memory collectionName,
-        string memory collectionVersion
-    ) internal onlyInitializing {
-        __EIP712_init(collectionName, collectionVersion);
-        __RatingSystem_init();
+    function __EAI721AgentAbility_init() internal onlyInitializing {
     }
 
-    // --- Functions ---
+    function __EAI721AgentAbility_init_unchained() internal onlyInitializing {
+    }
+
+    // --- Functions ---}
     function _setupAgent(
         uint256 agentId,
-        string calldata name,
-        string calldata ability
+        string calldata name
     ) internal {
         _name[agentId] = name;
-        _ability[agentId] = ability;
     }
 
-    function updateAgentName(
+    // {IEAI721AgentAbility-setAgentName}
+    function setAgentName(
         uint256 agentId,
         string calldata name
     ) external virtual onlyAgentOwner(agentId) {
         _name[agentId] = name;
     }
 
-    function updateAgentAbility(
-        uint256 agentId,
-        string calldata ability
-    ) external virtual onlyAgentOwner(agentId) {
-        _ability[agentId] = ability;
-    }
-
-    function getAgentName(
+    // {IEAI721AgentAbility-agentName}
+    function agentName(
         uint256 agentId
     ) external view returns (string memory) {
         return _name[agentId];
     }
 
-    function getAgentAbility(
-        uint256 agentId
-    ) external view returns (string memory) {
-        return _ability[agentId];
-    }
-
+    // {IEAI721AgentAbility-publishAgentCode}
     function publishAgentCode(
         uint256 agentId,
-        string calldata codeLanguage,
-        CodePointer[] calldata pointers,
-        uint256[] calldata depsAgents,
-        uint256 subscriptionFee
+        string calldata codeLanguageIn,
+        CodePointer[] calldata pointersIn,
+        uint256[] calldata depsAgentsIn
     ) external virtual onlyAgentOwner(agentId) returns (uint16) {
-        return _publishAgentCode(agentId, codeLanguage, pointers, depsAgents);
-    }
-
-    function publishAgentCodeWithSignature(
-        uint256 agentId,
-        string calldata codeLanguage,
-        CodePointer[] calldata pointers,
-        uint256[] calldata depsAgents,
-        bytes calldata signature,
-        uint256 subscriptionFee
-    ) external virtual returns (uint16) {
-        bytes32 digest = getHashToSign(agentId, pointers, depsAgents);
-
-        if (_usedDigests[digest]) {
-            revert DigestAlreadyUsed();
-        }
-        if (ECDSAUpgradeable.recover(digest, signature) != ownerOf(agentId)) {
-            revert Unauthenticated();
-        }
-        _usedDigests[digest] = true;
-
-        return _publishAgentCode(agentId, codeLanguage, pointers, depsAgents);
+        return _publishAgentCode(agentId, codeLanguageIn, pointersIn, depsAgentsIn);
     }
 
     function _publishAgentCode(
         uint256 agentId,
-        string calldata codeLanguage,
-        CodePointer[] calldata pointers,
-        uint256[] calldata depsAgents
+        string calldata codeLanguageIn,
+        CodePointer[] calldata pointersIn,
+        uint256[] calldata depsAgentsIn
     ) internal virtual returns (uint16) {
-        if (pointers.length == 0) revert InvalidData();
+        if (pointersIn.length == 0) revert InvalidData();
 
-        _codeLanguage[agentId] = codeLanguage;
+        _codeLanguage[agentId] = codeLanguageIn;
         uint16 version = _bumpVersion(agentId);
 
-        uint256 pLen = pointers.length;
+        uint256 pLen = pointersIn.length;
         for (uint256 i = 0; i < pLen; i++) {
-            if (bytes(pointers[i].fileName).length == 0) {
+            if (bytes(pointersIn[i].fileName).length == 0) {
                 revert InvalidData();
             }
-            _addNewCodePointer(agentId, version, pointers[i]);
+            _addNewCodePointer(agentId, version, pointersIn[i]);
         }
 
-        uint256 depsLen = depsAgents.length;
+        uint256 depsLen = depsAgentsIn.length;
         for (uint256 i = 0; i < depsLen; i++) {
-            if (depsAgents[i] == 0 || depsAgents[i] > TOKEN_LIMIT) {
+            if (depsAgentsIn[i] == 0 || depsAgentsIn[i] > TOKEN_LIMIT) {
                 revert InvalidDependency();
             }
-            _depsAgents[agentId][version].push(depsAgents[i]);
+            _depsAgents[agentId][version].push(depsAgentsIn[i]);
         }
 
         return version;
@@ -165,7 +121,7 @@ abstract contract Agent is
         uint16 version,
         CodePointer calldata pointer
     ) internal virtual {
-        uint256 pNum = _getPointersNumber(agentId, version);
+        uint256 pNum = _pointersNumber(agentId, version);
 
         _codePointers[agentId][version][pNum] = pointer;
 
@@ -173,14 +129,16 @@ abstract contract Agent is
         _pointersNum[agentId][version]++;
     }
 
-    function getDepsAgents(
+    // {IEAI721AgentAbility-depsAgents}
+    function depsAgents(
         uint256 agentId,
         uint16 version
     ) external view checkVersion(agentId, version) returns (uint256[] memory) {
         return _depsAgents[agentId][version];
     }
 
-    function getAgentCode(
+    // {IEAI721AgentAbility-agentCode}
+    function agentCode(
         uint256 agentId,
         uint16 version
     )
@@ -189,14 +147,14 @@ abstract contract Agent is
         checkVersion(agentId, version)
         returns (string memory code)
     {
-        uint256 len = _getPointersNumber(agentId, version);
+        uint256 len = _pointersNumber(agentId, version);
         string memory libsCode = "";
         string memory mainScripts = "";
 
         for (uint256 pIdx = 0; pIdx < len; pIdx++) {
             CodePointer memory p = _codePointers[agentId][version][pIdx];
 
-            string memory codeChunk = _getCodeByPointer(p);
+            string memory codeChunk = _codeByPointer(p);
 
             if (p.fileType == FileType.LIBRARY) {
                 libsCode = _concatStrings(libsCode, codeChunk);
@@ -218,17 +176,17 @@ abstract contract Agent is
         return string(abi.encodePacked(a, "\n", b));
     }
 
-    function _getCodeByPointer(
+    function _codeByPointer(
         CodePointer memory p
     ) internal view virtual returns (string memory logic) {
-        if (keccak256(bytes(_getStorageMode(p))) == IPFS_SIG) {
+        if (keccak256(bytes(_storageMode(p))) == IPFS_SIG) {
             logic = p.fileName; // return the IPFS hash
         } else {
             logic = IFileStore(p.retrieveAddress).getFile(p.fileName).read();
         }
     }
 
-    function _getStorageMode(
+    function _storageMode(
         CodePointer memory p
     ) internal view virtual returns (string memory) {
         if (p.retrieveAddress != address(0)) {
@@ -237,14 +195,15 @@ abstract contract Agent is
         return "ipfs";
     }
 
-    function _getPointersNumber(
+    function _pointersNumber(
         uint256 agentId,
         uint16 version
     ) internal view returns (uint256) {
         return _pointersNum[agentId][version];
     }
 
-    function getCurrentVersion(uint256 agentId) external view returns (uint16) {
+    // {IEAI721AgentAbility-currentVersion}
+    function currentVersion(uint256 agentId) external view returns (uint16) {
         return _currentVersion[agentId];
     }
 
@@ -254,48 +213,15 @@ abstract contract Agent is
         }
     }
 
-    function getCodeLanguage(
+    // {IEAI721AgentAbility-codeLanguage}
+    function codeLanguage(
         uint256 agentId
     ) external view returns (string memory) {
         return _codeLanguage[agentId];
     }
 
-    function getHashToSign(
-        uint256 agentId,
-        CodePointer[] calldata pointers,
-        uint256[] calldata depsAgents
-    ) public view virtual returns (bytes32) {
-        bytes32 CODEPOINTER_TYPEHASH = keccak256(
-            "CodePointer(address retrieveAddress,uint8 fileType,string fileName)"
-        );
-
-        bytes32[] memory pointerHashes = new bytes32[](pointers.length);
-
-        uint256 pLen = pointers.length;
-        for (uint i = 0; i < pLen; i++) {
-            pointerHashes[i] = keccak256(
-                abi.encode(
-                    CODEPOINTER_TYPEHASH,
-                    pointers[i].retrieveAddress,
-                    pointers[i].fileType,
-                    keccak256(bytes(pointers[i].fileName))
-                )
-            );
-        }
-
-        bytes32 pointersHash = keccak256(abi.encodePacked(pointerHashes));
-        bytes32 depsAgentsHash = keccak256(abi.encodePacked(depsAgents));
-
-        bytes32 structHash = keccak256(
-            abi.encode(
-                SIGN_DATA_TYPEHASH,
-                pointersHash,
-                depsAgentsHash,
-                agentId,
-                _currentVersion[agentId]
-            )
-        );
-
-        return _hashTypedDataV4(structHash);
-    }
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     */
+    uint256[44] private __gap;
 }
