@@ -1,5 +1,5 @@
+import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import * as path from "path";
-import {createAlchemyWeb3} from "@alch/alchemy-web3";
 
 const {ethers, upgrades} = require("hardhat");
 const hardhatConfig = require("../../../hardhat.config");
@@ -37,7 +37,7 @@ class CryptoAI {
         return proxy.address;
     }
 
-    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/nfts/CryptoAI.sol/CryptoAI.json") {
+    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/examples/CryptoAI.sol/CryptoAI.json") {
         console.log("Network run", this.network, hardhatConfig.networks[this.network].url);
         // if (this.network == "local") {
         //     console.log("not run local");
@@ -129,7 +129,7 @@ class CryptoAI {
     async mint(contractAddress: any, gas: any, to: any, agentAddr: any, dna: number, traits: any) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
-        const fun = temp?.nftContract.methods.mint(to, agentAddr, dna, traits)
+        const fun = temp?.nftContract.methods.mint(to, dna, traits)
         //the transaction
         const tx = {
             from: this.senderPublicKey,
@@ -181,4 +181,4 @@ class CryptoAI {
     }
 }
 
-export {CryptoAI};
+export { CryptoAI };
