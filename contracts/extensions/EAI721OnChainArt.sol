@@ -36,7 +36,7 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
     function _mint(
         address to,
         uint256 dna,
-        uint256[5] memory traits
+        uint256[6] memory traits
     ) internal virtual {
         if (to == address(0) || _cryptoAiDataAddr == address(0)) revert InvalidAddr();
 

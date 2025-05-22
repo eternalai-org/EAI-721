@@ -9,6 +9,7 @@ import "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import "../interfaces/ICryptoAIData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
+import "../interfaces/IEAI721AgentAbility.sol";
 
 contract CryptoAIData is OwnableUpgradeable, ICryptoAIData {
     uint256 public constant TOKEN_LIMIT = 0x2710;
@@ -28,7 +29,7 @@ contract CryptoAIData is OwnableUpgradeable, ICryptoAIData {
     string internal constant PLACEHOLDER_FOOTER = "'</script>";
 
     // elements
-    string[5] private partsName;
+    string[6] private partsName;
     // deployer
     address public _deployer;
     // crypto ai agent address
@@ -70,7 +71,7 @@ contract CryptoAIData is OwnableUpgradeable, ICryptoAIData {
     }
 
     function initialize(address deployer) public initializer {
-        partsName = ["dna", "Body", "Head", "Eyes", "Mouth"];
+        partsName = ["dna", "Body", "Head", "Eyes", "Mouth", "Earring"];
         _deployer = deployer;
 
         __Ownable_init();
@@ -122,7 +123,7 @@ contract CryptoAIData is OwnableUpgradeable, ICryptoAIData {
     function unlockRenderAgent(
         uint256 tokenId,
         uint256 dna,
-        uint256[5] memory traits
+        uint256[6] memory traits
     ) external onlyAIAgentContract _sealed {
         // agent is minted on nft collection, and unlock render svg by rarity info
         /* TODO: uncomment when deploy */
@@ -286,6 +287,16 @@ contract CryptoAIData is OwnableUpgradeable, ICryptoAIData {
         }
 
         byteString = abi.encodePacked(
+            '{"trait_type": "ORIGIN"',
+            ',"value":"',
+            StringsUpgradeable.toString(IEAI721AgentAbility(_cryptoAIAgentAddr).currentVersion(tokenId) > 1 ? 0 : 1),
+            '"},'
+            , byteString
+        );
+        count++;
+
+
+        byteString = abi.encodePacked(
             '{"trait_type": "attributes"',
             ',"value":"',
             StringsUpgradeable.toString(count),
@@ -303,8 +314,8 @@ contract CryptoAIData is OwnableUpgradeable, ICryptoAIData {
             Errors.TOKEN_ID_NOT_UNLOCKED
         );
 
-        uint16[][] memory data = new uint16[][](5);
-        bytes[] memory dataPalette = new bytes[](5);
+        uint16[][] memory data = new uint16[][](6);
+        bytes[] memory dataPalette = new bytes[](6);
         for (uint256 i = 0; i < partsName.length; i++) {
             if (i == 0) {
                 data[i] = items[DNA_TYPES.names[unlockedTokens[tokenId].dna]]
@@ -334,20 +345,21 @@ contract CryptoAIData is OwnableUpgradeable, ICryptoAIData {
             dataPalette[1].length +
             dataPalette[2].length +
             dataPalette[3].length +
-            dataPalette[4].length;
+            dataPalette[4].length +
+            dataPalette[5].length;
         for (uint256 i = 0; i < totalLength; i += 5) {
             uint256 idx;
             bytes memory pos;
             uint256 offset = dataPalette[0].length;
             uint256 prevOffset = 0;
-            for (uint256 j = 0; j < 5; j++) {
+            for (uint256 j = 0; j < 6; j++) {
                 if (i < offset) {
                     pos = dataPalette[j];
                     idx = i - prevOffset;
                     break;
                 }
                 prevOffset = offset;
-                if (j < 4) {
+                if (j < 5) {
                     offset += dataPalette[j + 1].length;
                 }
             }

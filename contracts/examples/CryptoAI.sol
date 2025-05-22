@@ -2,7 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {EAI721AgentAbility, ERC721Upgradeable, Initializable} from "../extensions/EAI721AgentAbility.sol";
 import {EAI721OnChainArt} from "../extensions/EAI721OnChainArt.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
@@ -10,7 +9,6 @@ import {ICryptoAIData} from "../interfaces/ICryptoAIData.sol";
 
 contract CryptoAI is
     Initializable,
-    AccessControlUpgradeable,
     EAI721AgentAbility,
     EAI721OnChainArt
 {
@@ -19,18 +17,45 @@ contract CryptoAI is
     // -- state variables --
     address private _royaltyReceiver;
 
+    // deployer
+    address public _deployer;
+    // admins
+    mapping(address => bool) public _admins;
+
+    modifier onlyDeployer() {
+        require(msg.sender == _deployer, Errors.ONLY_DEPLOYER);
+        _;
+    }
+
+    modifier onlyAdmin() {
+        require(_admins[msg.sender], Errors.ONLY_ADMIN_ALLOWED);
+        _;
+    }
+
     function initialize(
         string memory name,
         string memory symbol,
         address deployer
     ) initializer public {
-        _grantRole(DEFAULT_ADMIN_ROLE, deployer);
+        _deployer = deployer;
 
         __ERC721_init(name, symbol);
         __EAI721OnChainArt_init(1);
     }
 
-    function changeCryptoAiDataAddress(address newAddr) external onlyRole(ADMIN_ROLE) {
+    function changeDeployer(address newAdm) external onlyDeployer {
+        require(newAdm != Errors.ZERO_ADDR, Errors.INV_ADD);
+        if (_deployer != newAdm) {
+            _deployer = newAdm;
+        }
+    }
+
+    function allowAdmin(address newAdm, bool allow) external onlyDeployer {
+        require(newAdm != Errors.ZERO_ADDR, Errors.INV_ADD);
+        _admins[newAdm] = allow;
+    }
+
+    function changeCryptoAiDataAddress(address newAddr) external onlyDeployer {
         require(newAddr != Errors.ZERO_ADDR, Errors.ONLY_ADMIN_ALLOWED);
 
         _setCryptoAiDataAddr(newAddr);
@@ -40,28 +65,22 @@ contract CryptoAI is
     function mint(
         address to,
         uint256 dna,
-        uint256[5] memory traits
-    ) public virtual onlyRole(ADMIN_ROLE) {
+        uint256[6] memory traits
+    ) public virtual onlyAdmin {
         _mint(to, dna, traits);
     }
 
-    function unlock(uint256 tokenId, uint256 dna, uint256[5] memory traits) public virtual payable {
+    function unlock(uint256 tokenId, uint256 dna, uint256[6] memory traits) public virtual payable {
         require(cryptoAiDataAddr() != Errors.ZERO_ADDR, Errors.INV_ADD);
         ICryptoAIData cryptoAIDataContract = ICryptoAIData(cryptoAiDataAddr());
         cryptoAIDataContract.unlockRenderAgent(tokenId, dna, traits);
-    }
-
-    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlUpgradeable, ERC721Upgradeable) returns (bool) {
-        return
-            AccessControlUpgradeable.supportsInterface(interfaceId) ||
-            ERC721Upgradeable.supportsInterface(interfaceId);
     }
 
     function tokenURI(uint256 agentId) public view override(ERC721Upgradeable, EAI721OnChainArt) returns (string memory) {
         return EAI721OnChainArt.tokenURI(agentId);
     }
 
-    function setRoyaltyReceiver(address newRoyaltyReceiver) external onlyRole(ADMIN_ROLE) {
+    function setRoyaltyReceiver(address newRoyaltyReceiver) external onlyAdmin {
         require(newRoyaltyReceiver != address(0), Errors.INV_ADD);
         _royaltyReceiver = newRoyaltyReceiver;
     }
