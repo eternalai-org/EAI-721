@@ -5,9 +5,9 @@ pragma solidity ^0.8.0;
 import {EAI721AgentAbility, ERC721Upgradeable, Initializable} from "../extensions/EAI721AgentAbility.sol";
 import {EAI721OnChainArt} from "../extensions/EAI721OnChainArt.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
-import {ICryptoAIData} from "../interfaces/ICryptoAIData.sol";
+import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
 
-contract CryptoAI is
+contract CryptoAgents is
     Initializable,
     EAI721AgentAbility,
     EAI721OnChainArt

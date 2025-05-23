@@ -6,12 +6,12 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 
-import "../interfaces/ICryptoAIData.sol";
+import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
 import "../interfaces/IEAI721AgentAbility.sol";
 
-contract CryptoAIData is OwnableUpgradeable, ICryptoAIData {
+contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
     uint256 public constant TOKEN_LIMIT = 0x2710;
     uint8 internal constant GRID_SIZE = 0x18;
     bytes16 internal constant _HEX_SYMBOLS = "0123456789abcdef";
