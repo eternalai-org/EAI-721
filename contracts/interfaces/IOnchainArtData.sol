@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-interface ICryptoAIData {
+interface IOnchainArtData {
     /**
      * @notice Returns the metadata URI for a given token ID.
      * @param tokenId The ID of the token to query.

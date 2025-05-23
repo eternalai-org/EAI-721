@@ -26,17 +26,17 @@ class CryptoAIData {
         //     return;
         // }
 
-        const contract = await ethers.getContractFactory("CryptoAIData");
-        console.log("CryptoAIData.deploying ...")
+        const contract = await ethers.getContractFactory("OnchainArtData");
+        console.log("OnchainArtData.deploying ...")
         const proxy = await upgrades.deployProxy(contract, [deployerAddr], {
             initializer: 'initialize(address)',
         });
         await proxy.deployed();
-        console.log("CryptoAIData deployed at proxy:", proxy.address);
+        console.log("OnchainArtData deployed at proxy:", proxy.address);
         return proxy.address;
     }
 
-    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/data/OnchainArtData.sol/CryptoAIData.json") {
+    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/data/OnchainArtData.sol/OnchainArtData.json") {
         console.log("Network run", this.network, hardhatConfig.networks[this.network].url);
         // if (this.network == "local") {
         //     console.log("not run local");
@@ -53,10 +53,10 @@ class CryptoAIData {
     }
 
     async upgradeContract(proxyAddress: any) {
-        const contractUpdated = await ethers.getContractFactory("CryptoAIData");
-        console.log('Upgrading CryptoAIData... by proxy ' + proxyAddress);
+        const contractUpdated = await ethers.getContractFactory("OnchainArtData");
+        console.log('Upgrading OnchainArtData... by proxy ' + proxyAddress);
         const tx = await upgrades.upgradeProxy(proxyAddress, contractUpdated);
-        console.log('CryptoAIData upgraded on tx address ' + await tx.address);
+        console.log('OnchainArtData upgraded on tx address ' + await tx.address);
         return tx;
     }
 
