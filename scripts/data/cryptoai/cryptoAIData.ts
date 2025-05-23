@@ -1,6 +1,6 @@
-import {createAlchemyWeb3} from "@alch/alchemy-web3";
+import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import * as path from "path";
-import {DNA} from "./data";
+import { DNA } from "./data";
 
 const {ethers, upgrades} = require("hardhat");
 const hardhatConfig = require("../../../hardhat.config");
@@ -26,17 +26,17 @@ class CryptoAIData {
         //     return;
         // }
 
-        const contract = await ethers.getContractFactory("CryptoAIData");
-        console.log("CryptoAIData.deploying ...")
+        const contract = await ethers.getContractFactory("OnchainArtData");
+        console.log("OnchainArtData.deploying ...")
         const proxy = await upgrades.deployProxy(contract, [deployerAddr], {
             initializer: 'initialize(address)',
         });
         await proxy.deployed();
-        console.log("CryptoAIData deployed at proxy:", proxy.address);
+        console.log("OnchainArtData deployed at proxy:", proxy.address);
         return proxy.address;
     }
 
-    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/data/OnchainArtData.sol/CryptoAIData.json") {
+    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/data/OnchainArtData.sol/OnchainArtData.json") {
         console.log("Network run", this.network, hardhatConfig.networks[this.network].url);
         // if (this.network == "local") {
         //     console.log("not run local");
@@ -53,10 +53,10 @@ class CryptoAIData {
     }
 
     async upgradeContract(proxyAddress: any) {
-        const contractUpdated = await ethers.getContractFactory("CryptoAIData");
-        console.log('Upgrading CryptoAIData... by proxy ' + proxyAddress);
+        const contractUpdated = await ethers.getContractFactory("OnchainArtData");
+        console.log('Upgrading OnchainArtData... by proxy ' + proxyAddress);
         const tx = await upgrades.upgradeProxy(proxyAddress, contractUpdated);
-        console.log('CryptoAIData upgraded on tx address ' + await tx.address);
+        console.log('OnchainArtData upgraded on tx address ' + await tx.address);
         return tx;
     }
 
@@ -89,6 +89,26 @@ class CryptoAIData {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
         const fun = temp?.nftContract.methods.addItem(key, name, trait, positions)
+        //the transaction
+        const tx = {
+            from: this.senderPublicKey,
+            to: contractAddress,
+            nonce: nonce,
+            gas: gas,
+            data: fun.encodeABI(),
+        }
+
+        if (tx.gas == 0) {
+            tx.gas = await fun.estimateGas(tx);
+        }
+
+        return await this.signedAndSendTx(temp?.web3, tx);
+    }
+    
+    async addMoreItem(contractAddress: any, gas: any, key: string, name: string[], trait: number[], positions: number[][]) {
+        let temp = this.getContract(contractAddress);
+        const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
+        const fun = temp?.nftContract.methods.addMoreItem(key, name, trait, positions)
         //the transaction
         const tx = {
             from: this.senderPublicKey,
@@ -507,4 +527,4 @@ class CryptoAIData {
     }
 }
 
-export {CryptoAIData};
+export { CryptoAIData };

@@ -1,5 +1,5 @@
+import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import * as path from "path";
-import {createAlchemyWeb3} from "@alch/alchemy-web3";
 
 const {ethers, upgrades} = require("hardhat");
 const hardhatConfig = require("../../../hardhat.config");
@@ -27,17 +27,17 @@ class CryptoAI {
         //     return;
         // }
 
-        const contract = await ethers.getContractFactory("CryptoAI");
-        console.log("CryptoAI.deploying ...")
+        const contract = await ethers.getContractFactory("CryptoAgents");
+        console.log("CryptoAgents.deploying ...")
         const proxy = await upgrades.deployProxy(contract, [name, symbol, deployerAddr], {
             initializer: 'initialize(string, string, address)',
         });
         await proxy.deployed();
-        console.log("CryptoAI deployed at proxy:", proxy.address);
+        console.log("CryptoAgents deployed at proxy:", proxy.address);
         return proxy.address;
     }
 
-    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/examples/CryptoAgents.sol/CryptoAI.json") {
+    getContract(contractAddress: any, contractName: any = "./artifacts/contracts/examples/CryptoAgents.sol/CryptoAgents.json") {
         console.log("Network run", this.network, hardhatConfig.networks[this.network].url);
         // if (this.network == "local") {
         //     console.log("not run local");
@@ -54,10 +54,10 @@ class CryptoAI {
     }
 
     async upgradeContract(proxyAddress: any) {
-        const contractUpdated = await ethers.getContractFactory("CryptoAI");
-        console.log('Upgrading CryptoAI... by proxy ' + proxyAddress);
+        const contractUpdated = await ethers.getContractFactory("CryptoAgents");
+        console.log('Upgrading CryptoAgents... by proxy ' + proxyAddress);
         const tx = await upgrades.upgradeProxy(proxyAddress, contractUpdated);
-        console.log('CryptoAI upgraded on tx address ' + await tx.address);
+        console.log('CryptoAgents upgraded on tx address ' + await tx.address);
         return tx;
     }
 
@@ -181,4 +181,4 @@ class CryptoAI {
     }
 }
 
-export {CryptoAI};
+export { CryptoAI };

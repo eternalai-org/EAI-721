@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import {ICryptoAIData} from "../interfaces/ICryptoAIData.sol";
+import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
 
 abstract contract EAI721OnChainArt is  ERC721Upgradeable {
     // --- Constants ---
@@ -36,13 +36,13 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
     function _mint(
         address to,
         uint256 dna,
-        uint256[5] memory traits
+        uint256[6] memory traits
     ) internal virtual {
         if (to == address(0) || _cryptoAIDataAddr == address(0)) revert InvalidAddr();
 
         require(_indexMint <= TOKEN_SUPPLY_LIMIT);
         _safeMint(to, _indexMint);
-        ICryptoAIData cryptoAIDataContract = ICryptoAIData(_cryptoAIDataAddr);
+        IOnchainArtData cryptoAIDataContract = IOnchainArtData(_cryptoAIDataAddr);
         cryptoAIDataContract.mintAgent(_indexMint);
         cryptoAIDataContract.unlockRenderAgent(_indexMint, dna, traits);
 
@@ -52,7 +52,7 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
     // {IEAI721-tokenURI}
     function tokenURI(uint256 tokenId) public virtual view override returns (string memory result) {
         require(_exists(tokenId), 'ERC721: Token does not exist');
-        ICryptoAIData cryptoAIDataContract = ICryptoAIData(_cryptoAIDataAddr);
+        IOnchainArtData cryptoAIDataContract = IOnchainArtData(_cryptoAIDataAddr);
         result = cryptoAIDataContract.tokenURI(tokenId);
     }
 
