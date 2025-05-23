@@ -19,8 +19,8 @@ async function main() {
     config.contractAddress,
     0,
     process.env.PUBLIC_KEY,
-    data[0].index[0],
-    data[0].index[1]
+    data[7].index[0],
+    data[7].index[1]
   );
 }
 
