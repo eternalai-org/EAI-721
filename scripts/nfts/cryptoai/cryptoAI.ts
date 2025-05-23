@@ -1,5 +1,5 @@
+import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import * as path from "path";
-import {createAlchemyWeb3} from "@alch/alchemy-web3";
 
 const {ethers, upgrades} = require("hardhat");
 const hardhatConfig = require("../../../hardhat.config");
@@ -181,4 +181,4 @@ class CryptoAI {
     }
 }
 
-export {CryptoAI};
+export { CryptoAI };

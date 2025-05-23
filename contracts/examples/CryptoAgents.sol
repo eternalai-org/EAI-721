@@ -65,7 +65,7 @@ contract CryptoAI is
     function mint(
         address to,
         uint256 dna,
-        uint256[5] memory traits
+        uint256[6] memory traits
     ) public virtual onlyAdmin {
         _mint(to, dna, traits);
     }

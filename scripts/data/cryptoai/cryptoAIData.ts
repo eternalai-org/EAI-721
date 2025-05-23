@@ -1,6 +1,6 @@
-import {createAlchemyWeb3} from "@alch/alchemy-web3";
+import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import * as path from "path";
-import {DNA} from "./data";
+import { DNA } from "./data";
 
 const {ethers, upgrades} = require("hardhat");
 const hardhatConfig = require("../../../hardhat.config");
@@ -89,6 +89,26 @@ class CryptoAIData {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
         const fun = temp?.nftContract.methods.addItem(key, name, trait, positions)
+        //the transaction
+        const tx = {
+            from: this.senderPublicKey,
+            to: contractAddress,
+            nonce: nonce,
+            gas: gas,
+            data: fun.encodeABI(),
+        }
+
+        if (tx.gas == 0) {
+            tx.gas = await fun.estimateGas(tx);
+        }
+
+        return await this.signedAndSendTx(temp?.web3, tx);
+    }
+    
+    async addMoreItem(contractAddress: any, gas: any, key: string, name: string[], trait: number[], positions: number[][]) {
+        let temp = this.getContract(contractAddress);
+        const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
+        const fun = temp?.nftContract.methods.addMoreItem(key, name, trait, positions)
         //the transaction
         const tx = {
             from: this.senderPublicKey,
@@ -507,4 +527,4 @@ class CryptoAIData {
     }
 }
 
-export {CryptoAIData};
+export { CryptoAIData };
