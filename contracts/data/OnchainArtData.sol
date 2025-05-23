@@ -203,6 +203,37 @@ contract CryptoAIData is OwnableUpgradeable, ICryptoAIData {
         items[_itemType].positions = _positions;
     }
 
+    function addMoreItem(
+        string memory _itemType,
+        string[] memory _names,
+        uint256[] memory _rarities,
+        uint16[][] memory _positions
+    ) public onlyDeployer unsealed {
+        // Get existing data
+        string[] memory existingNames = items[_itemType].names;
+        uint16[][] memory existingPositions = items[_itemType].positions;
+
+        // Create new arrays with combined length
+        string[] memory newNames = new string[](existingNames.length + _names.length);
+        uint16[][] memory newPositions = new uint16[][](existingPositions.length + _positions.length);
+
+        // Copy existing data
+        for(uint i = 0; i < existingNames.length; i++) {
+            newNames[i] = existingNames[i];
+            newPositions[i] = existingPositions[i];
+        }
+
+        // Append new data
+        for(uint i = 0; i < _names.length; i++) {
+            newNames[existingNames.length + i] = _names[i];
+            newPositions[existingPositions.length + i] = _positions[i];
+        }
+
+        // Update storage
+        items[_itemType].names = newNames;
+        items[_itemType].positions = newPositions;
+    }
+
     function setPalettes(
         uint8[][] memory _pallets
     ) public onlyDeployer unsealed {

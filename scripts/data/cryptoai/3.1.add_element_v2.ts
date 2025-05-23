@@ -113,28 +113,6 @@ async function main(key: string) {
         //ADD DNA
         await dataContract.addDNA(address, 0, KEY_DNA, TRAITS_DNA);
         break;
-      case DNA.NEO_HUMAN:
-        //Add DNA Variant
-        await dataContract.addDNAVariant(
-          address,
-          0,
-          DNA.NEO_HUMAN,
-          data.DNA["Neo-Human"].names,
-          data.DNA["Neo-Human"].traits,
-          data.DNA["Neo-Human"].positions
-        );
-        break;
-      case DNA.X_TYPE:
-        //Add DNA Variant
-        await dataContract.addDNAVariant(
-          address,
-          0,
-          DNA.X_TYPE,
-          data.DNA["X-Type"].names,
-          data.DNA["X-Type"].traits,
-          data.DNA["X-Type"].positions
-        );
-        break;
       case DNA.ALIEN:
         //Add DNA Variant
         await dataContract.addDNAVariant(
@@ -155,6 +133,28 @@ async function main(key: string) {
           data.DNA.Kong.names,
           data.DNA.Kong.traits,
           data.DNA.Kong.positions
+        );
+        break;
+      case DNA.X_TYPE:
+        //Add DNA Variant
+        await dataContract.addDNAVariant(
+          address,
+          0,
+          DNA.X_TYPE,
+          data.DNA["X-Type"].names,
+          data.DNA["X-Type"].traits,
+          data.DNA["X-Type"].positions
+        );
+        break;
+      case DNA.NEO_HUMAN:
+        //Add DNA Variant
+        await dataContract.addDNAVariant(
+          address,
+          0,
+          DNA.NEO_HUMAN,
+          data.DNA["Neo-Human"].names,
+          data.DNA["Neo-Human"].traits,
+          data.DNA["Neo-Human"].positions
         );
         break;
       case DNA.ROBOT:
@@ -183,7 +183,7 @@ async function main(key: string) {
         // Add first half of Head elements
         {
           const mid = Math.ceil(data.elements.Head.names.length / 2);
-          await dataContract.addItem(
+          await dataContract.addMoreItem(
             address,
             0,
             ELEMENT.HEAD,
@@ -197,7 +197,7 @@ async function main(key: string) {
         // Add second half of Head elements
         {
           const mid = Math.ceil(data.elements.Head.names.length / 2);
-          await dataContract.addItem(
+          await dataContract.addMoreItem(
             address,
             0,
             ELEMENT.HEAD,
@@ -248,7 +248,7 @@ async function main(key: string) {
   }
 }
 
-main(`${ELEMENT.HEAD}_2`).catch((error) => {
+main(ELEMENT.EARRING).catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
