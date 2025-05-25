@@ -4,6 +4,7 @@ async function main() {
   const collections = require("./datajson/collections.json");
 
   const data = [];
+  const data_draw = [];
   try {
 
   interface TraitData {
@@ -185,15 +186,41 @@ async function main() {
         trait: ttrs,
         rarity: weight + rarity
       })
+      data_draw.push({
+        id: collection['id'],
+       draw: collection['name'],
+        rarity: weight + rarity
+      })
     }
 
-   data.sort((a, b) => a.rarity - b.rarity);
+    data.sort((a, b) => a.rarity - b.rarity);
+    data_draw.sort((a, b) => a.rarity - b.rarity);
+    
+    const nfts = data.map((item) => {
+      return item.id
+    });
+
+
+     await fs.writeFile(
+      "scripts/data/cryptoai/datajson/collections_nfs_order_rarity.json",
+      JSON.stringify(nfts, null, 2),
+      "utf8"
+    );
 
     await fs.writeFile(
       "scripts/data/cryptoai/datajson/collections_nfs_be.json",
       JSON.stringify(data, null, 2),
       "utf8"
     );
+
+    await fs.writeFile(
+      "scripts/data/cryptoai/datajson/collections_nfs_draw.json",
+      JSON.stringify(data_draw.map((item) => {
+        return item.draw
+      }), null, 2),
+      "utf8"
+    );
+ 
     console.log("Successfully wrote rarity data to collections_nfs_be.json");
   } catch (error) {
     console.error("Error writing rarity data to file:", error);

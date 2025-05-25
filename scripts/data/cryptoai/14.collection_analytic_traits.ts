@@ -35,11 +35,22 @@ async function main() {
 
   const data: TraitStats = {};
   const attrs: any = {};
+  const DNA_Analytic: any = {};
 
   collections.forEach((collection: any) => {
+    const DNA = collection.name[0];
     const elements = collection.name[1];
     const nonEmptyElements = elements.filter((element: string) => element !== '');
     const attrKey = `attr_${nonEmptyElements.length - 1}`;
+
+
+     if (!DNA_Analytic[DNA]) {
+      DNA_Analytic[DNA] = {
+        counter: 0
+      }
+     }
+    
+    DNA_Analytic[DNA].counter++;
     
     if (!attrs[attrKey]) {
       attrs[attrKey] = {
@@ -48,7 +59,7 @@ async function main() {
       }
     }
     attrs[attrKey].counter++;
-    attrs[attrKey].collections.push({id: collection['id'], attr: collection.name, thumbnail: `https://cdn.eternalai.org/homepage/data-mint-v2/${collection['id']}.svg`});
+    // attrs[attrKey].collections.push({id: collection['id'], attr: collection.name, thumbnail: `https://cdn.eternalai.org/homepage/data-mint-v2/${collection['id']}.svg`});
 
     elements.forEach((element: string, index: number) => {
       const elementKey = element || 'Null';
@@ -74,6 +85,7 @@ async function main() {
   });
 
   const print = {
+    dna: DNA_Analytic,
     attributes: attrs,
     traits: data,
   };
