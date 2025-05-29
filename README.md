@@ -7,17 +7,17 @@ The contract is built on a modular architecture, inheriting from multiple specia
 
 ```solidity
 contract EAI721 is 
+    IEAI721Identity,
     IEAI721Intelligence,
-    IEAI721Art,
-    IEAI721Payment,
-    IEAI721Coin
+    IEAI721Monetization,
+    IEAI721Tokenization
 ```
 
 ## Key Components
 
-### 1. Agent Ability Management (IEAI721AgentAbility)
+### 1. Agent Intelligence (IEAI721Intelligence)
 
-The ability extension contract enables the on-chain creation and management of AI agent abilities.
+The Agent Intelligence extension contract enables the on-chain creation and management of AI agent abilities.
 
 #### Core Data Structures
 
@@ -32,7 +32,6 @@ struct CodePointer {
     FileType fileType;
     string fileName;
 }
-
 ```
 
 #### Key Features
@@ -104,13 +103,13 @@ function setAgentName(
 - `agentId`: The ID of the agent to rename
 - `name`: The new human-readable name for the agent
 
-### 2. Implementation Choices for NFT Art
+### 2. Implementation Choices for Agent Identity
 
-Developers have two distinct options for implementing NFT art in their AI Agent contracts:
+Developers have two distinct options for implementing Agent Identity in their AI agent contracts:
 
-#### <i> Option 1: On-Chain Art Implementation (IEAI721OnChainArt) </i>
+#### <i> Option 1: Agent Identity — Manage Agents as On-Chain Art NFTs (IEAI721Identity) </i>
 
-If you want to store all artwork directly on the blockchain, follow the `IEAI721OnChainArt` interface. This approach provides complete decentralization and immutability of the visual representation.
+If you want to store all artwork directly on the blockchain, follow the `IEAI721Identity` interface. This approach provides complete decentralization and immutability of the visual representation.
 
 #### Key Features
 - **Fully On-Chain Art Storage**: All NFT artwork is stored directly on the blockchain
@@ -143,7 +142,7 @@ function tokenURI(uint256 tokenId) external view returns (string memory);
 **Parameters:**
 - `tokenId`: The ID of the token to get art for
 
-#### <i> Option 2: Off-Chain Art Implementation (Standard ERC721) </i>
+#### <i> Option 2: Agent Identity — Manage Agents as Off-Chain Art NFTs (Standard ERC721) </i>
 
 If you prefer to store artwork off-chain (e.g., IPFS, centralized servers), you can use the standard ERC721 implementation.
 
@@ -178,9 +177,9 @@ Choose **Option 2** if you need:
 - External storage solutions (IPFS, centralized servers)
 - Simpler implementation without on-chain art generation
 
-### 3. AI Subscription (IEAI721Subscription)
+### 3. AI Monetization (IEAI721Monetization)
 
-The AI subscription extension contract enables agent creators to monetize their AI agents through subscription-based access. This contract manages the subscription fees for accessing AI agent services.
+The AI Monetization extension contract enables agent creators to monetize their AI agents through subscription-based access. This contract manages the subscription fees for accessing AI agent services.
 
 #### Key Features
 
@@ -208,9 +207,9 @@ function subscriptionFee(uint256 agentId) external view returns (uint256);
 **Parameters:**
 - `agentId`: The ID of the agent to get the subscription fee for
 
-### 4. AI Token (IEAI721Token)
+### 4. AI Tokenization (IEAI721Tokenization)
 
-The AI Token extension contract allows each AI agent to have its own dedicated token for specialized use cases and value exchange.
+The AI Tokenization extension contract allows each AI agent to have its own dedicated token for specialized use cases and value exchange.
 
 #### Key Features
 
