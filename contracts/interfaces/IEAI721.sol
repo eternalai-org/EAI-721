@@ -2,6 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-import {IEAI721AgentAbility} from "./IEAI721AgentAbility.sol";
-import {IEAI721AIToken} from "./IEAI721AIToken.sol";
-import {IEAI721SubscriptionFee} from "./IEAI721SubscriptionFee.sol";
+import {IEAI721Brain} from "./IEAI721Brain.sol";
+import {IEAI721Tokenization} from "./IEAI721Tokenization.sol";
+import {IEAI721Monetization} from "./IEAI721Monetization.sol";

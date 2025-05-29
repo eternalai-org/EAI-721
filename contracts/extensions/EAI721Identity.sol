@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
 
-abstract contract EAI721OnChainArt is  ERC721Upgradeable {
+abstract contract EAI721Identity is  ERC721Upgradeable {
     // --- Constants ---
     uint256 public constant TOKEN_SUPPLY_LIMIT = 10000;
 
@@ -18,10 +18,10 @@ abstract contract EAI721OnChainArt is  ERC721Upgradeable {
     error NotExist();
 
     // initialization
-    function __EAI721OnChainArt_init(uint256 indexMint) internal onlyInitializing {
-        __EAI721OnChainArt_init_unchained(indexMint);
+    function __EAI721Identity_init(uint256 indexMint) internal onlyInitializing {
+        __EAI721Identity_init_unchained(indexMint);
     }
-    function __EAI721OnChainArt_init_unchained(uint256 indexMint) internal onlyInitializing {
+    function __EAI721Identity_init_unchained(uint256 indexMint) internal onlyInitializing {
         _indexMint = indexMint;
     }
 

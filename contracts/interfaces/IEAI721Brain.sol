@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-interface IEAI721AgentAbility {
+interface IEAI721Brain {
     // --- Enums ---
     enum FileType {
         LIBRARY,
