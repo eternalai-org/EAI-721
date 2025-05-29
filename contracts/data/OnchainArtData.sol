@@ -9,7 +9,7 @@ import "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
-import "../interfaces/IEAI721Brain.sol";
+import "../interfaces/IEAI721Intelligence.sol";
 
 contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
     uint256 public constant TOKEN_LIMIT = 0x2710;
@@ -291,6 +291,15 @@ contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
                 byteString = abi.encodePacked(byteString, objString);
             }
         }
+
+        byteString = abi.encodePacked(
+            '{"trait_type": "ORIGIN"',
+            ',"value":"',
+            StringsUpgradeable.toString(IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1 ? 0 : 1),
+            '"},'
+            , byteString
+        );
+        count++;
 
         byteString = abi.encodePacked(
             '{"trait_type": "attributes"',

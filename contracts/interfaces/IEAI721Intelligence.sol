@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-interface IEAI721Brain {
+interface IEAI721Intelligence {
     // --- Enums ---
     enum FileType {
         LIBRARY,
@@ -14,12 +14,6 @@ interface IEAI721Brain {
         address retrieveAddress;
         FileType fileType;
         string fileName;
-    }
-
-    struct SignData {
-        CodePointer[] pointers;
-        address[] depsAgents;
-        uint16 currentVersion;
     }
 
     // --- Events ---

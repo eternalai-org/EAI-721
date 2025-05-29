@@ -2,20 +2,16 @@
 
 pragma solidity ^0.8.0;
 
-import {IEAI721Brain} from "../interfaces/IEAI721Brain.sol";
+import {IEAI721Intelligence} from "../interfaces/IEAI721Intelligence.sol";
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "../libs/helpers/File.sol";
 
-abstract contract EAI721Brain is IEAI721Brain, Initializable, ERC721Upgradeable {
+abstract contract EAI721Intelligence is IEAI721Intelligence, Initializable, ERC721Upgradeable {
     using {read} for IFileStore.File;
 
     // --- Constants ---
     uint256 public constant TOKEN_LIMIT = 10000;
     bytes32 private constant IPFS_SIG = keccak256(bytes("ipfs"));
-    bytes32 private constant SIGN_DATA_TYPEHASH =
-        keccak256(
-            "SignData(CodePointer[] pointers,uint256[] depsAgents,uint256 agentId,uint16 currentVersion)CodePointer(address retrieveAddress,uint8 fileType,string fileName)"
-        );
 
     // --- Storage ---
     mapping(uint256 agentId => string) private _codeLanguage; // e.g., "python", "javascript"...
@@ -43,10 +39,10 @@ abstract contract EAI721Brain is IEAI721Brain, Initializable, ERC721Upgradeable 
     }
 
     // --- Initialization ---
-    function __EAI721Brain_init() internal onlyInitializing {
+    function __EAI721Intelligence_init() internal onlyInitializing {
     }
 
-    function __EAI721Brain_init_unchained() internal onlyInitializing {
+    function __EAI721Intelligence_init_unchained() internal onlyInitializing {
     }
 
     // --- Functions ---}
