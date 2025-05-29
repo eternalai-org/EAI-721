@@ -7,10 +7,10 @@ The contract is built on a modular architecture, inheriting from multiple specia
 
 ```solidity
 contract EAI721 is 
+    IEAI721Identity,
     IEAI721Brain,
-    IEAI721Art,
-    IEAI721Payment,
-    IEAI721Coin
+    IEAI721Monetization,
+    IEAI721Tokenization
 ```
 
 ## Key Components
