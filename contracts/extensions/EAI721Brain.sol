@@ -2,11 +2,11 @@
 
 pragma solidity ^0.8.0;
 
-import {IEAI721AgentAbility} from "../interfaces/IEAI721AgentAbility.sol";
+import {IEAI721Brain} from "../interfaces/IEAI721Brain.sol";
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "../libs/helpers/File.sol";
 
-abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC721Upgradeable {
+abstract contract EAI721Brain is IEAI721Brain, Initializable, ERC721Upgradeable {
     using {read} for IFileStore.File;
 
     // --- Constants ---
@@ -43,10 +43,10 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     }
 
     // --- Initialization ---
-    function __EAI721AgentAbility_init() internal onlyInitializing {
+    function __EAI721Brain_init() internal onlyInitializing {
     }
 
-    function __EAI721AgentAbility_init_unchained() internal onlyInitializing {
+    function __EAI721Brain_init_unchained() internal onlyInitializing {
     }
 
     // --- Functions ---}

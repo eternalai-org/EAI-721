@@ -9,7 +9,7 @@ import "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
-import "../interfaces/IEAI721AgentAbility.sol";
+import "../interfaces/IEAI721Brain.sol";
 
 contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
     uint256 public constant TOKEN_LIMIT = 0x2710;

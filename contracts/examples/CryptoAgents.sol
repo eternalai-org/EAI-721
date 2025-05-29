@@ -2,15 +2,15 @@
 
 pragma solidity ^0.8.0;
 
-import {EAI721AgentAbility, ERC721Upgradeable, Initializable} from "../extensions/EAI721AgentAbility.sol";
-import {EAI721OnChainArt} from "../extensions/EAI721OnChainArt.sol";
+import {EAI721Brain, ERC721Upgradeable, Initializable} from "../extensions/EAI721Brain.sol";
+import {EAI721Identity} from "../extensions/EAI721Identity.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
 import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
 
 contract CryptoAgents is
     Initializable,
-    EAI721AgentAbility,
-    EAI721OnChainArt
+    EAI721Brain,
+    EAI721Identity
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     
@@ -40,7 +40,7 @@ contract CryptoAgents is
         _deployer = deployer;
 
         __ERC721_init(name, symbol);
-        __EAI721OnChainArt_init(1);
+        __EAI721Identity_init(1);
     }
 
     function changeDeployer(address newAdm) external onlyDeployer {
@@ -61,7 +61,7 @@ contract CryptoAgents is
         _setCryptoAiDataAddr(newAddr);
     }
 
-    //@EAI721OnChainArt
+    //@EAI721Identity
     function mint(
         address to,
         uint256 dna,
@@ -70,8 +70,8 @@ contract CryptoAgents is
         _mint(to, dna, traits);
     }
 
-    function tokenURI(uint256 agentId) public view override(ERC721Upgradeable, EAI721OnChainArt) returns (string memory) {
-        return EAI721OnChainArt.tokenURI(agentId);
+    function tokenURI(uint256 agentId) public view override(ERC721Upgradeable, EAI721Identity) returns (string memory) {
+        return EAI721Identity.tokenURI(agentId);
     }
 
     function setRoyaltyReceiver(address newRoyaltyReceiver) external onlyAdmin {

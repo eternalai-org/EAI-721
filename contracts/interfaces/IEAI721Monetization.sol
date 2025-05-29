@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-interface IEAI721SubscriptionFee {
+interface IEAI721Monetization {
 
     // --- Errors ---
     error Unauthenticated();
