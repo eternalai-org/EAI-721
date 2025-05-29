@@ -15,9 +15,9 @@ contract EAI721 is
 
 ## Key Components
 
-### 1. Agent Brain (IEAI721Brain)
+### 1. Agent Intelligence (IEAI721Intelligence)
 
-The Agent Brain extension contract enables the on-chain creation and management of AI agent abilities.
+The Agent Intelligence extension contract enables the on-chain creation and management of AI agent abilities.
 
 #### Core Data Structures
 
@@ -31,12 +31,6 @@ struct CodePointer {
     address retrieveAddress;
     FileType fileType;
     string fileName;
-}
-
-struct SignData {
-    CodePointer[] pointers;
-    address[] depsAgents;
-    uint16 currentVersion;
 }
 ```
 
