@@ -2,14 +2,14 @@
 
 pragma solidity ^0.8.0;
 
-import {EAI721Brain, ERC721Upgradeable, Initializable} from "../extensions/EAI721Brain.sol";
+import {EAI721Intelligence, ERC721Upgradeable, Initializable} from "../extensions/EAI721Intelligence.sol";
 import {EAI721Identity} from "../extensions/EAI721Identity.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
 import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
 
 contract CryptoAgents is
     Initializable,
-    EAI721Brain,
+    EAI721Intelligence,
     EAI721Identity
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");

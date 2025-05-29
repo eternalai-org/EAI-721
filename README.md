@@ -7,7 +7,7 @@ The contract is built on a modular architecture, inheriting from multiple specia
 
 ```solidity
 contract EAI721 is 
-    IEAI721Brain,
+    IEAI721Intelligence,
     IEAI721Art,
     IEAI721Payment,
     IEAI721Coin
@@ -33,11 +33,6 @@ struct CodePointer {
     string fileName;
 }
 
-struct SignData {
-    CodePointer[] pointers;
-    address[] depsAgents;
-    uint16 currentVersion;
-}
 ```
 
 #### Key Features
