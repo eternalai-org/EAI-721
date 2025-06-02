@@ -9,6 +9,13 @@ async function main() {
 
   let config = await initConfig();
 
+
+  const args = process.argv.slice(2) as string[];
+  if (args.length == 0) {
+    console.log("missing key");
+  }
+  const key = args[0];
+
   const dataContract = new CryptoAI(
     process.env.NETWORK,
     process.env.PRIVATE_KEY,
@@ -18,7 +25,7 @@ async function main() {
   await dataContract.allowAdmin(
     config.contractAddress,
     0,
-    process.env.PUBLIC_KEY,
+    key || process.env.PUBLIC_KEY,
     true
   );
 }
