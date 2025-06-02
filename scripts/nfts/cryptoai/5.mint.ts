@@ -21,10 +21,11 @@ async function main() {
     process.env.PRIVATE_KEY,
     process.env.PUBLIC_KEY
   );
-  console.log(data[key].index[0], data[key].index[1]);
+  console.log(data[key].id, data[key].index[0], data[key].index[1]);
   await dataContract.mint(
     config.contractAddress,
     0,
+    data[key].id,
     process.env.PUBLIC_KEY,
     data[key].index[0],
     data[key].index[1]
