@@ -10,17 +10,24 @@ async function main() {
 
   let config = await initConfig();
 
+  const args = process.argv.slice(2) as string[];
+  if (args.length == 0) {
+    console.log("missing key");
+  }
+  const key = args[0];
+
   const dataContract = new CryptoAI(
     process.env.NETWORK,
     process.env.PRIVATE_KEY,
     process.env.PUBLIC_KEY
   );
+  console.log(data[key].index[0], data[key].index[1]);
   await dataContract.mint(
     config.contractAddress,
     0,
     process.env.PUBLIC_KEY,
-    data[0].index[0],
-    data[0].index[1]
+    data[key].index[0],
+    data[key].index[1]
   );
 }
 

@@ -4,10 +4,10 @@ import * as data from "./datajson/data-compressed.json";
 import { initConfig } from "./index";
 
 async function main() {
-  if (process.env.NETWORK != "base_testnet") {
-    console.log("wrong network");
-    return;
-  }
+  // if (process.env.NETWORK != "base_testnet") {
+  //   console.log("wrong network");
+  //   return;
+  // }
   const args = process.argv.slice(2) as string[];
   if (args.length == 0) {
     console.log("missing key");

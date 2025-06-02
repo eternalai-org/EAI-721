@@ -153,7 +153,12 @@ module.exports = {
         },
         base_testnet: {
             url: process.env.BASE_TESTNET, accounts: [`0x${process.env.PRIVATE_KEY}`], timeout: 100_000,
-        }
+        },
+        sepolia: {
+            url: process.env.SEPOLIA_API_URL,
+            accounts: [`0x${process.env.PRIVATE_KEY}`],
+            timeout: 100_000,
+        },
     },
     mocha: {
         timeout: 40000000,
