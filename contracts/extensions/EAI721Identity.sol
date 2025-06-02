@@ -2,57 +2,60 @@
 
 pragma solidity ^0.8.0;
 
-import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
 
-abstract contract EAI721Identity is  ERC721Upgradeable {
-    // --- Constants ---
-    uint256 public constant TOKEN_SUPPLY_LIMIT = 10000;
-
+abstract contract EAI721Identity is ERC721Upgradeable {
     // --- State Variables ---
-    uint256 private _indexMint;
     address private _cryptoAIDataAddr;
 
     // --- Errors ---
     error InvalidAddr();
     error NotExist();
+    error Existed();
 
     // initialization
-    function __EAI721Identity_init(uint256 indexMint) internal onlyInitializing {
-        __EAI721Identity_init_unchained(indexMint);
+    function __EAI721Identity_init() internal onlyInitializing {
+        __EAI721Identity_init_unchained();
     }
-    function __EAI721Identity_init_unchained(uint256 indexMint) internal onlyInitializing {
-        _indexMint = indexMint;
-    }
+    function __EAI721Identity_init_unchained() internal onlyInitializing {}
 
-    function _setCryptoAiDataAddr(address newCryptoAiDataAddr) internal virtual {
+    function _setCryptoAIDataAddr(
+        address newCryptoAiDataAddr
+    ) internal virtual {
         _cryptoAIDataAddr = newCryptoAiDataAddr;
     }
 
-    function cryptoAiDataAddr() public virtual view returns (address) {
+    function cryptoAIDataAddr() public view virtual returns (address) {
         return _cryptoAIDataAddr;
     }
 
     function _mint(
+        uint256 tokenId,
         address to,
         uint256 dna,
         uint256[6] memory traits
     ) internal virtual {
-        if (to == address(0) || _cryptoAIDataAddr == address(0)) revert InvalidAddr();
+        if (to == address(0) || _cryptoAIDataAddr == address(0))
+            revert InvalidAddr();
+        if (_exists(tokenId)) revert Existed();
 
-        require(_indexMint <= TOKEN_SUPPLY_LIMIT);
-        _safeMint(to, _indexMint);
-        IOnchainArtData cryptoAIDataContract = IOnchainArtData(_cryptoAIDataAddr);
-        cryptoAIDataContract.mintAgent(_indexMint);
-        cryptoAIDataContract.unlockRenderAgent(_indexMint, dna, traits);
-
-        _indexMint += 1;
+        _safeMint(to, tokenId);
+        IOnchainArtData cryptoAIDataContract = IOnchainArtData(
+            _cryptoAIDataAddr
+        );
+        cryptoAIDataContract.mintAgent(tokenId);
+        cryptoAIDataContract.unlockRenderAgent(tokenId, dna, traits);
     }
 
     // {IEAI721-tokenURI}
-    function tokenURI(uint256 tokenId) public virtual view override returns (string memory result) {
-        require(_exists(tokenId), 'ERC721: Token does not exist');
-        IOnchainArtData cryptoAIDataContract = IOnchainArtData(_cryptoAIDataAddr);
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory result) {
+        if (!_exists(tokenId)) revert NotExist();
+        IOnchainArtData cryptoAIDataContract = IOnchainArtData(
+            _cryptoAIDataAddr
+        );
         result = cryptoAIDataContract.tokenURI(tokenId);
     }
 

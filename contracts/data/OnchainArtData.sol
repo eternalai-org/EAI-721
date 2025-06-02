@@ -74,7 +74,7 @@ contract OnchainArtData is IOnchainArtData {
     }
 
     function changeDeployer(address newAdm) external onlyDeployer unsealed {
-        require(newAdm != Errors.ZERO_ADDR, Errors.INV_ADD);
+        require(newAdm != address(0), Errors.INV_ADD);
         if (_deployer != newAdm) {
             _deployer = newAdm;
         }
@@ -95,7 +95,7 @@ contract OnchainArtData is IOnchainArtData {
     function changeCryptoAIAgentAddress(
         address newAddr
     ) external onlyDeployer unsealed {
-        require(newAddr != Errors.ZERO_ADDR, Errors.INV_ADD);
+        require(newAddr != address(0), Errors.INV_ADD);
         if (_cryptoAIAgentAddr != newAddr) {
             _cryptoAIAgentAddr = newAddr;
         }
@@ -110,7 +110,7 @@ contract OnchainArtData is IOnchainArtData {
     }
 
     function mintAgent(uint256 tokenId) external onlyAIAgentContract _sealed {
-        require(_cryptoAIAgentAddr != Errors.ZERO_ADDR, Errors.INV_ADD);
+        require(_cryptoAIAgentAddr != address(0), Errors.INV_ADD);
         require(unlockedTokens[tokenId].tokenID == 0, Errors.TOKEN_ID_UNLOCKED);
         unlockedTokens[tokenId].tokenID = tokenId;
     }
@@ -210,17 +210,21 @@ contract OnchainArtData is IOnchainArtData {
         uint16[][] memory existingPositions = items[_itemType].positions;
 
         // Create new arrays with combined length
-        string[] memory newNames = new string[](existingNames.length + _names.length);
-        uint16[][] memory newPositions = new uint16[][](existingPositions.length + _positions.length);
+        string[] memory newNames = new string[](
+            existingNames.length + _names.length
+        );
+        uint16[][] memory newPositions = new uint16[][](
+            existingPositions.length + _positions.length
+        );
 
         // Copy existing data
-        for(uint i = 0; i < existingNames.length; i++) {
+        for (uint i = 0; i < existingNames.length; i++) {
             newNames[i] = existingNames[i];
             newPositions[i] = existingPositions[i];
         }
 
         // Append new data
-        for(uint i = 0; i < _names.length; i++) {
+        for (uint i = 0; i < _names.length; i++) {
             newNames[existingNames.length + i] = _names[i];
             newPositions[existingPositions.length + i] = _positions[i];
         }
@@ -291,9 +295,15 @@ contract OnchainArtData is IOnchainArtData {
         byteString = abi.encodePacked(
             '{"trait_type": "ORIGIN"',
             ',"value":"',
-            Strings.toString(IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1 ? 0 : 1),
-            '"},'
-            , byteString
+            Strings.toString(
+                IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
+                    tokenId
+                ) > 1
+                    ? 0
+                    : 1
+            ),
+            '"},',
+            byteString
         );
         count++;
 
@@ -396,22 +406,13 @@ contract OnchainArtData is IOnchainArtData {
     ) public view returns (string memory result) {
         return
             string(
-                abi.encodePacked(
-                    PLACEHOLDER_SCRIPT,
-                    Strings.toString(tokenId)
-                )
+                abi.encodePacked(PLACEHOLDER_SCRIPT, Strings.toString(tokenId))
             );
     }
 
     function cryptoAIImageSvg(
         uint256 tokenId
-    )
-        public
-        view
-        returns (
-            string memory result
-        )
-    {
+    ) public view returns (string memory result) {
         require(
             unlockedTokens[tokenId].tokenID > 0 &&
                 unlockedTokens[tokenId].weight > 0,
