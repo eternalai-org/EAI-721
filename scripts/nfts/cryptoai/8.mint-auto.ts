@@ -30,6 +30,7 @@ async function main() {
         await dataContract.mint(
           config.contractAddress,
           0,
+          entry.id,
           process.env.PUBLIC_KEY,
           entry.index[0],
           entry.index[1]
@@ -42,6 +43,7 @@ async function main() {
         await dataContract.mint(
           config.contractAddress,
           0,
+          data[i].id,
           process.env.PUBLIC_KEY,
           data[i].index[0],
           data[i].index[1]
