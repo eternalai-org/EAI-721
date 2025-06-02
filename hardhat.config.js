@@ -91,6 +91,10 @@ module.exports = {
             url: process.env.MAINNET_API_URL,
             accounts: [`0x${process.env.PRIVATE_KEY}`],
         },
+        sepolia: {
+            url: process.env.SEPOLIA_API_URL,
+            accounts: [`0x${process.env.PRIVATE_KEY}`],
+        },
         polygon: {
             url: process.env.POLYGON_MAINNET_API_URL,
             accounts: [`0x${process.env.PRIVATE_KEY}`],

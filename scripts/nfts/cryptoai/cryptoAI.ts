@@ -1,7 +1,7 @@
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import * as path from "path";
 
-const {ethers, upgrades} = require("hardhat");
+const { ethers, upgrades } = require("hardhat");
 const hardhatConfig = require("../../../hardhat.config");
 
 class CryptoAI {
@@ -19,8 +19,8 @@ class CryptoAI {
     }
 
     async deployUpgradeable(name: string,
-                            symbol: string,
-                            deployerAddr: any,
+        symbol: string,
+        deployerAddr: any,
     ) {
         // if (this.network == "local") {
         //     console.log("not run local");
@@ -50,7 +50,7 @@ class CryptoAI {
         let contract = require(path.resolve(contractName));
         const web3 = createAlchemyWeb3(API_URL)
         const nftContract = new web3.eth.Contract(contract.abi, contractAddress)
-        return {web3, nftContract};
+        return { web3, nftContract };
     }
 
     async upgradeContract(proxyAddress: any) {
@@ -86,10 +86,10 @@ class CryptoAI {
         return null;
     }
 
-    async changeCryptoAiDataAddress(contractAddress: any, gas: any, newAddr: any) {
+    async changeCryptoAIDataAddress(contractAddress: any, gas: any, newAddr: any) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
-        const fun = temp?.nftContract.methods.changeCryptoAiDataAddress(newAddr)
+        const fun = temp?.nftContract.methods.changeCryptoAIDataAddress(newAddr)
         //the transaction
         const tx = {
             from: this.senderPublicKey,

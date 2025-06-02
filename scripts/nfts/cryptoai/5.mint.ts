@@ -2,7 +2,7 @@ import { initConfig } from "../../data/cryptoai";
 import { CryptoAI } from "./cryptoAI";
 const data = require("../../data/cryptoai/datajson/collections.json");
 
-async function main() {
+async function main(tokenId: any) {
   // if (process.env.NETWORK != "base_mainnet") {
   //     console.log("wrong network");
   //     return;
@@ -23,6 +23,7 @@ async function main() {
   );
   console.log(data[key].id, data[key].index[0], data[key].index[1]);
   await dataContract.mint(
+    tokenId,
     config.contractAddress,
     0,
     data[key].id,
@@ -32,7 +33,7 @@ async function main() {
   );
 }
 
-main().catch((error) => {
+main(1).catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

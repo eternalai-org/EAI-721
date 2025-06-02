@@ -1,30 +1,20 @@
 {
   "manifestVersion": "3.2",
   "admin": {
-    "address": "0x95577BC6B7B558203fDd2Ae26301cFCDc08F5966",
-    "txHash": "0x4b19b93263f0e45dfb8b7970ce2f40c15f5a9b27a783f9e44f4766e9955251c7"
+    "address": "0xaFFCafce8a29112045Ca6A05BE785e191C0d38d2",
+    "txHash": "0xcb5baea088cfc5ed9ee6ac5e880659fed19f68498bfa323680551c3d65b98dc5"
   },
   "proxies": [
     {
-      "address": "0xDBF52319982Ac8AF5117109C5D7E731EE43E4041",
-      "txHash": "0xb3040e084a91f7db309b798eb491aa3890f7d622092e1bfbde3bb33ddb60b094",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x02483Baa24a9c80764E20d7F6098D372425054E4",
-      "txHash": "0xd3693bacf18a1b48e5d37964f3b31368166db190742e08a0a0de3999812b161d",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xc9F8A2b0EF6199BC01657DAa4f1D0ac852Cf0426",
-      "txHash": "0x4615c0a34a2f3336b2b75e74477c14173035aba72bc3de9a6a2e55b856d50b2d",
+      "address": "0xD6A90f260A4812581d066e99291ee330472EbBBb",
+      "txHash": "0x641a9750927cdb4b9dea47988e0825ddfc45c9501b8497699f23d414b96763dd",
       "kind": "transparent"
     }
   ],
   "impls": {
     "68e09b8efc09cf7d3ad5359e2e725527f3df67a347b0a99d75ae603c5f29a751": {
-      "address": "0xC45De416DCA3Cc21B4eDFea0FEAF9FB58ec5ecE2",
-      "txHash": "0x135fd5dd0f725fbc5c326ec4ec90f10226922d7e91b5248c71480c2a391ce610",
+      "address": "0x419d4505FdfdD1D7C1394851Fc72057012869A7d",
+      "txHash": "0x7b427e5a49b50a25ce2c35943e123ce22d6efef4efa61e8cba5908b391a0d00e",
       "layout": {
         "solcVersion": "0.8.22",
         "storage": [
@@ -161,7 +151,7 @@
             "label": "_codePointers",
             "offset": 0,
             "slot": "156",
-            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_mapping(t_uint256,t_struct(CodePointer)6984_storage)))",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_mapping(t_uint256,t_struct(CodePointer)4203_storage)))",
             "contract": "EAI721Intelligence",
             "src": "contracts/extensions/EAI721Intelligence.sol:29"
           },
@@ -331,7 +321,7 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_enum(FileType)6976": {
+          "t_enum(FileType)4195": {
             "label": "enum IEAI721Intelligence.FileType",
             "members": [
               "LIBRARY",
@@ -367,11 +357,11 @@
             "label": "mapping(uint256 => mapping(uint256 => uint256[]))",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_mapping(t_uint256,t_mapping(t_uint256,t_struct(CodePointer)6984_storage)))": {
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_mapping(t_uint256,t_struct(CodePointer)4203_storage)))": {
             "label": "mapping(uint256 => mapping(uint256 => mapping(uint256 => struct IEAI721Intelligence.CodePointer)))",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_mapping(t_uint256,t_struct(CodePointer)6984_storage))": {
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_struct(CodePointer)4203_storage))": {
             "label": "mapping(uint256 => mapping(uint256 => struct IEAI721Intelligence.CodePointer))",
             "numberOfBytes": "32"
           },
@@ -383,7 +373,7 @@
             "label": "mapping(uint256 => string)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_struct(CodePointer)6984_storage)": {
+          "t_mapping(t_uint256,t_struct(CodePointer)4203_storage)": {
             "label": "mapping(uint256 => struct IEAI721Intelligence.CodePointer)",
             "numberOfBytes": "32"
           },
@@ -399,7 +389,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(CodePointer)6984_storage": {
+          "t_struct(CodePointer)4203_storage": {
             "label": "struct IEAI721Intelligence.CodePointer",
             "members": [
               {
@@ -410,7 +400,7 @@
               },
               {
                 "label": "fileType",
-                "type": "t_enum(FileType)6976",
+                "type": "t_enum(FileType)4195",
                 "offset": 20,
                 "slot": "0"
               },

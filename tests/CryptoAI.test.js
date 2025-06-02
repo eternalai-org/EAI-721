@@ -94,9 +94,9 @@ describe("CryptoAI and CryptoAIData", function () {
             // Change the address
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(newCryptoAIDataAddress);
+                .changeCryptoAIDataAddress(newCryptoAIDataAddress);
 
-            expect(await cryptoAI.cryptoAiDataAddr()).to.equal(
+            expect(await cryptoAI.cryptoAIDataAddr()).to.equal(
                 newCryptoAIData.address
             );
         });
@@ -105,7 +105,7 @@ describe("CryptoAI and CryptoAIData", function () {
             const { cryptoAI, user } = await loadFixture(deployContractsFixture);
 
             await expect(
-                cryptoAI.connect(user).changeCryptoAiDataAddress(user.address)
+                cryptoAI.connect(user).changeCryptoAIDataAddress(user.address)
             ).to.be.rejectedWith("103");
         });
 
@@ -174,7 +174,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up required addresses
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -209,7 +209,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up required addresses
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -243,7 +243,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up required addresses
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -286,7 +286,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up required addresses
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -362,7 +362,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up required addresses
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -473,7 +473,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up required addresses
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -512,7 +512,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up required addresses
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -553,7 +553,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up required addresses and mint an NFT
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -585,7 +585,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up and mint NFT
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -619,7 +619,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up and mint NFT
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -647,7 +647,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up and mint NFT
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -684,7 +684,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up and mint NFT
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -713,7 +713,7 @@ describe("CryptoAI and CryptoAIData", function () {
             // Set up and mint NFT
             await cryptoAI
                 .connect(owner)
-                .changeCryptoAiDataAddress(cryptoAIData.address);
+                .changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData
                 .connect(owner)
                 .changeCryptoAIAgentAddress(cryptoAI.address);
@@ -740,7 +740,7 @@ describe("CryptoAI and CryptoAIData", function () {
     describe("EAI721Intelligence: setAgentName and agentName edge cases", function () {
         it("Should allow owner to set name to empty after non-empty", async function () {
             const { cryptoAI, cryptoAIData, owner, admin, user } = await loadFixture(deployContractsFixture);
-            await cryptoAI.connect(owner).changeCryptoAiDataAddress(cryptoAIData.address);
+            await cryptoAI.connect(owner).changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
             await cryptoAI.connect(owner).allowAdmin(admin.address, true);
             await cryptoAIData.connect(owner).sealContract();
@@ -754,7 +754,7 @@ describe("CryptoAI and CryptoAIData", function () {
 
         it("Should allow owner to set a very long agent name", async function () {
             const { cryptoAI, cryptoAIData, owner, admin, user } = await loadFixture(deployContractsFixture);
-            await cryptoAI.connect(owner).changeCryptoAiDataAddress(cryptoAIData.address);
+            await cryptoAI.connect(owner).changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
             await cryptoAI.connect(owner).allowAdmin(admin.address, true);
             await cryptoAIData.connect(owner).sealContract();
@@ -773,7 +773,7 @@ describe("CryptoAI and CryptoAIData", function () {
         it("Should allow only new owner to set agent name after transfer", async function () {
             const { cryptoAI, cryptoAIData, owner, admin, user } = await loadFixture(deployContractsFixture);
             const [, , , newOwner] = await ethers.getSigners();
-            await cryptoAI.connect(owner).changeCryptoAiDataAddress(cryptoAIData.address);
+            await cryptoAI.connect(owner).changeCryptoAIDataAddress(cryptoAIData.address);
             await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
             await cryptoAI.connect(owner).allowAdmin(admin.address, true);
             await cryptoAIData.connect(owner).sealContract();
@@ -786,4 +786,6 @@ describe("CryptoAI and CryptoAIData", function () {
             expect(await cryptoAI.agentName(agentId)).to.equal("NewOwnerName");
         });
     });
+
+
 }); 
