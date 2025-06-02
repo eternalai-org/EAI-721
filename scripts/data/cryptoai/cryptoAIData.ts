@@ -36,6 +36,22 @@ class CryptoAIData {
         return proxy.address;
     }
 
+
+    async deploy(deployerAddr: any
+    ) {
+        // if (this.network == "local") {
+        //     console.log("not run local");
+        //     return;
+        // }
+
+        const contract = await ethers.getContractFactory("OnchainArtData");
+        console.log("OnchainArtData.deploying ...")
+        const deployed = await contract.deploy(deployerAddr);
+        await deployed.deployed();
+        console.log("OnchainArtData deployed to:", deployed.address);
+        return deployed.address;
+    }
+
     getContract(contractAddress: any, contractName: any = "./artifacts/contracts/data/OnchainArtData.sol/OnchainArtData.json") {
         console.log("Network run", this.network, hardhatConfig.networks[this.network].url);
         // if (this.network == "local") {

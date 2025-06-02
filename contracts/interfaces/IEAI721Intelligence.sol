@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-interface IEAI721AgentAbility {
+interface IEAI721Intelligence {
     // --- Enums ---
     enum FileType {
         LIBRARY,
@@ -16,12 +16,6 @@ interface IEAI721AgentAbility {
         string fileName;
     }
 
-    struct SignData {
-        CodePointer[] pointers;
-        address[] depsAgents;
-        uint16 currentVersion;
-    }
-
     // --- Events ---
     event CodePointerCreated(
         uint256 indexed agentId,
@@ -31,7 +25,7 @@ interface IEAI721AgentAbility {
     );
 
     // --- Errors ---
-    error Unauthenticated();
+    error EAI721IntelligenceAuth();
     error DigestAlreadyUsed();
     error InvalidData();
     error InvalidDependency();

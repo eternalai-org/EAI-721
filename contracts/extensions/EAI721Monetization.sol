@@ -3,12 +3,12 @@
 pragma solidity ^0.8.0;
 
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import {IEAI721SubscriptionFee} from "../interfaces/IEAI721SubscriptionFee.sol";
+import {IEAI721Monetization} from "../interfaces/IEAI721Monetization.sol";
 
-abstract contract EAI721SubscriptionFee is IEAI721SubscriptionFee, ERC721Upgradeable {
+abstract contract EAI721Monetization is IEAI721Monetization, ERC721Upgradeable {
     // --- Modifiers ---
-    modifier onlyAgentOwner(uint256 agentId) {
-        if (msg.sender != ownerOf(agentId)) revert Unauthenticated();
+    modifier onlyAgentOwner(uint256 agentId) virtual {
+        if (msg.sender != ownerOf(agentId)) revert EAI721MonetizationAuth();
         _;
     }
 
@@ -17,18 +17,18 @@ abstract contract EAI721SubscriptionFee is IEAI721SubscriptionFee, ERC721Upgrade
     mapping(uint256 => uint256) private _subscriptionFees;
    
     // initialization
-    function __EAI721SubscriptionFee_init() internal onlyInitializing {
+    function __EAI721Monetization_init() internal onlyInitializing {
     }
 
-    function __EAI721SubscriptionFee_init_unchained() internal onlyInitializing {
+    function __EAI721Monetization_init_unchained() internal onlyInitializing {
     }
 
-    // {IEAI721SubscriptionFee-subscriptionFee}
+    // {IEAI721Monetization-subscriptionFee}
     function subscriptionFee(uint256 agentId) public virtual view returns (uint256) {
         return _subscriptionFees[agentId];
     }
 
-    // {IEAI721SubscriptionFee-setSubscriptionFee}
+    // {IEAI721Monetization-setSubscriptionFee}
     function setSubscriptionFee(uint256 agentId, uint256 fee) public virtual onlyAgentOwner(agentId) {
         _subscriptionFees[agentId] = fee;
         emit SubscriptionFeeUpdated(agentId, fee);

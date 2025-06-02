@@ -2,20 +2,20 @@
 
 pragma solidity ^0.8.0;
 
-import {IEAI721AgentAbility} from "../interfaces/IEAI721AgentAbility.sol";
+import {IEAI721Intelligence} from "../interfaces/IEAI721Intelligence.sol";
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "../libs/helpers/File.sol";
 
-abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC721Upgradeable {
+abstract contract EAI721Intelligence is
+    IEAI721Intelligence,
+    Initializable,
+    ERC721Upgradeable
+{
     using {read} for IFileStore.File;
 
     // --- Constants ---
     uint256 public constant TOKEN_LIMIT = 10000;
     bytes32 private constant IPFS_SIG = keccak256(bytes("ipfs"));
-    bytes32 private constant SIGN_DATA_TYPEHASH =
-        keccak256(
-            "SignData(CodePointer[] pointers,uint256[] depsAgents,uint256 agentId,uint16 currentVersion)CodePointer(address retrieveAddress,uint8 fileType,string fileName)"
-        );
 
     // --- Storage ---
     mapping(uint256 agentId => string) private _codeLanguage; // e.g., "python", "javascript"...
@@ -32,28 +32,26 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
         private _depsAgents;
 
     // --- Modifiers ---
-    modifier checkVersion(uint256 agentId, uint16 version) {
+    modifier checkVersion(uint256 agentId, uint16 version) virtual {
         _validateVersion(agentId, version);
         _;
     }
 
-    modifier onlyAgentOwner(uint256 agentId) {
-        if (msg.sender != ownerOf(agentId)) revert Unauthenticated();
+    modifier onlyAgentOwner(uint256 agentId) virtual {
+        if (msg.sender != ownerOf(agentId)) revert EAI721IntelligenceAuth();
         _;
     }
 
     // --- Initialization ---
-    function __EAI721AgentAbility_init() internal onlyInitializing {
-    }
+    function __EAI721Intelligence_init() internal onlyInitializing {}
 
-    function __EAI721AgentAbility_init_unchained() internal onlyInitializing {
-    }
+    function __EAI721Intelligence_init_unchained() internal onlyInitializing {}
 
     // --- Functions ---}
     function _setupAgent(
         uint256 agentId,
         string calldata name
-    ) internal {
+    ) internal virtual {
         _name[agentId] = name;
     }
 
@@ -68,7 +66,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     // {IEAI721AgentAbility-agentName}
     function agentName(
         uint256 agentId
-    ) public view returns (string memory) {
+    ) public virtual view returns (string memory) {
         return _name[agentId];
     }
 
@@ -133,7 +131,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     function depsAgents(
         uint256 agentId,
         uint16 version
-    ) public view checkVersion(agentId, version) returns (uint256[] memory) {
+    ) public virtual view checkVersion(agentId, version) returns (uint256[] memory) {
         return _depsAgents[agentId][version];
     }
 
@@ -143,6 +141,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
         uint16 version
     )
         public
+        virtual
         view
         checkVersion(agentId, version)
         returns (string memory code)
@@ -172,13 +171,13 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     function _concatStrings(
         string memory a,
         string memory b
-    ) internal pure returns (string memory) {
+    ) internal virtual pure returns (string memory) {
         return string(abi.encodePacked(a, "\n", b));
     }
 
     function _codeByPointer(
         CodePointer memory p
-    ) internal view virtual returns (string memory logic) {
+    ) internal virtual view returns (string memory logic) {
         if (keccak256(bytes(_storageMode(p))) == IPFS_SIG) {
             logic = p.fileName; // return the IPFS hash
         } else {
@@ -188,7 +187,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
 
     function _storageMode(
         CodePointer memory p
-    ) internal view virtual returns (string memory) {
+    ) internal virtual view returns (string memory) {
         if (p.retrieveAddress != address(0)) {
             return "fs";
         }
@@ -198,16 +197,16 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     function _pointersNumber(
         uint256 agentId,
         uint16 version
-    ) internal view returns (uint256) {
+    ) internal virtual view returns (uint256) {
         return _pointersNum[agentId][version];
     }
 
     // {IEAI721AgentAbility-currentVersion}
-    function currentVersion(uint256 agentId) public view returns (uint16) {
+    function currentVersion(uint256 agentId) public virtual view returns (uint16) {
         return _currentVersion[agentId];
     }
 
-    function _validateVersion(uint256 agentId, uint16 version) internal view {
+    function _validateVersion(uint256 agentId, uint16 version) internal virtual view {
         if (version > _currentVersion[agentId]) {
             revert InvalidVersion();
         }
@@ -216,7 +215,7 @@ abstract contract EAI721AgentAbility is IEAI721AgentAbility, Initializable, ERC7
     // {IEAI721AgentAbility-codeLanguage}
     function codeLanguage(
         uint256 agentId
-    ) public view returns (string memory) {
+    ) public virtual view returns (string memory) {
         return _codeLanguage[agentId];
     }
 
