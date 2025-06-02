@@ -6,14 +6,27 @@ import {EAI721Intelligence, ERC721Upgradeable, Initializable} from "../extension
 import {EAI721Identity} from "../extensions/EAI721Identity.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
 import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
+import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
+import {EAI721Tokenization} from "../extensions/EAI721Tokenization.sol";
 
 contract CryptoAgents is
     Initializable,
     EAI721Intelligence,
-    EAI721Identity
+    EAI721Identity,
+    EAI721Monetization,
+    EAI721Tokenization
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     
+    // -- errors --
+    error Unauthenticated();
+
+    // -- modifiers --
+    modifier onlyAgentOwner(uint256 agentId) override(EAI721Intelligence, EAI721Tokenization, EAI721Monetization) {
+        if (msg.sender != ownerOf(agentId)) revert Unauthenticated();
+        _;
+    }
+
     // -- state variables --
     // royalty receiver
     address private _royaltyReceiver;

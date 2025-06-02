@@ -7,8 +7,8 @@ import {IEAI721Monetization} from "../interfaces/IEAI721Monetization.sol";
 
 abstract contract EAI721Monetization is IEAI721Monetization, ERC721Upgradeable {
     // --- Modifiers ---
-    modifier onlyAgentOwner(uint256 agentId) {
-        if (msg.sender != ownerOf(agentId)) revert Unauthenticated();
+    modifier onlyAgentOwner(uint256 agentId) virtual {
+        if (msg.sender != ownerOf(agentId)) revert EAI721MonetizationAuth();
         _;
     }
 
