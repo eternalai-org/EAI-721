@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { initConfig } from "../../data/cryptoai";
 import { CryptoAI } from "./cryptoAI";
 
@@ -15,6 +16,14 @@ async function main() {
     const data = require("../../data/cryptoai/datajson/collections.json");
     let index = 0;
 
+    const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+    const waitForBlocks = async (blocks: number) => {
+      const startBlock = await provider.getBlockNumber();
+      while (await provider.getBlockNumber() < startBlock + blocks) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    };
+
     if (args.length == 0) {
       for (const entry of data) {
         index++;
@@ -26,6 +35,7 @@ async function main() {
           entry.index[1]
         );
         console.log("index", index);
+        await waitForBlocks(1); // Wait for 1 block before minting the next NFT
       }
     } else {
       for (let i = 0; i <= parseInt(args[0]); i++) {
@@ -37,6 +47,7 @@ async function main() {
           data[i].index[1]
         );
         console.log("index", i);
+        await waitForBlocks(1); // Wait for 1 block before minting the next NFT
       }
     }
   } catch (error) {

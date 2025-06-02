@@ -295,7 +295,7 @@ contract OnchainArtData is IOnchainArtData {
             '"},'
             , byteString
         );
-        count++;
+        // count++;
 
         byteString = abi.encodePacked(
             '{"trait_type": "attributes"',
