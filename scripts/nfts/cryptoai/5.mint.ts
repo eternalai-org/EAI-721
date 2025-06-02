@@ -23,7 +23,6 @@ async function main(tokenId: any) {
   );
   console.log(data[key].id, data[key].index[0], data[key].index[1]);
   await dataContract.mint(
-    tokenId,
     config.contractAddress,
     0,
     data[key].id,
