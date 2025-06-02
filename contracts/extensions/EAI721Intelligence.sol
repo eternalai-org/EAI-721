@@ -6,7 +6,11 @@ import {IEAI721Intelligence} from "../interfaces/IEAI721Intelligence.sol";
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "../libs/helpers/File.sol";
 
-abstract contract EAI721Intelligence is IEAI721Intelligence, Initializable, ERC721Upgradeable {
+abstract contract EAI721Intelligence is
+    IEAI721Intelligence,
+    Initializable,
+    ERC721Upgradeable
+{
     using {read} for IFileStore.File;
 
     // --- Constants ---
@@ -39,11 +43,9 @@ abstract contract EAI721Intelligence is IEAI721Intelligence, Initializable, ERC7
     }
 
     // --- Initialization ---
-    function __EAI721Intelligence_init() internal onlyInitializing {
-    }
+    function __EAI721Intelligence_init() internal onlyInitializing {}
 
-    function __EAI721Intelligence_init_unchained() internal onlyInitializing {
-    }
+    function __EAI721Intelligence_init_unchained() internal onlyInitializing {}
 
     // --- Functions ---}
     function _setupAgent(
