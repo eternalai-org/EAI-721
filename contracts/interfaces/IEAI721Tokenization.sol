@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 interface IEAI721Tokenization {
     // --- Errors ---
-    error Unauthenticated();
+    error EAI721TokenizationAuth();
     error InvalidAddress();
 
     // --- Events ---

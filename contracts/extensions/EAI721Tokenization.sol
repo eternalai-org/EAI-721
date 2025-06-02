@@ -9,8 +9,8 @@ abstract contract EAI721Tokenization is IEAI721Tokenization, Initializable, ERC7
     // agentId => AI token address
     mapping(uint256 => address) private _aiTokens;
 
-    modifier onlyAgentOwner(uint256 agentId) {
-        if (msg.sender != ownerOf(agentId)) revert Unauthenticated();
+    modifier onlyAgentOwner(uint256 agentId) virtual {
+        if (msg.sender != ownerOf(agentId)) revert EAI721TokenizationAuth();
         _;
     }
 

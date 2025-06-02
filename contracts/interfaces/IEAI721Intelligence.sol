@@ -25,7 +25,7 @@ interface IEAI721Intelligence {
     );
 
     // --- Errors ---
-    error Unauthenticated();
+    error EAI721IntelligenceAuth();
     error DigestAlreadyUsed();
     error InvalidData();
     error InvalidDependency();

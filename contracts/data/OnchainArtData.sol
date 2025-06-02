@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
-import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
 import "../interfaces/IEAI721Intelligence.sol";
 
-contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
+contract OnchainArtData is IOnchainArtData {
     uint256 public constant TOKEN_LIMIT = 0x2710;
     uint8 internal constant GRID_SIZE = 0x18;
     bytes16 internal constant _HEX_SYMBOLS = "0123456789abcdef";
@@ -70,11 +68,9 @@ contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
         _;
     }
 
-    function initialize(address deployer) public initializer {
+    constructor(address deployer) {
         partsName = ["dna", "Collar", "Head", "Eyes", "Mouth", "Earring"];
         _deployer = deployer;
-
-        __Ownable_init();
     }
 
     function changeDeployer(address newAdm) external onlyDeployer unsealed {
@@ -295,7 +291,7 @@ contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
         byteString = abi.encodePacked(
             '{"trait_type": "ORIGIN"',
             ',"value":"',
-            StringsUpgradeable.toString(IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1 ? 0 : 1),
+            Strings.toString(IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1 ? 0 : 1),
             '"},'
             , byteString
         );
@@ -304,7 +300,7 @@ contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
         byteString = abi.encodePacked(
             '{"trait_type": "attributes"',
             ',"value":"',
-            StringsUpgradeable.toString(count),
+            Strings.toString(count),
             '"},',
             byteString
         );
@@ -402,7 +398,7 @@ contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
             string(
                 abi.encodePacked(
                     PLACEHOLDER_SCRIPT,
-                    StringsUpgradeable.toString(tokenId)
+                    Strings.toString(tokenId)
                 )
             );
     }
@@ -461,9 +457,9 @@ contract OnchainArtData is OwnableUpgradeable, IOnchainArtData {
                             svg,
                             abi.encodePacked(
                                 SVG_RECT,
-                                StringsUpgradeable.toString(x),
+                                Strings.toString(x),
                                 SVG_Y,
-                                StringsUpgradeable.toString(y),
+                                Strings.toString(y),
                                 SVG_WIDTH,
                                 string(buffer),
                                 SVG_CLOSE_RECT

@@ -25,11 +25,11 @@ abstract contract EAI721Identity is  ERC721Upgradeable {
         _indexMint = indexMint;
     }
 
-    function _setCryptoAiDataAddr(address newCryptoAiDataAddr) internal {
+    function _setCryptoAiDataAddr(address newCryptoAiDataAddr) internal virtual {
         _cryptoAIDataAddr = newCryptoAiDataAddr;
     }
 
-    function cryptoAiDataAddr() public view virtual returns (address) {
+    function cryptoAiDataAddr() public virtual view returns (address) {
         return _cryptoAIDataAddr;
     }
 

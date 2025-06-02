@@ -4,16 +4,31 @@ pragma solidity ^0.8.0;
 
 import {EAI721Intelligence, ERC721Upgradeable, Initializable} from "../extensions/EAI721Intelligence.sol";
 import {EAI721Identity} from "../extensions/EAI721Identity.sol";
+import {Rating} from "../utils/Rating.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
 import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
+import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
+import {EAI721Tokenization} from "../extensions/EAI721Tokenization.sol";
 
 contract CryptoAgents is
     Initializable,
     EAI721Intelligence,
-    EAI721Identity
+    EAI721Identity,
+    EAI721Monetization,
+    EAI721Tokenization,
+    Rating
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-    
+
+    // -- errors --
+    error Unauthenticated();
+
+    // -- modifiers --
+    modifier onlyAgentOwner(uint256 agentId) override(EAI721Intelligence, EAI721Tokenization, EAI721Monetization) {
+        if (msg.sender != ownerOf(agentId)) revert Unauthenticated();
+        _;
+    }
+
     // -- state variables --
     // royalty receiver
     address private _royaltyReceiver;
@@ -40,7 +55,11 @@ contract CryptoAgents is
         _deployer = deployer;
 
         __ERC721_init(name, symbol);
+        __EAI721Intelligence_init();
         __EAI721Identity_init(1);
+        __Rating_init(100);
+        __EAI721Monetization_init();
+        __EAI721Tokenization_init();
     }
 
     function changeDeployer(address newAdm) external onlyDeployer {
