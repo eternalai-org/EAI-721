@@ -2,14 +2,14 @@
 
 pragma solidity ^0.8.0;
 
-import {IEAI721Intelligence} from "../interfaces/IEAI721Intelligence.sol";
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {IEAI721Intelligence} from "../interfaces/IEAI721Intelligence.sol";
 import "../libs/helpers/File.sol";
 
 abstract contract EAI721Intelligence is
-    IEAI721Intelligence,
     Initializable,
-    ERC721Upgradeable
+    ERC721Upgradeable,
+    IEAI721Intelligence
 {
     using {read} for IFileStore.File;
 
@@ -47,13 +47,7 @@ abstract contract EAI721Intelligence is
 
     function __EAI721Intelligence_init_unchained() internal onlyInitializing {}
 
-    // --- Functions ---}
-    function _setupAgent(
-        uint256 agentId,
-        string calldata name
-    ) internal virtual {
-        _name[agentId] = name;
-    }
+    // --- Functions ---
 
     // {IEAI721AgentAbility-setAgentName}
     function setAgentName(

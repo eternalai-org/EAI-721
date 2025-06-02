@@ -4,11 +4,10 @@ pragma solidity ^0.8.0;
 
 import {EAI721Intelligence, ERC721Upgradeable, Initializable} from "../extensions/EAI721Intelligence.sol";
 import {EAI721Identity} from "../extensions/EAI721Identity.sol";
-import {Rating} from "../utils/Rating.sol";
-import {Errors} from "../libs/helpers/Errors.sol";
-import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
 import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
 import {EAI721Tokenization} from "../extensions/EAI721Tokenization.sol";
+import {Rating} from "../utils/Rating.sol";
+import {Errors} from "../libs/helpers/Errors.sol";
 
 contract CryptoAgents is
     Initializable,
@@ -18,13 +17,17 @@ contract CryptoAgents is
     EAI721Tokenization,
     Rating
 {
+    // --- Constants ---
+    uint256 public constant TOKEN_SUPPLY_LIMIT = 10000;
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     // -- errors --
     error Unauthenticated();
+    error InvalidTokenId();
 
     // -- modifiers --
-    modifier onlyAgentOwner(uint256 agentId) override(EAI721Intelligence, EAI721Tokenization, EAI721Monetization) {
+    modifier onlyAgentOwner(uint256 agentId)
+        override(EAI721Intelligence, EAI721Tokenization, EAI721Monetization) {
         if (msg.sender != ownerOf(agentId)) revert Unauthenticated();
         _;
     }
@@ -51,45 +54,58 @@ contract CryptoAgents is
         string memory name,
         string memory symbol,
         address deployer
-    ) initializer public {
+    ) public initializer {
+        require(deployer != address(0), Errors.INV_ADD);
+
         _deployer = deployer;
 
         __ERC721_init(name, symbol);
         __EAI721Intelligence_init();
-        __EAI721Identity_init(1);
+        __EAI721Identity_init();
         __Rating_init(100);
         __EAI721Monetization_init();
         __EAI721Tokenization_init();
     }
 
-    function changeDeployer(address newAdm) external onlyDeployer {
-        require(newAdm != Errors.ZERO_ADDR, Errors.INV_ADD);
-        if (_deployer != newAdm) {
-            _deployer = newAdm;
+    function changeDeployer(address newDeployer) external onlyDeployer {
+        require(newDeployer != address(0), Errors.INV_ADD);
+        if (_deployer != newDeployer) {
+            _deployer = newDeployer;
         }
     }
 
     function allowAdmin(address newAdm, bool allow) external onlyDeployer {
-        require(newAdm != Errors.ZERO_ADDR, Errors.INV_ADD);
+        require(newAdm != address(0), Errors.INV_ADD);
         _admins[newAdm] = allow;
     }
 
-    function changeCryptoAiDataAddress(address newAddr) external onlyDeployer {
-        require(newAddr != Errors.ZERO_ADDR, Errors.ONLY_ADMIN_ALLOWED);
+    function changeCryptoAIDataAddress(address newAddr) external onlyDeployer {
+        require(newAddr != address(0), Errors.INV_ADD);
 
-        _setCryptoAiDataAddr(newAddr);
+        _setCryptoAIDataAddr(newAddr);
     }
 
     //@EAI721Identity
     function mint(
+        uint256 tokenId,
         address to,
         uint256 dna,
         uint256[6] memory traits
     ) public virtual onlyAdmin {
-        _mint(to, dna, traits);
+        if (tokenId == 0 || tokenId > TOKEN_SUPPLY_LIMIT)
+            revert InvalidTokenId();
+
+        _mint(tokenId, to, dna, traits);
     }
 
-    function tokenURI(uint256 agentId) public view override(ERC721Upgradeable, EAI721Identity) returns (string memory) {
+    function tokenURI(
+        uint256 agentId
+    )
+        public
+        view
+        override(ERC721Upgradeable, EAI721Identity)
+        returns (string memory)
+    {
         return EAI721Identity.tokenURI(agentId);
     }
 
@@ -98,16 +114,19 @@ contract CryptoAgents is
         _royaltyReceiver = newRoyaltyReceiver;
     }
 
-    function getRoyaltyReceiver() external view returns (address) {
+    function royaltyReceiver() external view returns (address) {
         return _royaltyReceiver;
     }
 
     /* @dev EIP2981 royalties implementation.
-    // EIP2981 standard royalties return.
+        EIP2981 standard royalties return.
     */
-    function royaltyInfo(uint256 _tokenId, uint256 _salePrice) external view virtual returns (address receiver, uint256 royaltyAmount) {
+    function royaltyInfo(
+        uint256 _tokenId,
+        uint256 _salePrice
+    ) external view virtual returns (address receiver, uint256 royaltyAmount) {
         receiver = _royaltyReceiver;
-        royaltyAmount = _salePrice * 0 / 10000;
+        royaltyAmount = (_salePrice * 500) / 10000; // 5%
     }
 
     uint256[50] private __gap;
