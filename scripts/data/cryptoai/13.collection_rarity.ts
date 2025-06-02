@@ -87,6 +87,7 @@ async function main() {
       const collection = collections[i];
       const traits = collection['name'][1];
       const name = collection['name'][0];
+      const data_mint = collection['index'];
 
       const attrNumber = traits.filter((t: string) => t !== '').length - 1;
 
@@ -173,9 +174,7 @@ async function main() {
         case 'Robot':
           weight = 1000000000;
           break;
-      }
-   
-          
+      }          
 
       data.push({
         id: collection['id'],
@@ -183,7 +182,8 @@ async function main() {
         DNA_Rarity: dataTraits[name].percent,
         thumbnail: `https://cdn.eternalai.org/homepage/data-mint-v2/${collection['id']}.svg`,
         trait: ttrs,
-        rarity: weight + rarity
+        rarity: weight + rarity,
+        data_mint: data_mint
       })
     }
 
