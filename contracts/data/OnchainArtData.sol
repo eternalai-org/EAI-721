@@ -380,6 +380,15 @@ contract OnchainArtData is IOnchainArtData {
     }
 
     function fractionalStr(uint fractionalPart, uint8 dec) internal pure returns(string memory res) {
+        while (fractionalPart > 0 && dec > 0) {
+            if (fractionalPart % 10 == 0) {
+                fractionalPart /= 10;
+                dec--;
+            } else {
+                break;
+            }
+        }
+
         res = Strings.toString(fractionalPart);
         if (bytes(res).length < dec) {
             for (uint i = bytes(res).length; i < dec; i++) {
