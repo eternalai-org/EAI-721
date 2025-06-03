@@ -17,7 +17,9 @@ async function main(tokenId: any) {
   }
   const key = args[0];
   const addressToMint = args[1];
-  console.log(key, addressToMint);
+
+  console.log("Index:", key, "TokenId: ", data[key].token_id, "Address: ", addressToMint);
+
   const dataContract = new CryptoAI(
     process.env.NETWORK,
     process.env.PRIVATE_KEY,
