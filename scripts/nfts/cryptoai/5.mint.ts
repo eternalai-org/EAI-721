@@ -1,6 +1,7 @@
 import { initConfig } from "../../data/cryptoai";
 import { CryptoAI } from "./cryptoAI";
-const data = require("../../data/cryptoai/datajson/collections.json");
+// const data = require("../../data/cryptoai/datajson/collections.json");
+const data = require("../../data/cryptoai/datajson/collections_nfts_be.json");
 
 async function main(tokenId: any) {
   // if (process.env.NETWORK != "base_mainnet") {
@@ -25,10 +26,10 @@ async function main(tokenId: any) {
   await dataContract.mint(
     config.contractAddress,
     0,
-    data[key].id,
+    data[key].token_id,
     process.env.PUBLIC_KEY,
-    data[key].index[0],
-    data[key].index[1]
+    data[key].data_mint[0],
+    data[key].data_mint[1]
   );
 }
 
