@@ -16,22 +16,17 @@ async function main(tokenId: any) {
     console.log("missing key");
   }
   const key = args[0];
-  const addressToMint = args[1];
-  const privateKey = args[2];
-
-  console.log("Index:", key, "TokenId: ", data[key].token_id, "Address: ", addressToMint);
-  console.log(data[key].id, data[key].data_mint[0], data[key].data_mint[1]);
 
   const dataContract = new CryptoAI(
     process.env.NETWORK,
-    privateKey,
-    addressToMint
+    process.env.PRIVATE_KEY,
+    process.env.PUBLIC_KEY
   );
   await dataContract.mint(
     config.contractAddress,
     0,
     data[key].token_id,
-    addressToMint,
+    process.env.PUBLIC_KEY,
     data[key].data_mint[0],
     data[key].data_mint[1]
   );
