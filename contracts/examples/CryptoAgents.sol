@@ -50,16 +50,16 @@ contract CryptoAgents is
     }
 
     function initialize(
-        string memory name,
-        string memory symbol,
-        address deployer,
-        address defaultRoyaltyReceiver
+        string memory name_,
+        string memory symbol_,
+        address deployer_,
+        address defaultRoyaltyReceiver_
     ) public initializer {
-        require(deployer != address(0), Errors.INV_ADD);
+        require(deployer_ != address(0), Errors.INV_ADD);
 
-        _deployer = deployer;
+        _deployer = deployer_;
 
-        __ERC721_init(name, symbol);
+        __ERC721_init(name_, symbol_);
         __EAI721Intelligence_init();
         __EAI721Identity_init();
         __Rating_init(100);
@@ -67,7 +67,7 @@ contract CryptoAgents is
         __EAI721Tokenization_init();
         __ERC2981_init();
 
-        _setDefaultRoyalty(defaultRoyaltyReceiver, 500);
+        _setDefaultRoyalty(defaultRoyaltyReceiver_, 500);
     }
 
     function changeDeployer(address newDeployer) external onlyDeployer {
