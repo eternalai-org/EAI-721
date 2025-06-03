@@ -297,31 +297,27 @@ contract OnchainArtData is IOnchainArtData {
         byteString = abi.encodePacked(
             '{"trait_type": "ORIGIN"',
             ',"value":"',
-            Strings.toString(
-                IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
-                    tokenId
-                ) > 1
-                    ? 0
-                    : 1
-            ),
+            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
+                tokenId
+            ) > 1
+                ? "no"
+                : "yes",
             '"},',
             byteString
         );
-        count++;
 
         // - INTELLIGENCE: (string) (req) yes/no
         byteString = abi.encodePacked(
             '{"trait_type": "INTELLIGENCE"',
             ',"value":"',
             IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
-                    tokenId
-                ) > 0
-                    ? "yes"
-                    : "no",
+                tokenId
+            ) > 0
+                ? "yes"
+                : "no",
             '"},',
             byteString
         );
-        count++;
 
         // - AGENT_NAME: (string) (opt)
         string memory agentName = IEAI721Intelligence(
@@ -335,18 +331,19 @@ contract OnchainArtData is IOnchainArtData {
                 '"},',
                 byteString
             );
-            count++;
         }
 
         // - TOKEN: address erc20 (opt)
-        byteString = abi.encodePacked(
-            '{"trait_type": "TOKEN"',
-            ',"value":"',
-            Strings.toHexString(IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(tokenId)),
-            '"},',
-            byteString
-        );
-        count++;
+        address aiToken = IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(tokenId);
+        if (aiToken != address(0)) {
+            byteString = abi.encodePacked(
+                '{"trait_type": "TOKEN"',
+                ',"value":"',
+                Strings.toHexString(aiToken),
+                '"},',
+                byteString
+            );
+        }
 
         // - SUBSCRIPTION_FEE: (eth unit) (req) 0/ fee
         byteString = abi.encodePacked(
@@ -356,7 +353,6 @@ contract OnchainArtData is IOnchainArtData {
             '"},',
             byteString
         );
-        count++;
 
         byteString = abi.encodePacked(
             '{"trait_type": "attributes"',
