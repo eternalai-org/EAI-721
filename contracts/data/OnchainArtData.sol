@@ -3,8 +3,11 @@ pragma solidity ^0.8.12;
 
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 import "../interfaces/IEAI721Intelligence.sol";
+import "../interfaces/IEAI721Tokenization.sol";
+import "../interfaces/IEAI721Monetization.sol";
 import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
@@ -295,17 +298,75 @@ contract OnchainArtData is IOnchainArtData {
         byteString = abi.encodePacked(
             '{"trait_type": "ORIGIN"',
             ',"value":"',
-            Strings.toString(
-                IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
-                    tokenId
-                ) > 1
-                    ? 0
-                    : 1
-            ),
+            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
+                tokenId
+            ) > 1
+                ? "no"
+                : "yes",
             '"},',
             byteString
         );
-        // count++;
+
+        // - INTELLIGENCE: (string) (req) yes/no
+        byteString = abi.encodePacked(
+            '{"trait_type": "INTELLIGENCE"',
+            ',"value":"',
+            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
+                tokenId
+            ) > 0
+                ? "yes"
+                : "no",
+            '"},',
+            byteString
+        );
+
+        // - AGENT_NAME: (string) (opt)
+        string memory agentName = IEAI721Intelligence(
+            _cryptoAIAgentAddr
+        ).agentName(tokenId);
+        if (bytes(agentName).length > 0) {
+            byteString = abi.encodePacked(
+                '{"trait_type": "AGENT_NAME"',
+                ',"value":"',
+                agentName,
+                '"},',
+                byteString
+            );
+        }
+
+        // - TOKEN: address erc20 (opt)
+        address aiToken = IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(tokenId);
+        if (aiToken != address(0)) {
+            byteString = abi.encodePacked(
+                '{"trait_type": "TOKEN"',
+                ',"value":"',
+                Strings.toHexString(aiToken),
+                '"},',
+                byteString
+            );
+
+            // - SUBSCRIPTION_FEE: (eth unit) (req) 0/ fee
+            uint256 feeUnits = IEAI721Monetization(_cryptoAIAgentAddr)
+                .subscriptionFee(tokenId);
+            uint8 tokenDecimals = IERC20Metadata(aiToken).decimals();
+            string memory feeStr = feeUnits == 0 ? "0"
+                : tokenDecimals == 0 || feeUnits % 10**tokenDecimals == 0 ? Strings.toString(feeUnits / 10**tokenDecimals)
+                : string(
+                    abi.encodePacked(
+                        Strings.toString(feeUnits / 10**tokenDecimals),
+                        ".",
+                        fractionalStr(feeUnits % 10**tokenDecimals, tokenDecimals)
+                    )
+                );
+            
+            byteString = abi.encodePacked(
+                '{"trait_type": "SUBSCRIPTION_FEE"',
+                ',"value":"',
+                feeStr,
+                '"},',
+                byteString
+            );
+        }
 
         byteString = abi.encodePacked(
             '{"trait_type": "attributes"',
@@ -316,6 +377,24 @@ contract OnchainArtData is IOnchainArtData {
         );
 
         text = string(abi.encodePacked("[", string(byteString), "]"));
+    }
+
+    function fractionalStr(uint fractionalPart, uint8 dec) internal pure returns(string memory res) {
+        while (fractionalPart > 0 && dec > 0) {
+            if (fractionalPart % 10 == 0) {
+                fractionalPart /= 10;
+                dec--;
+            } else {
+                break;
+            }
+        }
+
+        res = Strings.toString(fractionalPart);
+        if (bytes(res).length < dec) {
+            for (uint i = bytes(res).length; i < dec; i++) {
+                res = string(abi.encodePacked("0", res));
+            }
+        }
     }
 
     function cryptoAIImage(uint256 tokenId) public view returns (bytes memory) {

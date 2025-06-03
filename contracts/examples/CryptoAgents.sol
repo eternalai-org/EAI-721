@@ -21,7 +21,6 @@ contract CryptoAgents is
 {
     // --- Constants ---
     uint256 public constant TOKEN_SUPPLY_LIMIT = 10000;
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     // -- errors --
     error Unauthenticated();
@@ -35,12 +34,10 @@ contract CryptoAgents is
     }
 
     // -- state variables --
-    // royalty receiver
-    address private _royaltyReceiver;
     // deployer
-    address public _deployer;
+    address private _deployer;
     // admins
-    mapping(address => bool) public _admins;
+    mapping(address => bool) private _admins;
 
     modifier onlyDeployer() {
         require(msg.sender == _deployer, Errors.ONLY_DEPLOYER);
@@ -53,16 +50,16 @@ contract CryptoAgents is
     }
 
     function initialize(
-        string memory name,
-        string memory symbol,
-        address deployer,
-        address defaultRoyaltyReceiver
+        string memory name_,
+        string memory symbol_,
+        address deployer_,
+        address defaultRoyaltyReceiver_
     ) public initializer {
-        require(deployer != address(0), Errors.INV_ADD);
+        require(deployer_ != address(0), Errors.INV_ADD);
 
-        _deployer = deployer;
+        _deployer = deployer_;
 
-        __ERC721_init(name, symbol);
+        __ERC721_init(name_, symbol_);
         __EAI721Intelligence_init();
         __EAI721Identity_init();
         __Rating_init(100);
@@ -70,7 +67,7 @@ contract CryptoAgents is
         __EAI721Tokenization_init();
         __ERC2981_init();
 
-        _setDefaultRoyalty(defaultRoyaltyReceiver, 500);
+        _setDefaultRoyalty(defaultRoyaltyReceiver_, 500);
     }
 
     function changeDeployer(address newDeployer) external onlyDeployer {
@@ -80,9 +77,17 @@ contract CryptoAgents is
         }
     }
 
+    function deployer() external view returns (address) {
+        return _deployer;
+    }
+
     function allowAdmin(address newAdm, bool allow) external onlyDeployer {
         require(newAdm != address(0), Errors.INV_ADD);
         _admins[newAdm] = allow;
+    }
+
+    function isAdmin(address admin) external view returns (bool) {
+        return _admins[admin];
     }
 
     function changeCryptoAIDataAddress(address newAddr) external onlyDeployer {
