@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "../interfaces/IEAI721Intelligence.sol";
+import "../interfaces/IEAI721Tokenization.sol";
+import "../interfaces/IEAI721Monetization.sol";
 import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
@@ -302,6 +304,55 @@ contract OnchainArtData is IOnchainArtData {
                     ? 0
                     : 1
             ),
+            '"},',
+            byteString
+        );
+        count++;
+
+        // - INTELLIGENCE: (string) (req) yes/no
+        byteString = abi.encodePacked(
+            '{"trait_type": "INTELLIGENCE"',
+            ',"value":"',
+            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
+                    tokenId
+                ) > 0
+                    ? "yes"
+                    : "no",
+            '"},',
+            byteString
+        );
+        count++;
+
+        // - AGENT_NAME: (string) (opt)
+        string memory agentName = IEAI721Intelligence(
+            _cryptoAIAgentAddr
+        ).agentName(tokenId);
+        if (bytes(agentName).length > 0) {
+            byteString = abi.encodePacked(
+                '{"trait_type": "AGENT_NAME"',
+                ',"value":"',
+                agentName,
+                '"},',
+                byteString
+            );
+            count++;
+        }
+
+        // - TOKEN: address erc20 (opt)
+        byteString = abi.encodePacked(
+            '{"trait_type": "TOKEN"',
+            ',"value":"',
+            Strings.toHexString(IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(tokenId)),
+            '"},',
+            byteString
+        );
+        count++;
+
+        // - SUBSCRIPTION_FEE: (eth unit) (req) 0/ fee
+        byteString = abi.encodePacked(
+            '{"trait_type": "SUBSCRIPTION_FEE"',
+            ',"value":"',
+            Strings.toString(IEAI721Monetization(_cryptoAIAgentAddr).subscriptionFee(tokenId)),
             '"},',
             byteString
         );

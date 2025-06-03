@@ -21,7 +21,6 @@ contract CryptoAgents is
 {
     // --- Constants ---
     uint256 public constant TOKEN_SUPPLY_LIMIT = 10000;
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     // -- errors --
     error Unauthenticated();
