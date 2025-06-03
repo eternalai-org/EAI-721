@@ -47,7 +47,7 @@ describe("CryptoAI and CryptoAIData", function () {
         const CryptoAI = await ethers.getContractFactory("CryptoAgents");
         cryptoAI = await upgrades.deployProxy(
             CryptoAI,
-            ["CryptoAI", "CAI", owner.address]
+            ["CryptoAI", "CAI", owner.address, owner.address]
         );
         await cryptoAI.deployed();
         console.log("cryptoAI deployed at", cryptoAI.address);
@@ -191,6 +191,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     dna,
                     traits
@@ -226,6 +227,7 @@ describe("CryptoAI and CryptoAIData", function () {
                 cryptoAI
                     .connect(user)
                     .mint(
+                        1,
                         user.address,
                         dna,
                         traits,
@@ -260,6 +262,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     dna,
                     traits,
@@ -320,6 +323,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     dna,
                     traits,
@@ -381,6 +385,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     dna,
                     traits,
@@ -486,6 +491,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     12345,
                     [1, 2, 3, 4, 5, 6],
@@ -525,6 +531,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     12345,
                     [1, 2, 3, 4, 5, 6],
@@ -564,6 +571,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     12345,
                     [1, 2, 3, 4, 5, 6]
@@ -595,6 +603,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     12345,
                     [1, 2, 3, 4, 5, 6]
@@ -629,6 +638,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     12345,
                     [1, 2, 3, 4, 5, 6]
@@ -657,6 +667,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     12345,
                     [1, 2, 3, 4, 5, 6]
@@ -694,6 +705,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAI
                 .connect(admin)
                 .mint(
+                    1,
                     user.address,
                     12345,
                     [1, 2, 3, 4, 5, 6]
@@ -705,8 +717,8 @@ describe("CryptoAI and CryptoAIData", function () {
         });
     });
 
-    describe.skip("Minting 10.000 NFTs", function () {
-        it("Should mint 10.000 NFTs", async function () {
+    describe("Minting 10.000 NFTs", function () {
+        it.skip("Should mint 10.000 NFTs", async function () {
             const { cryptoAI, cryptoAIData, owner, admin, user } = await loadFixture(
                 deployContractsFixture
             );
@@ -730,7 +742,7 @@ describe("CryptoAI and CryptoAIData", function () {
             for await (let i of nftArray) {
                 console.log("Minting NFT ", i);
                 const traits = Array(6).fill(0).map(() => Math.floor(Math.random() * 100) + 1);
-                await cryptoAI.connect(admin).mint(user.address, dna, traits);
+                await cryptoAI.connect(admin).mint(i, user.address, dna, traits);
                 await cryptoAI.connect(user).setAgentName(i, agentName);
             }
             expect(await cryptoAI.balanceOf(user.address)).to.equal(nftSupply);
@@ -744,7 +756,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
             await cryptoAI.connect(owner).allowAdmin(admin.address, true);
             await cryptoAIData.connect(owner).sealContract();
-            await cryptoAI.connect(admin).mint(user.address, 12345, [1, 2, 3, 4, 5, 6]);
+            await cryptoAI.connect(admin).mint(1, user.address, 12345, [1, 2, 3, 4, 5, 6]);
             const agentId = 1;
             await cryptoAI.connect(user).setAgentName(agentId, "NonEmptyName");
             expect(await cryptoAI.agentName(agentId)).to.equal("NonEmptyName");
@@ -758,7 +770,7 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
             await cryptoAI.connect(owner).allowAdmin(admin.address, true);
             await cryptoAIData.connect(owner).sealContract();
-            await cryptoAI.connect(admin).mint(user.address, 12345, [1, 2, 3, 4, 5, 6]);
+            await cryptoAI.connect(admin).mint(1, user.address, 12345, [1, 2, 3, 4, 5, 6]);
             const agentId = 1;
             const longName = "A".repeat(256); // 256 chars
             await cryptoAI.connect(user).setAgentName(agentId, longName);
@@ -777,13 +789,146 @@ describe("CryptoAI and CryptoAIData", function () {
             await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
             await cryptoAI.connect(owner).allowAdmin(admin.address, true);
             await cryptoAIData.connect(owner).sealContract();
-            await cryptoAI.connect(admin).mint(user.address, 12345, [1, 2, 3, 4, 5, 6]);
+            await cryptoAI.connect(admin).mint(1, user.address, 12345, [1, 2, 3, 4, 5, 6]);
             const agentId = 1;
             await cryptoAI.connect(user).setAgentName(agentId, "UserName");
             await cryptoAI.connect(user)["safeTransferFrom(address,address,uint256)"](user.address, newOwner.address, agentId);
             await expect(cryptoAI.connect(user).setAgentName(agentId, "ShouldFail")).to.be.rejectedWith("Unauthenticated");
             await cryptoAI.connect(newOwner).setAgentName(agentId, "NewOwnerName");
             expect(await cryptoAI.agentName(agentId)).to.equal("NewOwnerName");
+        });
+    });
+
+    describe("ERC2981 Royalties", function () {
+        it("Should allow admin to set and get default royalty", async function () {
+            const { cryptoAI, owner, admin, user, cryptoAIData } = await loadFixture(deployContractsFixture);
+
+            // Setup
+            await cryptoAI.connect(owner).changeCryptoAIDataAddress(cryptoAIData.address);
+            await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
+            await cryptoAI.connect(owner).allowAdmin(admin.address, true);
+            await cryptoAIData.connect(owner).sealContract();
+
+            // Set default royalty
+            const royaltyReceiver = user.address;
+            const feeNumerator = 1000; // 10%
+            await cryptoAI.connect(admin).setDefaultRoyalty(royaltyReceiver, feeNumerator);
+
+            // Mint NFT
+            await cryptoAI.connect(admin).mint(1, user.address, 12345, [1, 2, 3, 4, 5, 6]);
+            const tokenId = 1;
+
+            // Check royalty info
+            const salePrice = ethers.utils.parseEther("1");
+            const [receiver, royaltyAmount] = await cryptoAI.royaltyInfo(tokenId, salePrice);
+            expect(receiver).to.equal(royaltyReceiver);
+            expect(royaltyAmount).to.equal(salePrice.mul(feeNumerator).div(10000));
+        });
+
+        it("Should allow admin to set and get token-specific royalty", async function () {
+            const { cryptoAI, owner, admin, user, cryptoAIData } = await loadFixture(deployContractsFixture);
+
+            // Setup
+            await cryptoAI.connect(owner).changeCryptoAIDataAddress(cryptoAIData.address);
+            await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
+            await cryptoAI.connect(owner).allowAdmin(admin.address, true);
+            await cryptoAIData.connect(owner).sealContract();
+
+            // Mint NFT
+            await cryptoAI.connect(admin).mint(1, user.address, 12345, [1, 2, 3, 4, 5, 6]);
+            const tokenId = 1;
+
+            // Set token royalty
+            const royaltyReceiver = admin.address;
+            const feeNumerator = 500; // 5%
+            await cryptoAI.connect(admin).setTokenRoyalty(tokenId, royaltyReceiver, feeNumerator);
+
+            // Check royalty info
+            const salePrice = ethers.utils.parseEther("2");
+            const [receiver, royaltyAmount] = await cryptoAI.royaltyInfo(tokenId, salePrice);
+            expect(receiver).to.equal(royaltyReceiver);
+            expect(royaltyAmount).to.equal(salePrice.mul(feeNumerator).div(10000));
+        });
+
+        it("Should allow admin to delete default royalty", async function () {
+            const { cryptoAI, owner, admin, user, cryptoAIData } = await loadFixture(deployContractsFixture);
+
+            // Setup
+            await cryptoAI.connect(owner).changeCryptoAIDataAddress(cryptoAIData.address);
+            await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
+            await cryptoAI.connect(owner).allowAdmin(admin.address, true);
+            await cryptoAIData.connect(owner).sealContract();
+
+            // Set and then delete default royalty
+            await cryptoAI.connect(admin).setDefaultRoyalty(user.address, 1000);
+            await cryptoAI.connect(admin).deleteDefaultRoyalty();
+
+            // Mint NFT
+            await cryptoAI.connect(admin).mint(1, user.address, 12345, [1, 2, 3, 4, 5, 6]);
+            const tokenId = 1;
+
+            // Check royalty info (should be zeroed)
+            const salePrice = ethers.utils.parseEther("1");
+            const [receiver, royaltyAmount] = await cryptoAI.royaltyInfo(tokenId, salePrice);
+            expect(royaltyAmount).to.equal(0);
+            expect(receiver).to.equal(ethers.constants.AddressZero);
+        });
+
+        it("Should allow admin to reset token-specific royalty", async function () {
+            const { cryptoAI, owner, admin, user, cryptoAIData } = await loadFixture(deployContractsFixture);
+
+            // Setup
+            await cryptoAI.connect(owner).changeCryptoAIDataAddress(cryptoAIData.address);
+            await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
+            await cryptoAI.connect(owner).allowAdmin(admin.address, true);
+            await cryptoAIData.connect(owner).sealContract();
+
+            // Set default royalty
+            await cryptoAI.connect(admin).setDefaultRoyalty(user.address, 1000);
+
+            // Mint NFT
+            await cryptoAI.connect(admin).mint(1, user.address, 12345, [1, 2, 3, 4, 5, 6]);
+            const tokenId = 1;
+
+            // Set token royalty
+            await cryptoAI.connect(admin).setTokenRoyalty(tokenId, admin.address, 500);
+
+            // Reset token royalty
+            await cryptoAI.connect(admin).resetTokenRoyalty(tokenId);
+
+            // Should fallback to default royalty
+            const salePrice = ethers.utils.parseEther("1");
+            const [receiver, royaltyAmount] = await cryptoAI.royaltyInfo(tokenId, salePrice);
+            expect(receiver).to.equal(user.address);
+            expect(royaltyAmount).to.equal(salePrice.mul(1000).div(10000));
+        });
+
+        it("Should not allow non-admin to set or delete royalties", async function () {
+            const { cryptoAI, owner, admin, user, cryptoAIData } = await loadFixture(deployContractsFixture);
+
+            // Setup
+            await cryptoAI.connect(owner).changeCryptoAIDataAddress(cryptoAIData.address);
+            await cryptoAIData.connect(owner).changeCryptoAIAgentAddress(cryptoAI.address);
+            await cryptoAI.connect(owner).allowAdmin(admin.address, true);
+            await cryptoAIData.connect(owner).sealContract();
+
+            // Mint NFT
+            await cryptoAI.connect(admin).mint(1, user.address, 12345, [1, 2, 3, 4, 5, 6]);
+            const tokenId = 1;
+
+            // Non-admin tries to set/delete royalties
+            await expect(
+                cryptoAI.connect(user).setDefaultRoyalty(user.address, 1000)
+            ).to.be.revertedWith("101");
+            await expect(
+                cryptoAI.connect(user).deleteDefaultRoyalty()
+            ).to.be.revertedWith("101");
+            await expect(
+                cryptoAI.connect(user).setTokenRoyalty(tokenId, user.address, 1000)
+            ).to.be.revertedWith("101");
+            await expect(
+                cryptoAI.connect(user).resetTokenRoyalty(tokenId)
+            ).to.be.revertedWith("101");
         });
     });
 

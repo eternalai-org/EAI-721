@@ -34,12 +34,10 @@ contract CryptoAgents is
     }
 
     // -- state variables --
-    // royalty receiver
-    address private _royaltyReceiver;
     // deployer
-    address public _deployer;
+    address private _deployer;
     // admins
-    mapping(address => bool) public _admins;
+    mapping(address => bool) private _admins;
 
     modifier onlyDeployer() {
         require(msg.sender == _deployer, Errors.ONLY_DEPLOYER);
@@ -79,9 +77,17 @@ contract CryptoAgents is
         }
     }
 
+    function deployer() external view returns (address) {
+        return _deployer;
+    }
+
     function allowAdmin(address newAdm, bool allow) external onlyDeployer {
         require(newAdm != address(0), Errors.INV_ADD);
         _admins[newAdm] = allow;
+    }
+
+    function isAdmin(address admin) external view returns (bool) {
+        return _admins[admin];
     }
 
     function changeCryptoAIDataAddress(address newAddr) external onlyDeployer {
