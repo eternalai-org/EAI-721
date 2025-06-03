@@ -3,7 +3,7 @@ import { promises as fs } from "fs";
 async function main() {
   const collections = require("./datajson/collections.json");
 
-  const data = [];
+  const data: any[] = [];
   try {
 
   interface TraitData {
@@ -176,10 +176,12 @@ async function main() {
           break;
       }          
 
+     
       data.push({
         id: collection['id'],
         name: name,
         DNA_Rarity: dataTraits[name].percent,
+        dna_rarity: dataTraits[name].percent,
         thumbnail: `https://cdn.eternalai.org/homepage/data-mint-v2/${collection['id']}.svg`,
         trait: ttrs,
         rarity: weight + rarity,
@@ -187,7 +189,12 @@ async function main() {
       })
     }
 
-   data.sort((a, b) => a.rarity - b.rarity);
+    data.sort((a, b) => a.rarity - b.rarity);
+    
+    data.map((item, index) => {
+      item.token_id = index + 1;
+      item.thumbnail_token_id = `https://cdn.eternalai.org/homepage/data-mint-v2/${item.token_id}.svg`;
+    })
 
     await fs.writeFile(
       "scripts/data/cryptoai/datajson/collections_nfs_be.json",
