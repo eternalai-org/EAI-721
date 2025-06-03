@@ -1,7 +1,7 @@
 import { initConfig } from "../../data/cryptoai";
 import { CryptoAI } from "./cryptoAI";
 // const data = require("../../data/cryptoai/datajson/collections.json");
-const data = require("../../data/cryptoai/datajson/collections_nfts_be.json");
+const data = require("../../data/cryptoai/datajson/collections_nfs_be.json");
 
 async function main(tokenId: any) {
   // if (process.env.NETWORK != "base_mainnet") {
@@ -16,7 +16,8 @@ async function main(tokenId: any) {
     console.log("missing key");
   }
   const key = args[0];
-
+  const addressToMint = args[1];
+  console.log(key, addressToMint);
   const dataContract = new CryptoAI(
     process.env.NETWORK,
     process.env.PRIVATE_KEY,
@@ -27,7 +28,7 @@ async function main(tokenId: any) {
     config.contractAddress,
     0,
     data[key].token_id,
-    process.env.PUBLIC_KEY,
+    addressToMint || process.env.PUBLIC_KEY,
     data[key].data_mint[0],
     data[key].data_mint[1]
   );
