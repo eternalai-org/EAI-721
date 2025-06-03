@@ -119,7 +119,7 @@ contract CryptoAgents is
     }
 
     /* @dev EIP2981 royalties implementation.
-    // EIP2981 standard royalties return.
+        EIP2981 standard royalties return.
     */
     function royaltyInfo(
         uint256 _tokenId,

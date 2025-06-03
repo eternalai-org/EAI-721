@@ -4,10 +4,10 @@ pragma solidity ^0.8.12;
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
+import "../interfaces/IEAI721Intelligence.sol";
 import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
-import "../interfaces/IEAI721Intelligence.sol";
 
 contract OnchainArtData is IOnchainArtData {
     uint256 public constant TOKEN_LIMIT = 0x2710;
