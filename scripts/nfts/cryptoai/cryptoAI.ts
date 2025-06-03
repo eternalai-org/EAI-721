@@ -21,6 +21,7 @@ class CryptoAI {
     async deployUpgradeable(name: string,
         symbol: string,
         deployerAddr: any,
+        defaultRoyaltyReceiver: any
     ) {
         // if (this.network == "local") {
         //     console.log("not run local");
@@ -29,8 +30,8 @@ class CryptoAI {
 
         const contract = await ethers.getContractFactory("CryptoAgents");
         console.log("CryptoAgents.deploying ...")
-        const proxy = await upgrades.deployProxy(contract, [name, symbol, deployerAddr], {
-            initializer: 'initialize(string, string, address)',
+        const proxy = await upgrades.deployProxy(contract, [name, symbol, deployerAddr, defaultRoyaltyReceiver], {
+            initializer: 'initialize(string, string, address, address)',
         });
         await proxy.deployed();
         console.log("CryptoAgents deployed at proxy:", proxy.address);
