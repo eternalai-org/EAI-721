@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
 
 abstract contract EAI721Identity is Initializable, ERC721Upgradeable {

@@ -25,12 +25,12 @@ async function main(tokenId: any) {
     process.env.PRIVATE_KEY,
     process.env.PUBLIC_KEY
   );
-  console.log(data[key].id, data[key].index[0], data[key].index[1]);
+  console.log(data[key].id, data[key].data_mint[0], data[key].data_mint[1]);
   await dataContract.mint(
     config.contractAddress,
     0,
     data[key].token_id,
-    addressToMint || process.env.PUBLIC_KEY,
+    addressToMint,
     data[key].data_mint[0],
     data[key].data_mint[1]
   );
