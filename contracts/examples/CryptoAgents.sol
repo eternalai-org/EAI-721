@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.0;
 
+import {ERC2981Upgradeable} from "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
 import {EAI721Intelligence, ERC721Upgradeable, Initializable} from "../extensions/EAI721Intelligence.sol";
 import {EAI721Identity} from "../extensions/EAI721Identity.sol";
 import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
@@ -15,6 +16,7 @@ contract CryptoAgents is
     EAI721Identity,
     EAI721Monetization,
     EAI721Tokenization,
+    ERC2981Upgradeable,
     Rating
 {
     // --- Constants ---
@@ -53,7 +55,8 @@ contract CryptoAgents is
     function initialize(
         string memory name,
         string memory symbol,
-        address deployer
+        address deployer,
+        address defaultRoyaltyReceiver
     ) public initializer {
         require(deployer != address(0), Errors.INV_ADD);
 
@@ -65,6 +68,9 @@ contract CryptoAgents is
         __Rating_init(100);
         __EAI721Monetization_init();
         __EAI721Tokenization_init();
+        __ERC2981_init();
+
+        _setDefaultRoyalty(defaultRoyaltyReceiver, 500);
     }
 
     function changeDeployer(address newDeployer) external onlyDeployer {
@@ -109,24 +115,40 @@ contract CryptoAgents is
         return EAI721Identity.tokenURI(agentId);
     }
 
-    function setRoyaltyReceiver(address newRoyaltyReceiver) external onlyAdmin {
-        require(newRoyaltyReceiver != address(0), Errors.INV_ADD);
-        _royaltyReceiver = newRoyaltyReceiver;
+    function setDefaultRoyalty(
+        address newRoyaltyReceiver,
+        uint96 feeNumerator
+    ) external onlyAdmin {
+        _setDefaultRoyalty(newRoyaltyReceiver, feeNumerator);
     }
 
-    function royaltyReceiver() external view returns (address) {
-        return _royaltyReceiver;
+    function deleteDefaultRoyalty() external onlyAdmin {
+        _deleteDefaultRoyalty();
     }
 
-    /* @dev EIP2981 royalties implementation.
-        EIP2981 standard royalties return.
-    */
-    function royaltyInfo(
-        uint256 _tokenId,
-        uint256 _salePrice
-    ) external view virtual returns (address receiver, uint256 royaltyAmount) {
-        receiver = _royaltyReceiver;
-        royaltyAmount = (_salePrice * 500) / 10000; // 5%
+    function setTokenRoyalty(
+        uint256 tokenId,
+        address newRoyaltyReceiver,
+        uint96 feeNumerator
+    ) external onlyAdmin {
+        _setTokenRoyalty(tokenId, newRoyaltyReceiver, feeNumerator);
+    }
+
+    function resetTokenRoyalty(uint256 tokenId) external onlyAdmin {
+        _resetTokenRoyalty(tokenId);
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    )
+        public
+        view
+        override(ERC721Upgradeable, ERC2981Upgradeable)
+        returns (bool)
+    {
+        return
+            ERC721Upgradeable.supportsInterface(interfaceId) ||
+            ERC2981Upgradeable.supportsInterface(interfaceId);
     }
 
     uint256[50] private __gap;
