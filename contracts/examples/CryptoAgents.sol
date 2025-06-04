@@ -33,6 +33,14 @@ contract CryptoAgents is
         _;
     }
 
+    // -- events --
+    event AdminAllowed(address indexed admin, bool allowed);
+    event DeployerChanged(
+        address indexed oldDeployer,
+        address indexed newDeployer
+    );
+    event CryptoAIDataAddressChanged(address indexed newAddr);
+
     // -- state variables --
     // deployer
     address private _deployer;
@@ -73,6 +81,7 @@ contract CryptoAgents is
     function changeDeployer(address newDeployer) external onlyDeployer {
         require(newDeployer != address(0), Errors.INV_ADD);
         if (_deployer != newDeployer) {
+            emit DeployerChanged(_deployer, newDeployer);
             _deployer = newDeployer;
         }
     }
@@ -84,6 +93,7 @@ contract CryptoAgents is
     function allowAdmin(address newAdm, bool allow) external onlyDeployer {
         require(newAdm != address(0), Errors.INV_ADD);
         _admins[newAdm] = allow;
+        emit AdminAllowed(newAdm, allow);
     }
 
     function isAdmin(address admin) external view returns (bool) {
@@ -94,6 +104,7 @@ contract CryptoAgents is
         require(newAddr != address(0), Errors.INV_ADD);
 
         _setCryptoAIDataAddr(newAddr);
+        emit CryptoAIDataAddressChanged(newAddr);
     }
 
     //@EAI721Identity
