@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 import {ERC2981Upgradeable} from "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
 import {EAI721Intelligence, ERC721Upgradeable, Initializable} from "../extensions/EAI721Intelligence.sol";
-import {EAI721Identity} from "../extensions/EAI721Identity.sol";
+import {EAI721Identity, IOnchainArtData} from "../extensions/EAI721Identity.sol";
 import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
 import {EAI721Tokenization} from "../extensions/EAI721Tokenization.sol";
 import {Rating} from "../utils/Rating.sol";
@@ -113,7 +113,7 @@ contract CryptoAgents is
         address to,
         uint256 dna,
         uint256[6] memory traits
-    ) public virtual onlyAdmin {
+    ) external virtual onlyAdmin {
         if (tokenId == 0 || tokenId > TOKEN_SUPPLY_LIMIT)
             revert InvalidTokenId();
 
@@ -129,6 +129,18 @@ contract CryptoAgents is
         returns (string memory)
     {
         return EAI721Identity.tokenURI(agentId);
+    }
+
+    function agentAttributes(
+        uint256 agentId
+    ) external view returns (string memory) {
+        return IOnchainArtData(cryptoAIDataAddr()).agentAttributes(agentId);
+    }
+
+    function agentImageSvg(
+        uint256 agentId
+    ) external view returns (string memory) {
+        return IOnchainArtData(cryptoAIDataAddr()).agentImageSvg(agentId);
     }
 
     function setDefaultRoyalty(
