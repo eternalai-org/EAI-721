@@ -154,13 +154,13 @@ contract OnchainArtData is IOnchainArtData {
         );
         result = string(
             abi.encodePacked(
-                '{"name": "CryptoAI #',
+                '{"name": "CryptoAgent #',
                 Strings.toString(tokenId),
                 '",',
                 '"description": "The first-ever PFP collection for AI agents.",',
                 '"image": "',
                 cryptoAIImageSvg(tokenId),
-                '", "attributes": [',
+                '", "attributes": ',
                 cryptoAIAttributes(tokenId),
                 "}"
             )
