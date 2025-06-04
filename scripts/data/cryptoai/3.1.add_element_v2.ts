@@ -1,14 +1,18 @@
 import { CryptoAIData } from "./cryptoAIData";
-import { initConfig } from "./index";
-// @ts-ignore
 import { DNA, ELEMENT, KEY_DNA, PALETTE_COLOR, TRAITS_DNA } from "./data";
 import * as data from "./datajson/data-compressed.json";
+import { initConfig } from "./index";
 
-async function main(key: string) {
-  if (process.env.NETWORK != "base_testnet") {
-    console.log("wrong network");
-    return;
+async function main() {
+  // if (process.env.NETWORK != "base_testnet") {
+  //   console.log("wrong network");
+  //   return;
+  // }
+  const args = process.argv.slice(2) as string[];
+  if (args.length == 0) {
+    console.log("missing key");
   }
+  const key = args[0];
   console.log("___key", key);
 
   try {
@@ -248,7 +252,7 @@ async function main(key: string) {
   }
 }
 
-main(ELEMENT.EARRING).catch((error) => {
+main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

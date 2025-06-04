@@ -44,11 +44,11 @@ async function main() {
     if (!attrs[attrKey]) {
       attrs[attrKey] = {
         counter: 0,
-        collections: []
+        // collections: []
       }
     }
     attrs[attrKey].counter++;
-    attrs[attrKey].collections.push({id: collection['id'], attr: collection.name, thumbnail: `https://cdn.eternalai.org/homepage/data-mint-v2/${collection['id']}.svg`});
+    // attrs[attrKey].collections.push({id: collection['id'], attr: collection.name, thumbnail: `https://cdn.eternalai.org/homepage/data-mint-v2/${collection['id']}.svg`});
 
     elements.forEach((element: string, index: number) => {
       const elementKey = element || 'Null';
