@@ -158,6 +158,7 @@ contract OnchainArtData is IOnchainArtData {
                 Strings.toString(tokenId),
                 '",',
                 '"description": "The first-ever PFP collection for AI agents.",',
+                '"image_thumbnail": "https://cdn.eternalai.org/homepage/data-mint-v2/9.svg",',
                 '"image": "',
                 cryptoAIImageSvg(tokenId),
                 '", "attributes": ',

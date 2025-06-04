@@ -1,6 +1,6 @@
 #!/bin/bash
 
-timeSleep=3.5
+timeSleep=2.5
 
 
 yarn ts:run scripts/data/cryptoai/1.deploy.ts
@@ -38,5 +38,3 @@ sleep $timeSleep
 yarn ts:run scripts/data/cryptoai/3.1.add_element_v2.ts "Earring"
 sleep $timeSleep
 yarn ts:run scripts/data/cryptoai/10.sealcontract.ts
-sleep $timeSleep
-./allowAdmin.sh
