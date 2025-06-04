@@ -18,7 +18,7 @@ contract OnchainArtData is IOnchainArtData {
     bytes16 internal constant _HEX_SYMBOLS = "0123456789abcdef";
     string private constant svgDataType = "data:image/svg+xml;utf8,";
     string internal constant SVG_HEADER =
-        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>";
+        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' fill='%23636B96'/>";
     string internal constant SVG_FOOTER = "</svg>";
     string internal constant SVG_RECT = "<rect x='";
     string internal constant SVG_Y = "' y='";
@@ -152,27 +152,19 @@ contract OnchainArtData is IOnchainArtData {
             unlockedTokens[tokenId].tokenID > 0,
             Errors.TOKEN_ID_NOT_EXISTED
         );
-        if (unlockedTokens[tokenId].weight == 0) {
-            result = string(
-                abi.encodePacked(
-                    '{"image": "',
-                    PLACEHOLDER_IMG,
-                    '", "animation_url": "',
-                    cryptoAIImageHtml(tokenId),
-                    '"}'
-                )
-            );
-        } else {
-            result = string(
-                abi.encodePacked(
-                    '{"image": "',
-                    cryptoAIImageSvg(tokenId),
-                    '", "attributes": ',
-                    cryptoAIAttributes(tokenId),
-                    "}"
-                )
-            );
-        }
+        result = string(
+            abi.encodePacked(
+                '{"name": "CryptoAgent #',
+                Strings.toString(tokenId),
+                '",',
+                '"description": "The first-ever PFP collection for AI agents.",',
+                '"image": "',
+                cryptoAIImageSvg(tokenId),
+                '", "attributes": ',
+                cryptoAIAttributes(tokenId),
+                "}"
+            )
+        );
     }
 
     function addDNA(
@@ -295,81 +287,83 @@ contract OnchainArtData is IOnchainArtData {
             }
         }
 
-        byteString = abi.encodePacked(
-            '{"trait_type": "ORIGIN"',
-            ',"value":"',
-            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
-                tokenId
-            ) > 1
-                ? "no"
-                : "yes",
-            '"},',
-            byteString
-        );
+        // byteString = abi.encodePacked(
+        //     '{"trait_type": "Origin"',
+        //     ',"value":"',
+        //     IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1
+        //         ? "no"
+        //         : "yes",
+        //     '"},',
+        //     byteString
+        // );
 
         // - INTELLIGENCE: (string) (req) yes/no
-        byteString = abi.encodePacked(
-            '{"trait_type": "INTELLIGENCE"',
-            ',"value":"',
-            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(
-                tokenId
-            ) > 0
-                ? "yes"
-                : "no",
-            '"},',
-            byteString
-        );
+        // byteString = abi.encodePacked(
+        //     '{"trait_type": "Intelligence"',
+        //     ',"value":"',
+        //     IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 0
+        //         ? "yes"
+        //         : "no",
+        //     '"},',
+        //     byteString
+        // );
 
         // - AGENT_NAME: (string) (opt)
-        string memory agentName = IEAI721Intelligence(
-            _cryptoAIAgentAddr
-        ).agentName(tokenId);
-        if (bytes(agentName).length > 0) {
-            byteString = abi.encodePacked(
-                '{"trait_type": "AGENT_NAME"',
-                ',"value":"',
-                agentName,
-                '"},',
-                byteString
-            );
-        }
+        // string memory agentName = IEAI721Intelligence(_cryptoAIAgentAddr)
+        //     .agentName(tokenId);
+        // if (bytes(agentName).length > 0) {
+        //     byteString = abi.encodePacked(
+        //         '{"trait_type": "Agent Name"',
+        //         ',"value":"',
+        //         agentName,
+        //         '"},',
+        //         byteString
+        //     );
+        // }
 
         // - TOKEN: address erc20 (opt)
-        address aiToken = IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(tokenId);
-        if (aiToken != address(0)) {
-            byteString = abi.encodePacked(
-                '{"trait_type": "TOKEN"',
-                ',"value":"',
-                Strings.toHexString(aiToken),
-                '"},',
-                byteString
-            );
+        // address aiToken = IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(
+        //     tokenId
+        // );
+        // if (aiToken != address(0)) {
+        //     byteString = abi.encodePacked(
+        //         '{"trait_type": "Token"',
+        //         ',"value":"',
+        //         Strings.toHexString(aiToken),
+        //         '"},',
+        //         byteString
+        //     );
 
-            // - SUBSCRIPTION_FEE: (eth unit) (req) 0/ fee
-            uint256 feeUnits = IEAI721Monetization(_cryptoAIAgentAddr)
-                .subscriptionFee(tokenId);
-            uint8 tokenDecimals = IERC20Metadata(aiToken).decimals();
-            string memory feeStr = feeUnits == 0 ? "0"
-                : tokenDecimals == 0 || feeUnits % 10**tokenDecimals == 0 ? Strings.toString(feeUnits / 10**tokenDecimals)
-                : string(
-                    abi.encodePacked(
-                        Strings.toString(feeUnits / 10**tokenDecimals),
-                        ".",
-                        fractionalStr(feeUnits % 10**tokenDecimals, tokenDecimals)
-                    )
-                );
-            
-            byteString = abi.encodePacked(
-                '{"trait_type": "SUBSCRIPTION_FEE"',
-                ',"value":"',
-                feeStr,
-                '"},',
-                byteString
-            );
-        }
+        //     // - SUBSCRIPTION_FEE: (eth unit) (req) 0/ fee
+        //     uint256 feeUnits = IEAI721Monetization(_cryptoAIAgentAddr)
+        //         .subscriptionFee(tokenId);
+        //     uint8 tokenDecimals = IERC20Metadata(aiToken).decimals();
+        //     string memory feeStr = feeUnits == 0
+        //         ? "0"
+        //         : tokenDecimals == 0 || feeUnits % 10 ** tokenDecimals == 0
+        //             ? Strings.toString(feeUnits / 10 ** tokenDecimals)
+        //             : string(
+        //                 abi.encodePacked(
+        //                     Strings.toString(feeUnits / 10 ** tokenDecimals),
+        //                     ".",
+        //                     fractionalStr(
+        //                         feeUnits % 10 ** tokenDecimals,
+        //                         tokenDecimals
+        //                     )
+        //                 )
+        //             );
+
+        //     byteString = abi.encodePacked(
+        //         '{"trait_type": "Subscription Fee"',
+        //         ',"value":"',
+        //         feeStr,
+        //         '"},',
+        //         byteString
+        //     );
+        // }
 
         byteString = abi.encodePacked(
-            '{"trait_type": "attributes"',
+            '{"trait_type": "Attributes"',
             ',"value":"',
             Strings.toString(count),
             '"},',
@@ -379,7 +373,10 @@ contract OnchainArtData is IOnchainArtData {
         text = string(abi.encodePacked("[", string(byteString), "]"));
     }
 
-    function fractionalStr(uint fractionalPart, uint8 dec) internal pure returns(string memory res) {
+    function fractionalStr(
+        uint fractionalPart,
+        uint8 dec
+    ) internal pure returns (string memory res) {
         while (fractionalPart > 0 && dec > 0) {
             if (fractionalPart % 10 == 0) {
                 fractionalPart /= 10;
