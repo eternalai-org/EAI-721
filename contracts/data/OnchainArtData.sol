@@ -18,7 +18,7 @@ contract OnchainArtData is IOnchainArtData {
     bytes16 internal constant _HEX_SYMBOLS = "0123456789abcdef";
     string private constant svgDataType = "data:image/svg+xml;utf8,";
     string internal constant SVG_HEADER =
-        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' fill='%23636B96'/>";
+        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>";
     string internal constant SVG_FOOTER = "</svg>";
     string internal constant SVG_RECT = "<rect x='";
     string internal constant SVG_Y = "' y='";
@@ -158,8 +158,9 @@ contract OnchainArtData is IOnchainArtData {
                 Strings.toString(tokenId),
                 '",',
                 '"description": "The first-ever PFP collection for AI agents.",',
-                '"image_thumbnail": "https://cdn.eternalai.org/homepage/data-mint-v2/9.svg",',
-                '"image": "',
+                '"image": "https://cdn.eternalai.org/homepage/10k-png/26.png",',
+                '"background_color": "#636B96",',
+                '"image_data": "',
                 cryptoAIImageSvg(tokenId),
                 '", "attributes": ',
                 cryptoAIAttributes(tokenId),
