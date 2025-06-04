@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import { initConfig } from "../../data/cryptoai";
 import { CryptoAI } from "./cryptoAI";
 // const data = require("../../data/cryptoai/datajson/collections.json");
@@ -10,6 +11,7 @@ async function main(tokenId: any) {
   // }
 
   let config = await initConfig();
+  let tokenCannotMint: any[] = [];
 
   const args = process.argv.slice(2) as string[];
   if (args.length == 0) {
@@ -34,6 +36,18 @@ async function main(tokenId: any) {
     addressToMint,
     data[key].data_mint[0],
     data[key].data_mint[1]
+  ).catch((error) => {
+    tokenCannotMint.push({
+      index: key,
+      token_id: data[key].token_id,
+      dna: data[key].data_mint[0],
+      elements: data[key].data_mint[1],
+    });
+  });
+
+   await fs.writeFileSync(
+    `scripts/data/cryptoai/datajson/collections_nfs_be_id_not_mint_${addressToMint}.json`,
+    JSON.stringify(tokenCannotMint, null, 2)
   );
 }
 
