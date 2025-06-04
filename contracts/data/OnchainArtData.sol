@@ -287,83 +287,49 @@ contract OnchainArtData is IOnchainArtData {
             }
         }
 
-        // byteString = abi.encodePacked(
-        //     '{"trait_type": "Origin"',
-        //     ',"value":"',
-        //     IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1
-        //         ? "no"
-        //         : "yes",
-        //     '"},',
-        //     byteString
-        // );
-
-        // - INTELLIGENCE: (string) (req) yes/no
-        // byteString = abi.encodePacked(
-        //     '{"trait_type": "Intelligence"',
-        //     ',"value":"',
-        //     IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 0
-        //         ? "yes"
-        //         : "no",
-        //     '"},',
-        //     byteString
-        // );
-
-        // - AGENT_NAME: (string) (opt)
-        // string memory agentName = IEAI721Intelligence(_cryptoAIAgentAddr)
-        //     .agentName(tokenId);
-        // if (bytes(agentName).length > 0) {
-        //     byteString = abi.encodePacked(
-        //         '{"trait_type": "Agent Name"',
-        //         ',"value":"',
-        //         agentName,
-        //         '"},',
-        //         byteString
-        //     );
-        // }
-
-        // - TOKEN: address erc20 (opt)
-        // address aiToken = IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(
-        //     tokenId
-        // );
-        // if (aiToken != address(0)) {
-        //     byteString = abi.encodePacked(
-        //         '{"trait_type": "Token"',
-        //         ',"value":"',
-        //         Strings.toHexString(aiToken),
-        //         '"},',
-        //         byteString
-        //     );
-
-        //     // - SUBSCRIPTION_FEE: (eth unit) (req) 0/ fee
-        //     uint256 feeUnits = IEAI721Monetization(_cryptoAIAgentAddr)
-        //         .subscriptionFee(tokenId);
-        //     uint8 tokenDecimals = IERC20Metadata(aiToken).decimals();
-        //     string memory feeStr = feeUnits == 0
-        //         ? "0"
-        //         : tokenDecimals == 0 || feeUnits % 10 ** tokenDecimals == 0
-        //             ? Strings.toString(feeUnits / 10 ** tokenDecimals)
-        //             : string(
-        //                 abi.encodePacked(
-        //                     Strings.toString(feeUnits / 10 ** tokenDecimals),
-        //                     ".",
-        //                     fractionalStr(
-        //                         feeUnits % 10 ** tokenDecimals,
-        //                         tokenDecimals
-        //                     )
-        //                 )
-        //             );
-
-        //     byteString = abi.encodePacked(
-        //         '{"trait_type": "Subscription Fee"',
-        //         ',"value":"',
-        //         feeStr,
-        //         '"},',
-        //         byteString
-        //     );
-        // }
+        byteString = abi.encodePacked(
+            '{"trait_type": "Origin"',
+            ',"value":"',
+            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1
+                ? "no"
+                : "yes",
+            '"},',
+            byteString
+        );
 
         byteString = abi.encodePacked(
-            '{"trait_type": "Attributes"',
+            '{"trait_type": "Intelligence"',
+            ',"value":"',
+            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 0
+                ? "yes"
+                : "no",
+            '"},',
+            byteString
+        );
+
+        byteString = abi.encodePacked(
+            '{"trait_type": "Tokenization"',
+            ',"value":"',
+            IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(tokenId) !=
+                address(0)
+                ? "yes"
+                : "no",
+            '"},',
+            byteString
+        );
+
+        byteString = abi.encodePacked(
+            '{"trait_type": "Monetization"',
+            ',"value":"',
+            IEAI721Monetization(_cryptoAIAgentAddr).subscriptionFee(tokenId) > 0
+                ? "yes"
+                : "no",
+            '"},',
+            byteString
+        );
+
+        byteString = abi.encodePacked(
+            '{"trait_type": "Number of attributes"',
             ',"value":"',
             Strings.toString(count),
             '"},',
