@@ -158,7 +158,7 @@ contract OnchainArtData is IOnchainArtData {
                 Strings.toString(tokenId),
                 '",',
                 '"description": "The first-ever PFP collection for AI agents.",',
-                '"image_data": "https://nbc-alpha.mypinata.cloud/ipfs/bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
+                '"image_data": "https://cryptoagents.mypinata.cloud/ipfs/bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
                 Strings.toString(tokenId),
                 '.png",',
                 '"image": "',
