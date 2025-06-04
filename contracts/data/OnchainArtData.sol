@@ -159,9 +159,9 @@ contract OnchainArtData is IOnchainArtData {
                 '",',
                 '"description": "The first-ever PFP collection for AI agents.",',
                 '"image": "',
-                cryptoAIImageSvg(tokenId),
+                agentImageSvg(tokenId),
                 '", "attributes": ',
-                cryptoAIAttributes(tokenId),
+                agentAttributes(tokenId),
                 "}"
             )
         );
@@ -235,7 +235,7 @@ contract OnchainArtData is IOnchainArtData {
         palettes = _pallets;
     }
 
-    function cryptoAIAttributesValue(
+    function agentAttributesValue(
         uint256 tokenId
     ) public view returns (string[] memory) {
         string[] memory attrs = new string[](partsName.length);
@@ -254,7 +254,7 @@ contract OnchainArtData is IOnchainArtData {
         return attrs;
     }
 
-    function cryptoAIAttributes(
+    function agentAttributes(
         uint256 tokenId
     ) public view returns (string memory text) {
         bytes memory byteString;
@@ -452,7 +452,7 @@ contract OnchainArtData is IOnchainArtData {
             );
     }
 
-    function cryptoAIImageSvg(
+    function agentImageSvg(
         uint256 tokenId
     ) public view returns (string memory result) {
         require(
