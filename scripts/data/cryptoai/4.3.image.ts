@@ -1,5 +1,5 @@
-import {initConfig} from "./index";
-import {CryptoAIData} from "./cryptoAIData";
+import { initConfig } from "./index";
+import { CryptoAIData } from "./cryptoAIData";
 
 async function main() {
     if (process.env.NETWORK != "local") {
@@ -21,7 +21,7 @@ async function main() {
     const num = parseInt(args[0]);
     for (var i = 1; i <= num; i++) {
         try {
-            await dataContract.cryptoAIImage(address, i);
+            await dataContract.agentImage(address, i);
             console.log(i, " processed");
         } catch (ex) {
             console.log(i, " failed");

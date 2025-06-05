@@ -14,7 +14,7 @@ abstract contract EAI721Intelligence is
     using {read} for IFileStore.File;
 
     // --- Constants ---
-    uint256 public constant TOKEN_LIMIT = 10000;
+    uint256 private constant TOKEN_LIMIT = 10000;
     bytes32 private constant IPFS_SIG = keccak256(bytes("ipfs"));
 
     // --- Storage ---

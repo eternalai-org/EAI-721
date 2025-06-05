@@ -22,7 +22,7 @@ contract CryptoAgents is
     Rating
 {
     // --- Constants ---
-    uint256 public constant TOKEN_SUPPLY_LIMIT = 10000;
+    uint256 private constant TOKEN_SUPPLY_LIMIT = 10000;
 
     // -- errors --
     error Unauthenticated();
@@ -116,6 +116,10 @@ contract CryptoAgents is
         uint256 agentId
     ) external view returns (string memory) {
         return IOnchainArtData(agentDataAddr()).agentImageSvg(agentId);
+    }
+
+    function agentImage(uint256 agentId) external view returns (bytes memory) {
+        return IOnchainArtData(agentDataAddr()).agentImage(agentId);
     }
 
     function setDefaultRoyalty(

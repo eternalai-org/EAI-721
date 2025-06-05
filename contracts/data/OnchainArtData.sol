@@ -3,7 +3,6 @@ pragma solidity ^0.8.12;
 
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "../interfaces/IEAI721Intelligence.sol";
@@ -316,28 +315,7 @@ contract OnchainArtData is Ownable, IOnchainArtData {
         text = string(abi.encodePacked("[", string(byteString), "]"));
     }
 
-    function fractionalStr(
-        uint fractionalPart,
-        uint8 dec
-    ) internal pure returns (string memory res) {
-        while (fractionalPart > 0 && dec > 0) {
-            if (fractionalPart % 10 == 0) {
-                fractionalPart /= 10;
-                dec--;
-            } else {
-                break;
-            }
-        }
-
-        res = Strings.toString(fractionalPart);
-        if (bytes(res).length < dec) {
-            for (uint i = bytes(res).length; i < dec; i++) {
-                res = string(abi.encodePacked("0", res));
-            }
-        }
-    }
-
-    function cryptoAIImage(uint256 tokenId) public view returns (bytes memory) {
+    function agentImage(uint256 tokenId) public view returns (bytes memory) {
         require(
             unlockedTokens[tokenId].tokenID > 0 &&
                 unlockedTokens[tokenId].weight > 0,
@@ -438,7 +416,7 @@ contract OnchainArtData is Ownable, IOnchainArtData {
             Errors.TOKEN_ID_NOT_UNLOCKED
         );
 
-        bytes memory pixels = cryptoAIImage(tokenId);
+        bytes memory pixels = agentImage(tokenId);
         string memory svg = "";
         bytes memory buffer = new bytes(8);
         uint p;

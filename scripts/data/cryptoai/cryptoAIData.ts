@@ -38,10 +38,10 @@ class CryptoAIData {
 
 
     async deploy() {
-        // if (this.network == "local") {
-        //     console.log("not run local");
-        //     return;
-        // }
+        if (this.network == "mainnet") {
+            console.log("not run local");
+            return;
+        }
 
         const contract = await ethers.getContractFactory("OnchainArtData");
         console.log("OnchainArtData.deploying ...")
@@ -326,7 +326,7 @@ class CryptoAIData {
         return val;
     }
 
-    async cryptoAIImage(contractAddress: any, token: number) {
+    async agentImage(contractAddress: any, token: number) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
 
@@ -337,7 +337,7 @@ class CryptoAIData {
             nonce: nonce,
         }
 
-        const val: any = await temp?.nftContract.methods.cryptoAIImage(token).call(tx);
+        const val: any = await temp?.nftContract.methods.agentImage(token).call(tx);
         return val;
     }
 
