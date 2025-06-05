@@ -87,10 +87,10 @@ class CryptoAI {
         return null;
     }
 
-    async changeCryptoAIDataAddress(contractAddress: any, gas: any, newAddr: any) {
+    async changeAgentDataAddress(contractAddress: any, gas: any, newAddr: any) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
-        const fun = temp?.nftContract.methods.changeCryptoAIDataAddress(newAddr)
+        const fun = temp?.nftContract.methods.changeAgentDataAddress(newAddr)
         //the transaction
         const tx = {
             from: this.senderPublicKey,
