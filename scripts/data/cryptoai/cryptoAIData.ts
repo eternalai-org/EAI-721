@@ -37,8 +37,7 @@ class CryptoAIData {
     }
 
 
-    async deploy(deployerAddr: any
-    ) {
+    async deploy() {
         // if (this.network == "local") {
         //     console.log("not run local");
         //     return;
@@ -46,7 +45,7 @@ class CryptoAIData {
 
         const contract = await ethers.getContractFactory("OnchainArtData");
         console.log("OnchainArtData.deploying ...")
-        const deployed = await contract.deploy(deployerAddr);
+        const deployed = await contract.deploy();
         await deployed.deployed();
         console.log("OnchainArtData deployed to:", deployed.address);
         return deployed.address;

@@ -15,7 +15,6 @@ async function main() {
     console.log("missing key");
   }
   const key = args[0];
-  console.log("key", key);
   const dataContract = new CryptoAI(
     process.env.NETWORK,
     process.env.PRIVATE_KEY,

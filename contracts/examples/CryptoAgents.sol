@@ -3,6 +3,7 @@
 pragma solidity ^0.8.0;
 
 import {ERC2981Upgradeable} from "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {EAI721Intelligence, ERC721Upgradeable, Initializable} from "../extensions/EAI721Intelligence.sol";
 import {EAI721Identity, IOnchainArtData} from "../extensions/EAI721Identity.sol";
 import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
@@ -12,6 +13,7 @@ import {Errors} from "../libs/helpers/Errors.sol";
 
 contract CryptoAgents is
     Initializable,
+    OwnableUpgradeable,
     EAI721Intelligence,
     EAI721Identity,
     EAI721Monetization,
@@ -35,22 +37,11 @@ contract CryptoAgents is
 
     // -- events --
     event AdminAllowed(address indexed admin, bool allowed);
-    event DeployerChanged(
-        address indexed oldDeployer,
-        address indexed newDeployer
-    );
     event AgentDataAddressChanged(address indexed newAddr);
 
     // -- state variables --
-    // deployer
-    address private _deployer;
     // admins
     mapping(address => bool) private _admins;
-
-    modifier onlyDeployer() {
-        require(msg.sender == _deployer, Errors.ONLY_DEPLOYER);
-        _;
-    }
 
     modifier onlyAdmin() {
         require(_admins[msg.sender], Errors.ONLY_ADMIN_ALLOWED);
@@ -60,13 +51,9 @@ contract CryptoAgents is
     function initialize(
         string memory name_,
         string memory symbol_,
-        address deployer_,
         address defaultRoyaltyReceiver_
     ) public initializer {
-        require(deployer_ != address(0), Errors.INV_ADD);
-
-        _deployer = deployer_;
-
+        __Ownable_init();
         __ERC721_init(name_, symbol_);
         __EAI721Intelligence_init();
         __EAI721Identity_init();
@@ -78,19 +65,7 @@ contract CryptoAgents is
         _setDefaultRoyalty(defaultRoyaltyReceiver_, 500);
     }
 
-    function changeDeployer(address newDeployer) external onlyDeployer {
-        require(newDeployer != address(0), Errors.INV_ADD);
-        if (_deployer != newDeployer) {
-            emit DeployerChanged(_deployer, newDeployer);
-            _deployer = newDeployer;
-        }
-    }
-
-    function deployer() external view returns (address) {
-        return _deployer;
-    }
-
-    function allowAdmin(address newAdm, bool allow) external onlyDeployer {
+    function allowAdmin(address newAdm, bool allow) external onlyOwner {
         require(newAdm != address(0), Errors.INV_ADD);
         _admins[newAdm] = allow;
         emit AdminAllowed(newAdm, allow);
@@ -100,7 +75,7 @@ contract CryptoAgents is
         return _admins[admin];
     }
 
-    function changeAgentDataAddress(address newAddr) external onlyDeployer {
+    function changeAgentDataAddress(address newAddr) external onlyOwner {
         require(newAddr != address(0), Errors.INV_ADD);
 
         _setAgentDataAddr(newAddr);

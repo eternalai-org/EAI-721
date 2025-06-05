@@ -4,6 +4,7 @@ pragma solidity ^0.8.12;
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "../interfaces/IEAI721Intelligence.sol";
 import "../interfaces/IEAI721Tokenization.sol";
@@ -12,7 +13,7 @@ import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
 
-contract OnchainArtData is IOnchainArtData {
+contract OnchainArtData is Ownable, IOnchainArtData {
     uint256 public constant TOKEN_LIMIT = 0x2710;
     uint8 internal constant GRID_SIZE = 0x18;
     bytes16 internal constant _HEX_SYMBOLS = "0123456789abcdef";
@@ -31,8 +32,6 @@ contract OnchainArtData is IOnchainArtData {
 
     // elements
     string[6] private partsName;
-    // deployer
-    address public _deployer;
     // crypto ai agent address
     address public _cryptoAIAgentAddr;
     // seal flag
@@ -61,54 +60,41 @@ contract OnchainArtData is IOnchainArtData {
         _;
     }
 
-    modifier onlyDeployer() {
-        require(msg.sender == _deployer, Errors.ONLY_DEPLOYER);
-        _;
-    }
-
     modifier onlyAIAgentContract() {
         require(msg.sender == _cryptoAIAgentAddr, Errors.ONLY_AGENT_CONTRACT);
         _;
     }
 
-    constructor(address deployer) {
+    constructor() Ownable() {
         partsName = ["dna", "Collar", "Head", "Eyes", "Mouth", "Earring"];
-        _deployer = deployer;
-    }
-
-    function changeDeployer(address newAdm) external onlyDeployer unsealed {
-        require(newAdm != address(0), Errors.INV_ADD);
-        if (_deployer != newAdm) {
-            _deployer = newAdm;
-        }
     }
 
     function changePlaceHolderScript(
         string memory content
-    ) external onlyDeployer unsealed {
+    ) external onlyOwner unsealed {
         PLACEHOLDER_SCRIPT = content;
     }
 
     function changePlaceHolderImg(
         string memory content
-    ) external onlyDeployer unsealed {
+    ) external onlyOwner unsealed {
         PLACEHOLDER_IMG = content;
     }
 
     function changeCryptoAIAgentAddress(
         address newAddr
-    ) external onlyDeployer unsealed {
+    ) external onlyOwner unsealed {
         require(newAddr != address(0), Errors.INV_ADD);
         if (_cryptoAIAgentAddr != newAddr) {
             _cryptoAIAgentAddr = newAddr;
         }
     }
 
-    function sealContract() external unsealed onlyDeployer {
+    function sealContract() external unsealed onlyOwner {
         _contractSealed = true;
     }
 
-    function unSealContract() external _sealed onlyDeployer {
+    function unSealContract() external _sealed onlyOwner {
         _contractSealed = false;
     }
 
@@ -173,7 +159,7 @@ contract OnchainArtData is IOnchainArtData {
     function addDNA(
         string[] memory _names,
         uint16[] memory rarities
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         DNA_TYPES.names = _names;
     }
 
@@ -182,7 +168,7 @@ contract OnchainArtData is IOnchainArtData {
         string[] memory _DNAName,
         uint16[] memory _rarities,
         uint16[][] memory _positions
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         items[_DNAType].names = _DNAName;
         items[_DNAType].positions = _positions;
     }
@@ -192,7 +178,7 @@ contract OnchainArtData is IOnchainArtData {
         string[] memory _names,
         uint256[] memory _rarities,
         uint16[][] memory _positions
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         items[_itemType].names = _names;
         items[_itemType].positions = _positions;
     }
@@ -202,7 +188,7 @@ contract OnchainArtData is IOnchainArtData {
         string[] memory _names,
         uint256[] memory _rarities,
         uint16[][] memory _positions
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         // Get existing data
         string[] memory existingNames = items[_itemType].names;
         uint16[][] memory existingPositions = items[_itemType].positions;
@@ -232,9 +218,7 @@ contract OnchainArtData is IOnchainArtData {
         items[_itemType].positions = newPositions;
     }
 
-    function setPalettes(
-        uint8[][] memory _pallets
-    ) public onlyDeployer unsealed {
+    function setPalettes(uint8[][] memory _pallets) public onlyOwner unsealed {
         palettes = _pallets;
     }
 
