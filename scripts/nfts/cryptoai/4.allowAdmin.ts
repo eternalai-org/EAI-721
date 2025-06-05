@@ -2,10 +2,10 @@ import { initConfig } from "../../data/cryptoai";
 import { CryptoAI } from "./cryptoAI";
 
 async function main() {
-  // if (process.env.NETWORK != "base_mainnet") {
-  //     console.log("wrong network");
-  //     return;
-  // }
+  if (process.env.NETWORK != "mainnet") {
+    console.log("wrong network");
+    return;
+  }
 
   let config = await initConfig();
 
@@ -25,8 +25,7 @@ async function main() {
   await dataContract.allowAdmin(
     config.contractAddress,
     0,
-    // process.env.PUBLIC_KEY,
-    key,
+    "0x313FED7629F92c585A71C21Fe386638815C072E6",
     true
   );
 }
