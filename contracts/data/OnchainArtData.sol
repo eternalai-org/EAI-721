@@ -158,7 +158,7 @@ contract OnchainArtData is IOnchainArtData {
                 Strings.toString(tokenId),
                 '",',
                 '"description": "The first-ever PFP collection for AI agents.",',
-                '"image_data": "https://cryptoagents.mypinata.cloud/ipfs/bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
+                '"image_data": "ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
                 Strings.toString(tokenId),
                 '.png",',
                 '"image": "',
@@ -291,21 +291,11 @@ contract OnchainArtData is IOnchainArtData {
         }
 
         byteString = abi.encodePacked(
-            '{"trait_type": "Origin"',
-            ',"value":"',
-            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1
-                ? "no"
-                : "yes",
-            '"},',
-            byteString
-        );
-
-        byteString = abi.encodePacked(
             '{"trait_type": "Intelligence"',
             ',"value":"',
             IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 0
-                ? "yes"
-                : "no",
+                ? "Yes"
+                : "Not yet",
             '"},',
             byteString
         );
@@ -315,8 +305,8 @@ contract OnchainArtData is IOnchainArtData {
             ',"value":"',
             IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(tokenId) !=
                 address(0)
-                ? "yes"
-                : "no",
+                ? "Yes"
+                : "Not yet",
             '"},',
             byteString
         );
@@ -325,14 +315,14 @@ contract OnchainArtData is IOnchainArtData {
             '{"trait_type": "Monetization"',
             ',"value":"',
             IEAI721Monetization(_cryptoAIAgentAddr).subscriptionFee(tokenId) > 0
-                ? "yes"
-                : "no",
+                ? "Yes"
+                : "Not yet",
             '"},',
             byteString
         );
 
         byteString = abi.encodePacked(
-            '{"trait_type": "Number of attributes"',
+            '{"trait_type": "Number of Attributes"',
             ',"value":"',
             Strings.toString(count),
             '"},',
