@@ -315,7 +315,7 @@ contract OnchainArtData is Ownable, IOnchainArtData {
         text = string(abi.encodePacked("[", string(byteString), "]"));
     }
 
-    function cryptoAIImage(uint256 tokenId) public view returns (bytes memory) {
+    function agentImage(uint256 tokenId) public view returns (bytes memory) {
         require(
             unlockedTokens[tokenId].tokenID > 0 &&
                 unlockedTokens[tokenId].weight > 0,
@@ -416,7 +416,7 @@ contract OnchainArtData is Ownable, IOnchainArtData {
             Errors.TOKEN_ID_NOT_UNLOCKED
         );
 
-        bytes memory pixels = cryptoAIImage(tokenId);
+        bytes memory pixels = agentImage(tokenId);
         string memory svg = "";
         bytes memory buffer = new bytes(8);
         uint p;

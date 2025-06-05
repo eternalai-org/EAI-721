@@ -118,6 +118,10 @@ contract CryptoAgents is
         return IOnchainArtData(agentDataAddr()).agentImageSvg(agentId);
     }
 
+    function agentImage(uint256 agentId) external view returns (bytes memory) {
+        return IOnchainArtData(agentDataAddr()).agentImage(agentId);
+    }
+
     function setDefaultRoyalty(
         address newRoyaltyReceiver,
         uint96 feeNumerator
