@@ -30,7 +30,7 @@ class CryptoAI {
         const contract = await ethers.getContractFactory("CryptoAgents");
         console.log("CryptoAgents.deploying ...")
         const proxy = await upgrades.deployProxy(contract, [name, symbol, defaultRoyaltyReceiver], {
-            initializer: 'initialize(string, string, address, address)',
+            initializer: 'initialize(string, string, address)',
         });
         await proxy.deployed();
         console.log("CryptoAgents deployed at proxy:", proxy.address);

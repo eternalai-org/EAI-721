@@ -6,8 +6,8 @@ import {IRating} from "../interfaces/IRating.sol";
 
 abstract contract Rating is Initializable, IRating {
     // --- Constants ---
-    uint8 public constant MAX_RATING = 5;
-    uint8 public constant MIN_RATING = 1;
+    uint8 private constant MAX_RATING = 5;
+    uint8 private constant MIN_RATING = 1;
 
     // --- Storage ---
     uint256 private _ratingMultiplier;

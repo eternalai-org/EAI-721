@@ -22,7 +22,7 @@ contract CryptoAgents is
     Rating
 {
     // --- Constants ---
-    uint256 public constant TOKEN_SUPPLY_LIMIT = 10000;
+    uint256 private constant TOKEN_SUPPLY_LIMIT = 10000;
 
     // -- errors --
     error Unauthenticated();
