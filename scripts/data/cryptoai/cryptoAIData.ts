@@ -151,7 +151,7 @@ class CryptoAIData {
             nonce: nonce,
         }
 
-        const val: any = await temp?.nftContract.methods._deployer().call(tx);
+        const val: any = await temp?.nftContract.methods.owner().call(tx);
         return val;
     }
 
