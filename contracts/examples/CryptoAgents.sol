@@ -3,6 +3,9 @@
 pragma solidity ^0.8.0;
 
 import {ERC2981Upgradeable} from "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {ERC721CInitializable, AutomaticValidatorTransferApproval, CreatorTokenBase} from "@limitbreak/creator-token-standards/src/erc721c/ERC721C.sol";
+import {OwnableInitializable} from "@limitbreak/creator-token-standards/src/access/OwnableInitializable.sol";
 import {EAI721Intelligence, ERC721Upgradeable, Initializable} from "../extensions/EAI721Intelligence.sol";
 import {EAI721Identity, IOnchainArtData} from "../extensions/EAI721Identity.sol";
 import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
@@ -12,6 +15,8 @@ import {Errors} from "../libs/helpers/Errors.sol";
 
 contract CryptoAgents is
     Initializable,
+    OwnableInitializable,
+    ERC721CInitializable,
     EAI721Intelligence,
     EAI721Identity,
     EAI721Monetization,
@@ -57,6 +62,9 @@ contract CryptoAgents is
         _;
     }
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() ERC721("", "") {}
+
     function initialize(
         string memory name_,
         string memory symbol_,
@@ -67,12 +75,13 @@ contract CryptoAgents is
 
         _deployer = deployer_;
 
-        __ERC721_init(name_, symbol_);
+        // __ERC721_init(name_, symbol_);
+        initializeERC721(name_, symbol_);
         __EAI721Intelligence_init();
         __EAI721Identity_init();
-        __Rating_init(100);
         __EAI721Monetization_init();
         __EAI721Tokenization_init();
+        __Rating_init(100);
         __ERC2981_init();
 
         _setDefaultRoyalty(defaultRoyaltyReceiver_, 500);
@@ -122,12 +131,7 @@ contract CryptoAgents is
 
     function tokenURI(
         uint256 agentId
-    )
-        public
-        view
-        override(ERC721Upgradeable, EAI721Identity)
-        returns (string memory)
-    {
+    ) public view override(ERC721, EAI721Identity) returns (string memory) {
         return EAI721Identity.tokenURI(agentId);
     }
 
@@ -171,11 +175,11 @@ contract CryptoAgents is
     )
         public
         view
-        override(ERC721Upgradeable, ERC2981Upgradeable)
+        override(ERC721CInitializable, ERC2981Upgradeable)
         returns (bool)
     {
         return
-            ERC721Upgradeable.supportsInterface(interfaceId) ||
+            ERC721CInitializable.supportsInterface(interfaceId) ||
             ERC2981Upgradeable.supportsInterface(interfaceId);
     }
 

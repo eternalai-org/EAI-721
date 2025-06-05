@@ -4,8 +4,9 @@ pragma solidity ^0.8.0;
 
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
+import {ERC721CInitializable} from "@limitbreak/creator-token-standards/src/erc721c/ERC721C.sol";
 
-abstract contract EAI721Identity is Initializable, ERC721Upgradeable {
+abstract contract EAI721Identity is Initializable, ERC721CInitializable {
     // --- State Variables ---
     address private _agentDataAddr;
 

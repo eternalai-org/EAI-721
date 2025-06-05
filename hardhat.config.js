@@ -13,6 +13,14 @@ module.exports = {
     solidity: {
         compilers: [
             {
+                version: "0.8.24",
+                settings: {
+                    optimizer: { enabled: true, runs: 200000 },
+                    viaIR: true,
+                    evmVersion: "cancun"
+                },
+            },
+            {
                 version: "0.8.22",
                 settings: {
                     optimizer: { enabled: true, runs: 200000 },
