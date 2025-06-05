@@ -20,5 +20,5 @@ interface IRating {
     // --- View functions ---
     function ratingScore(uint256 agentId) external view returns (uint256);
     function ratingCount(uint256 agentId) external view returns (uint256);
-    function ratingDecimals() external view returns (uint256);
+    function ratingMultiplier() external view returns (uint256);
 }

@@ -10,24 +10,25 @@ abstract contract Rating is Initializable, IRating {
     uint8 public constant MIN_RATING = 1;
 
     // --- Storage ---
-    uint256 private _ratingDecimals;
+    uint256 private _ratingMultiplier;
     mapping(uint256 agentId => uint256) private _totalStars;
     mapping(uint256 agentId => uint256) private _totalRatingCount;
 
-
     // --- Initialization ---
-    function __Rating_init(uint256 ratingDecimals_) internal onlyInitializing {
-        __Rating_init_unchained(ratingDecimals_);
+    function __Rating_init(
+        uint256 ratingMultiplier_
+    ) internal onlyInitializing {
+        __Rating_init_unchained(ratingMultiplier_);
     }
 
     function __Rating_init_unchained(
-        uint256 ratingDecimals_
+        uint256 ratingMultiplier_
     ) internal onlyInitializing {
-        _ratingDecimals = ratingDecimals_;
+        _ratingMultiplier = ratingMultiplier_;
     }
 
     // --- Functions ---
-    function rateStar(uint256 agentId, uint8 stars) external {
+    function rateStar(uint256 agentId, uint8 stars) external virtual {
         if (stars < MIN_RATING || stars > MAX_RATING) {
             revert RatingOutOfRange(stars);
         }
@@ -44,22 +45,26 @@ abstract contract Rating is Initializable, IRating {
         );
     }
 
-    function ratingScore(uint256 agentId) external virtual view returns (uint256) {
+    function ratingScore(
+        uint256 agentId
+    ) external view virtual returns (uint256) {
         if (_totalRatingCount[agentId] == 0) {
             return 0;
         }
         // Multiply by 100 for 2 decimal places
         // 451 means 4.51
         return
-            (_totalStars[agentId] * _ratingDecimals) /
+            (_totalStars[agentId] * _ratingMultiplier) /
             _totalRatingCount[agentId];
     }
 
-    function ratingDecimals() external virtual view returns (uint256) {
-        return _ratingDecimals;
+    function ratingMultiplier() external view virtual returns (uint256) {
+        return _ratingMultiplier;
     }
 
-    function ratingCount(uint256 agentId) external virtual view returns (uint256) {
+    function ratingCount(
+        uint256 agentId
+    ) external view virtual returns (uint256) {
         return _totalRatingCount[agentId];
     }
 
