@@ -143,12 +143,10 @@ contract OnchainArtData is Ownable, IOnchainArtData {
                 Strings.toString(tokenId),
                 '",',
                 '"description": "The first-ever PFP collection for AI agents.",',
-                '"image_data": "ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
+                '"image": "ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
                 Strings.toString(tokenId),
                 '.png",',
-                '"image": "',
-                agentImageSvg(tokenId),
-                '", "attributes": ',
+                '"attributes": ',
                 agentAttributes(tokenId),
                 "}"
             )
