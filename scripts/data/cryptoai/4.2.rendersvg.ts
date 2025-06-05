@@ -1,6 +1,6 @@
-import {initConfig} from "./index";
-import {CryptoAIData} from "./cryptoAIData";
-import {promises as fs} from "fs";
+import { initConfig } from "./index";
+import { CryptoAIData } from "./cryptoAIData";
+import { promises as fs } from "fs";
 
 async function main() {
     if (process.env.NETWORK != "local") {
@@ -25,12 +25,12 @@ async function main() {
     const num = parseInt(args[0]);
     for (var i = 1; i <= num; i++) {
         try {
-            const fullSVG = await dataContract.cryptoAIImageSvg(address, i);
+            const fullSVG = await dataContract.agentImageSvg(address, i);
             images += "<span>" + i + "</span><br>" + "<img width=\"64\" src=\"" + fullSVG + "\" title='" + i + "' />"
             console.log(i, " processed image");
-            const attr = await dataContract.cryptoAIAttributes(address, i);
+            const attr = await dataContract.agentAttributes(address, i);
             images += "<pre>" + attr + "</pre>";
-            const attrval = await dataContract.cryptoAIAttributesValue(address, i);
+            const attrval = await dataContract.agentAttributesValue(address, i);
             images += "<pre style='color: red'>" + attrval + "</pre><br>";
             console.log(i, " processed attr");
         } catch (ex) {

@@ -2,7 +2,7 @@ import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import * as path from "path";
 import { DNA } from "./data";
 
-const {ethers, upgrades} = require("hardhat");
+const { ethers, upgrades } = require("hardhat");
 const hardhatConfig = require("../../../hardhat.config");
 
 class CryptoAIData {
@@ -65,7 +65,7 @@ class CryptoAIData {
         let contract = require(path.resolve(contractName));
         const web3 = createAlchemyWeb3(API_URL)
         const nftContract = new web3.eth.Contract(contract.abi, contractAddress)
-        return {web3, nftContract};
+        return { web3, nftContract };
     }
 
     async upgradeContract(proxyAddress: any) {
@@ -120,7 +120,7 @@ class CryptoAIData {
 
         return await this.signedAndSendTx(temp?.web3, tx);
     }
-    
+
     async addMoreItem(contractAddress: any, gas: any, key: string, name: string[], trait: number[], positions: number[][]) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
@@ -194,8 +194,8 @@ class CryptoAIData {
     }
 
     async addDNAVariant(contractAddress: any, gas: any, key: DNA, name: string[],
-                        trait: number[],
-                        positions: number[][]) {
+        trait: number[],
+        positions: number[][]) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
 
@@ -218,7 +218,7 @@ class CryptoAIData {
     }
 
     async addDNAVariantRobot(contractAddress: any, gas: any, name: string[],
-                             trait: number[]) {
+        trait: number[]) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
 
@@ -312,7 +312,7 @@ class CryptoAIData {
         return val;
     }
 
-    async cryptoAIImageSvg(contractAddress: any, token: number) {
+    async agentImageSvg(contractAddress: any, token: number) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
 
@@ -323,7 +323,7 @@ class CryptoAIData {
             nonce: nonce,
         }
 
-        const val: any = await temp?.nftContract.methods.cryptoAIImageSvg(token).call(tx);
+        const val: any = await temp?.nftContract.methods.agentImageSvg(token).call(tx);
         return val;
     }
 
@@ -357,7 +357,7 @@ class CryptoAIData {
         return val;
     }
 
-    async cryptoAIAttributes(contractAddress: any, token: number) {
+    async agentAttributes(contractAddress: any, token: number) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
 
@@ -368,11 +368,11 @@ class CryptoAIData {
             nonce: nonce,
         }
 
-        const val: any = await temp?.nftContract.methods.cryptoAIAttributes(token).call(tx);
+        const val: any = await temp?.nftContract.methods.agentAttributes(token).call(tx);
         return val;
     }
 
-    async cryptoAIAttributesValue(contractAddress: any, token: number) {
+    async agentAttributesValue(contractAddress: any, token: number) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
 
@@ -383,7 +383,7 @@ class CryptoAIData {
             nonce: nonce,
         }
 
-        const val: any = await temp?.nftContract.methods.cryptoAIAttributesValue(token).call(tx);
+        const val: any = await temp?.nftContract.methods.agentAttributesValue(token).call(tx);
         return val;
     }
 

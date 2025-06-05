@@ -15,21 +15,21 @@ module.exports = {
             {
                 version: "0.8.22",
                 settings: {
-                    optimizer: { enabled: true, runs: 2000000 },
+                    optimizer: { enabled: true, runs: 200000 },
                     viaIR: true,
                 },
             },
             {
                 version: "0.8.19",
                 settings: {
-                    optimizer: { enabled: true, runs: 2000000 },
+                    optimizer: { enabled: true, runs: 200000 },
                     viaIR: true,
                 },
             },
             {
                 version: "0.8.20",
                 settings: {
-                    optimizer: { enabled: true, runs: 2000000 },
+                    optimizer: { enabled: true, runs: 200000 },
                     viaIR: true,
                 },
             },
@@ -37,7 +37,10 @@ module.exports = {
     },
     defaultNetwork: process.env.NETWORK,
     etherscan: {
-        apiKey: process.env.ETHSCAN_API_KEY,
+        apiKey: {
+            sepolia: process.env.ETHSCAN_API_KEY,
+            mainnet: process.env.ETHSCAN_API_KEY
+        },
         customChains: [
             {
                 network: "tc_mainnet",
@@ -111,14 +114,6 @@ module.exports = {
             url: process.env.FANTOM_TESTNET_API_URL,
             accounts: [`0x${process.env.PRIVATE_KEY}`],
         },
-        // harmony: {
-        //     url: process.env.HARMONY_MAINNET_API_URL,
-        //     accounts: [`0x${process.env.PRIVATE_KEY}`],
-        // },
-        // harmony_testnet: {
-        //     url: process.env.HARMONY_TESTNET_API_URL,
-        //     accounts: [`0x${process.env.PRIVATE_KEY}`],
-        // },
         kardia: {
             url: process.env.KARDIA_MAINNET_API_URL,
             accounts: [`0x${process.env.PRIVATE_KEY}`],

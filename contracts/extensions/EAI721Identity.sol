@@ -7,7 +7,7 @@ import {IOnchainArtData} from "../interfaces/IOnchainArtData.sol";
 
 abstract contract EAI721Identity is Initializable, ERC721Upgradeable {
     // --- State Variables ---
-    address private _cryptoAIDataAddr;
+    address private _agentDataAddr;
 
     // --- Errors ---
     error InvalidAddr();
@@ -20,14 +20,12 @@ abstract contract EAI721Identity is Initializable, ERC721Upgradeable {
     }
     function __EAI721Identity_init_unchained() internal onlyInitializing {}
 
-    function _setCryptoAIDataAddr(
-        address newCryptoAiDataAddr
-    ) internal virtual {
-        _cryptoAIDataAddr = newCryptoAiDataAddr;
+    function _setAgentDataAddr(address newAgentDataAddr) internal virtual {
+        _agentDataAddr = newAgentDataAddr;
     }
 
-    function cryptoAIDataAddr() public view virtual returns (address) {
-        return _cryptoAIDataAddr;
+    function agentDataAddr() public view virtual returns (address) {
+        return _agentDataAddr;
     }
 
     function _mint(
@@ -36,16 +34,14 @@ abstract contract EAI721Identity is Initializable, ERC721Upgradeable {
         uint256 dna,
         uint256[6] memory traits
     ) internal virtual {
-        if (to == address(0) || _cryptoAIDataAddr == address(0))
+        if (to == address(0) || _agentDataAddr == address(0))
             revert InvalidAddr();
         if (_exists(tokenId)) revert Existed();
 
         _safeMint(to, tokenId);
-        IOnchainArtData cryptoAIDataContract = IOnchainArtData(
-            _cryptoAIDataAddr
-        );
-        cryptoAIDataContract.mintAgent(tokenId);
-        cryptoAIDataContract.unlockRenderAgent(tokenId, dna, traits);
+        IOnchainArtData agentDataContract = IOnchainArtData(_agentDataAddr);
+        agentDataContract.mintAgent(tokenId);
+        agentDataContract.unlockRenderAgent(tokenId, dna, traits);
     }
 
     // {IEAI721-tokenURI}
@@ -53,10 +49,8 @@ abstract contract EAI721Identity is Initializable, ERC721Upgradeable {
         uint256 tokenId
     ) public view virtual override returns (string memory result) {
         if (!_exists(tokenId)) revert NotExist();
-        IOnchainArtData cryptoAIDataContract = IOnchainArtData(
-            _cryptoAIDataAddr
-        );
-        result = cryptoAIDataContract.tokenURI(tokenId);
+        IOnchainArtData agentDataContract = IOnchainArtData(_agentDataAddr);
+        result = agentDataContract.tokenURI(tokenId);
     }
 
     /**

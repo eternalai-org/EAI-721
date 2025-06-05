@@ -39,7 +39,7 @@ contract CryptoAgents is
         address indexed oldDeployer,
         address indexed newDeployer
     );
-    event CryptoAIDataAddressChanged(address indexed newAddr);
+    event AgentDataAddressChanged(address indexed newAddr);
 
     // -- state variables --
     // deployer
@@ -100,11 +100,11 @@ contract CryptoAgents is
         return _admins[admin];
     }
 
-    function changeCryptoAIDataAddress(address newAddr) external onlyDeployer {
+    function changeAgentDataAddress(address newAddr) external onlyDeployer {
         require(newAddr != address(0), Errors.INV_ADD);
 
-        _setCryptoAIDataAddr(newAddr);
-        emit CryptoAIDataAddressChanged(newAddr);
+        _setAgentDataAddr(newAddr);
+        emit AgentDataAddressChanged(newAddr);
     }
 
     //@EAI721Identity
@@ -134,13 +134,13 @@ contract CryptoAgents is
     function agentAttributes(
         uint256 agentId
     ) external view returns (string memory) {
-        return IOnchainArtData(cryptoAIDataAddr()).agentAttributes(agentId);
+        return IOnchainArtData(agentDataAddr()).agentAttributes(agentId);
     }
 
     function agentImageSvg(
         uint256 agentId
     ) external view returns (string memory) {
-        return IOnchainArtData(cryptoAIDataAddr()).agentImageSvg(agentId);
+        return IOnchainArtData(agentDataAddr()).agentImageSvg(agentId);
     }
 
     function setDefaultRoyalty(
