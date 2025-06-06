@@ -31,6 +31,8 @@ abstract contract EAI721Intelligence is
     mapping(uint256 agentId => mapping(uint256 version => uint256[]))
         private _depsAgents;
 
+    address public agentFactory;
+
     // --- Modifiers ---
     modifier checkVersion(uint256 agentId, uint16 version) virtual {
         _validateVersion(agentId, version);
@@ -39,6 +41,12 @@ abstract contract EAI721Intelligence is
 
     modifier onlyAgentOwner(uint256 agentId) virtual {
         if (msg.sender != ownerOf(agentId)) revert EAI721IntelligenceAuth();
+        _;
+    }
+
+    modifier onlyAgentOwnerOrFactory(uint256 agentId) virtual {
+        if (msg.sender != ownerOf(agentId) && msg.sender != agentFactory)
+            revert EAI721IntelligenceAuth();
         _;
     }
 
@@ -60,7 +68,7 @@ abstract contract EAI721Intelligence is
     // {IEAI721AgentAbility-agentName}
     function agentName(
         uint256 agentId
-    ) public virtual view returns (string memory) {
+    ) public view virtual returns (string memory) {
         return _name[agentId];
     }
 
@@ -70,8 +78,14 @@ abstract contract EAI721Intelligence is
         string calldata codeLanguageIn,
         CodePointer[] calldata pointersIn,
         uint256[] calldata depsAgentsIn
-    ) public virtual onlyAgentOwner(agentId) returns (uint16) {
-        return _publishAgentCode(agentId, codeLanguageIn, pointersIn, depsAgentsIn);
+    ) public virtual onlyAgentOwnerOrFactory(agentId) returns (uint16) {
+        return
+            _publishAgentCode(
+                agentId,
+                codeLanguageIn,
+                pointersIn,
+                depsAgentsIn
+            );
     }
 
     function _publishAgentCode(
@@ -125,7 +139,13 @@ abstract contract EAI721Intelligence is
     function depsAgents(
         uint256 agentId,
         uint16 version
-    ) public virtual view checkVersion(agentId, version) returns (uint256[] memory) {
+    )
+        public
+        view
+        virtual
+        checkVersion(agentId, version)
+        returns (uint256[] memory)
+    {
         return _depsAgents[agentId][version];
     }
 
@@ -135,8 +155,8 @@ abstract contract EAI721Intelligence is
         uint16 version
     )
         public
-        virtual
         view
+        virtual
         checkVersion(agentId, version)
         returns (string memory code)
     {
@@ -165,13 +185,13 @@ abstract contract EAI721Intelligence is
     function _concatStrings(
         string memory a,
         string memory b
-    ) internal virtual pure returns (string memory) {
+    ) internal pure virtual returns (string memory) {
         return string(abi.encodePacked(a, "\n", b));
     }
 
     function _codeByPointer(
         CodePointer memory p
-    ) internal virtual view returns (string memory logic) {
+    ) internal view virtual returns (string memory logic) {
         if (keccak256(bytes(_storageMode(p))) == IPFS_SIG) {
             logic = p.fileName; // return the IPFS hash
         } else {
@@ -181,7 +201,7 @@ abstract contract EAI721Intelligence is
 
     function _storageMode(
         CodePointer memory p
-    ) internal virtual view returns (string memory) {
+    ) internal view virtual returns (string memory) {
         if (p.retrieveAddress != address(0)) {
             return "fs";
         }
@@ -191,16 +211,21 @@ abstract contract EAI721Intelligence is
     function _pointersNumber(
         uint256 agentId,
         uint16 version
-    ) internal virtual view returns (uint256) {
+    ) internal view virtual returns (uint256) {
         return _pointersNum[agentId][version];
     }
 
     // {IEAI721AgentAbility-currentVersion}
-    function currentVersion(uint256 agentId) public virtual view returns (uint16) {
+    function currentVersion(
+        uint256 agentId
+    ) public view virtual returns (uint16) {
         return _currentVersion[agentId];
     }
 
-    function _validateVersion(uint256 agentId, uint16 version) internal virtual view {
+    function _validateVersion(
+        uint256 agentId,
+        uint16 version
+    ) internal view virtual {
         if (version > _currentVersion[agentId]) {
             revert InvalidVersion();
         }
@@ -209,12 +234,12 @@ abstract contract EAI721Intelligence is
     // {IEAI721AgentAbility-codeLanguage}
     function codeLanguage(
         uint256 agentId
-    ) public virtual view returns (string memory) {
+    ) public view virtual returns (string memory) {
         return _codeLanguage[agentId];
     }
 
     /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      */
-    uint256[44] private __gap;
+    uint256[43] private __gap;
 }
