@@ -27,6 +27,7 @@ contract CryptoAgents is
     // -- errors --
     error Unauthenticated();
     error InvalidTokenId();
+    error InvalidFactoryAddress();
 
     // -- modifiers --
     modifier onlyAgentOwner(uint256 agentId)
@@ -156,6 +157,12 @@ contract CryptoAgents is
         return
             ERC721Upgradeable.supportsInterface(interfaceId) ||
             ERC2981Upgradeable.supportsInterface(interfaceId);
+    }
+
+    function setAgentFactory(address factory) public virtual onlyOwner {
+        if (factory == address(0)) revert InvalidFactoryAddress();
+
+        agentFactory = factory;
     }
 
     uint256[50] private __gap;
