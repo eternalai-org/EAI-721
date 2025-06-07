@@ -27,6 +27,8 @@ interface IAgent {
         CodePointer newPointer
     );
 
+    event AgentSynced(uint16 indexed oldVersion, uint16 indexed newVersion);
+
     error Unauthenticated();
     error DigestAlreadyUsed();
     error InvalidData();
@@ -37,11 +39,11 @@ interface IAgent {
         CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) external returns (uint16 version);
-    
+
     function getDepsAgents(
         uint16 version
     ) external view returns (address[] memory);
-    
+
     function getAgentCode(
         uint16 version
     ) external view returns (string memory code);

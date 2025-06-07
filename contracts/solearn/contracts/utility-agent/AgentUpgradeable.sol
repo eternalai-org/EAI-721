@@ -13,7 +13,6 @@ contract AgentUpgradeable is IAgent, Initializable {
     address private _factory;
     string private _agentName;
 
-    mapping(bytes32 signature => bool) private _usedDigests;
     mapping(uint256 version => uint256) private _pointersNum;
     mapping(uint256 version => mapping(uint256 => CodePointer))
         private _codePointers;
@@ -38,7 +37,7 @@ contract AgentUpgradeable is IAgent, Initializable {
         address[] calldata depsAgents
     ) external payable initializer {
         _codeLanguage = codeLanguage;
-        _publishAgentCode(pointers, depsAgents);
+        // _publishAgentCode(1, pointers, depsAgents);
         _factory = msg.sender;
         _agentName = agentName;
     }
@@ -47,16 +46,28 @@ contract AgentUpgradeable is IAgent, Initializable {
         CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) external virtual onlyFactory returns (uint16) {
-        return _publishAgentCode(pointers, depsAgents);
+        uint16 version = _bumpVersion();
+
+        return _publishAgentCode(version, pointers, depsAgents);
+    }
+
+    function syncAgent(
+        uint16 version,
+        CodePointer[] calldata pointers,
+        address[] calldata depsAgents
+    ) external virtual onlyFactory returns (uint16) {
+        emit AgentSynced(_currentVersion, version);
+        _currentVersion = version;
+
+        _publishAgentCode(version, pointers, depsAgents);
     }
 
     function _publishAgentCode(
+        uint16 version,
         CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) internal virtual returns (uint16) {
         if (pointers.length == 0) revert InvalidData();
-
-        uint16 version = _bumpVersion();
 
         uint256 pLen = pointers.length;
         for (uint256 i = 0; i < pLen; i++) {
