@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
-import {IAgentFactory, IAgent} from "../interfaces/IAgentFactory.sol";
+import {IAgentFactory, IAgent, IEAI721Intelligence} from "../interfaces/IAgentFactory.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {AgentUpgradeable} from "./AgentUpgradeable.sol";
 import {AgentProxy} from "./AgentProxy.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {IEAI721Intelligence} from "../interfaces/IEAI721Intelligence.sol";
 
 contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     address _implementation;
@@ -33,10 +32,10 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     function createAgent(
         uint256 agentId,
         address collection,
-        string calldata agentName,
-        string calldata codeLanguage,
-        IAgent.CodePointer[] memory pointers,
-        address[] calldata depsAgents
+        string calldata agentName
+        // string calldata codeLanguage,
+        // IEAI721Intelligence.CodePointer[] memory pointers,
+        // address[] calldata depsAgents
     ) external onlyAgentOwner(collection, agentId) returns (address agent) {
         require(!isNameRegistered[agentName], "Agent name already registered");
         require(
@@ -47,10 +46,10 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         isNameRegistered[agentName] = true;
         agent = address(new AgentProxy());
         AgentUpgradeable(agent).initialize(
-            agentName,
-            codeLanguage,
-            pointers,
-            depsAgents
+            agentName
+            // codeLanguage,
+            // pointers,
+            // depsAgents
         );
 
         agents[collection][agentId] = agent;
@@ -62,44 +61,42 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         uint256 agentId,
         address collection,
         string memory codeLanguage,
-        IAgent.CodePointer[] calldata pointers,
-        address[] calldata depsAgentsAgents,
+        IEAI721Intelligence.CodePointer[] calldata pointers,
+        address[] calldata depsAgents,
         uint256[] calldata depsAgentCollectionIds
     )
         external
         onlyAgentOwner(collection, agentId)
-        returns (uint16 agetnVersion, uint16 collectionVersion)
+        returns (uint16 agentVersion, uint16 collectionVersion)
     {
         address agent = agents[collection][agentId];
         require(agent != address(0), "Agent does not exist");
 
-        // todo: after publish to collection, sync agent code to agent
-
-        uint256 collectionVersion = IEAI721Intelligence(collection)
+        collectionVersion = IEAI721Intelligence(collection)
             .currentVersion(agentId);
-        uint256 agentVersion = AgentUpgradeable(agents[collection][agentId])
-            .currentVersion();
+        agentVersion = AgentUpgradeable(agents[collection][agentId])
+            .getCurrentVersion();
 
         if (collectionVersion > agentVersion) {
-            IEAI721Intelligence(collection).publishAgentCode(
+            collectionVersion = IEAI721Intelligence(collection).publishAgentCode(
                 agentId,
                 codeLanguage,
                 pointers,
                 depsAgentCollectionIds
             );
-            AgentUpgradeable(agents[collection][agentId]).syncAgent(
-                collectionVersion + 1,
+            agentVersion = AgentUpgradeable(agents[collection][agentId]).syncAgent(
+                collectionVersion,
                 pointers,
                 depsAgents
             );
         } else if (collectionVersion == agentVersion) {
-            IEAI721Intelligence(collection).publishAgentCode(
+            collectionVersion = IEAI721Intelligence(collection).publishAgentCode(
                 agentId,
                 codeLanguage,
                 pointers,
                 depsAgentCollectionIds
             );
-            AgentUpgradeable(agents[collection][agentId]).publishAgentCode(
+            agentVersion = AgentUpgradeable(agents[collection][agentId]).publishAgentCode(
                 pointers,
                 depsAgents
             );

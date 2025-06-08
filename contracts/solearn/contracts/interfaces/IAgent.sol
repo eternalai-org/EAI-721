@@ -2,21 +2,11 @@
 pragma solidity ^0.8.0;
 
 import {File} from "./IFileStore.sol";
+import {IEAI721Intelligence} from "../../../interfaces/IEAI721Intelligence.sol";
 
 interface IAgent {
-    enum FileType {
-        LIBRARY,
-        MAIN_SCRIPT
-    }
-
-    struct CodePointer {
-        address retrieveAddress;
-        FileType fileType;
-        string fileName;
-    }
-
     struct SignData {
-        CodePointer[] pointers;
+        IEAI721Intelligence.CodePointer[] pointers;
         address[] depsAgents;
         uint16 currentVersion;
     }
@@ -24,7 +14,7 @@ interface IAgent {
     event CodePointerCreated(
         uint256 indexed version,
         uint256 indexed pIndex,
-        CodePointer newPointer
+        IEAI721Intelligence.CodePointer newPointer
     );
 
     event AgentSynced(uint16 indexed oldVersion, uint16 indexed newVersion);
@@ -36,7 +26,7 @@ interface IAgent {
     error InvalidVersion();
 
     function publishAgentCode(
-        CodePointer[] calldata pointers,
+        IEAI721Intelligence.CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) external returns (uint16 version);
 

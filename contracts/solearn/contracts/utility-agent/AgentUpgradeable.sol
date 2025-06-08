@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
-import {IAgent} from "../interfaces/IAgent.sol";
+import {IAgent, IEAI721Intelligence} from "../interfaces/IAgent.sol";
 import {IFileStore, File} from "../interfaces/IFileStore.sol";
 
 contract AgentUpgradeable is IAgent, Initializable {
@@ -14,7 +14,7 @@ contract AgentUpgradeable is IAgent, Initializable {
     string private _agentName;
 
     mapping(uint256 version => uint256) private _pointersNum;
-    mapping(uint256 version => mapping(uint256 => CodePointer))
+    mapping(uint256 version => mapping(uint256 => IEAI721Intelligence.CodePointer))
         private _codePointers;
     mapping(uint256 version => address[]) private _depsAgents;
 
@@ -31,19 +31,19 @@ contract AgentUpgradeable is IAgent, Initializable {
     }
 
     function initialize(
-        string memory agentName,
-        string memory codeLanguage,
-        CodePointer[] calldata pointers,
-        address[] calldata depsAgents
+        string memory agentName
+        // string memory codeLanguage,
+        // IEAI721Intelligence.CodePointer[] calldata pointers,
+        // address[] calldata depsAgents
     ) external payable initializer {
-        _codeLanguage = codeLanguage;
+        // _codeLanguage = codeLanguage;
         // _publishAgentCode(1, pointers, depsAgents);
         _factory = msg.sender;
         _agentName = agentName;
     }
 
     function publishAgentCode(
-        CodePointer[] calldata pointers,
+        IEAI721Intelligence.CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) external virtual onlyFactory returns (uint16) {
         uint16 version = _bumpVersion();
@@ -53,18 +53,18 @@ contract AgentUpgradeable is IAgent, Initializable {
 
     function syncAgent(
         uint16 version,
-        CodePointer[] calldata pointers,
+        IEAI721Intelligence.CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) external virtual onlyFactory returns (uint16) {
         emit AgentSynced(_currentVersion, version);
         _currentVersion = version;
 
-        _publishAgentCode(version, pointers, depsAgents);
+        return _publishAgentCode(version, pointers, depsAgents);
     }
 
     function _publishAgentCode(
         uint16 version,
-        CodePointer[] calldata pointers,
+        IEAI721Intelligence.CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) internal virtual returns (uint16) {
         if (pointers.length == 0) revert InvalidData();
@@ -94,7 +94,7 @@ contract AgentUpgradeable is IAgent, Initializable {
 
     function _addNewCodePointer(
         uint16 version,
-        CodePointer calldata pointer
+        IEAI721Intelligence.CodePointer calldata pointer
     ) internal virtual {
         uint256 pNum = _getPointersNumber(version);
 
@@ -118,13 +118,13 @@ contract AgentUpgradeable is IAgent, Initializable {
         string memory mainScripts = "";
 
         for (uint256 pIdx = 0; pIdx < len; pIdx++) {
-            CodePointer memory p = _codePointers[version][pIdx];
+            IEAI721Intelligence.CodePointer memory p = _codePointers[version][pIdx];
 
             string memory codeChunk = _getCodeByPointer(p);
 
-            if (p.fileType == FileType.LIBRARY) {
+            if (p.fileType == IEAI721Intelligence.FileType.LIBRARY) {
                 libsCode = _concatStrings(libsCode, codeChunk);
-            } else if (p.fileType == FileType.MAIN_SCRIPT) {
+            } else if (p.fileType == IEAI721Intelligence.FileType.MAIN_SCRIPT) {
                 mainScripts = _concatStrings(mainScripts, codeChunk);
             }
         }
@@ -140,7 +140,7 @@ contract AgentUpgradeable is IAgent, Initializable {
     }
 
     function _getCodeByPointer(
-        CodePointer memory p
+        IEAI721Intelligence.CodePointer memory p
     ) internal view virtual returns (string memory logic) {
         if (keccak256(bytes(_getStorageMode(p))) == _IPFS_SIG) {
             logic = p.fileName; // return the IPFS hash
@@ -150,7 +150,7 @@ contract AgentUpgradeable is IAgent, Initializable {
     }
 
     function _getStorageMode(
-        CodePointer memory p
+        IEAI721Intelligence.CodePointer memory p
     ) internal view virtual returns (string memory) {
         if (p.retrieveAddress != address(0)) {
             return "fs";
