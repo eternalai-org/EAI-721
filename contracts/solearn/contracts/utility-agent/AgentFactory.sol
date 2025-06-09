@@ -25,6 +25,7 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         address owner,
         address implementation
     ) public initializer {
+        __Ownable_init();
         _transferOwnership(owner);
         _implementation = implementation;
     }
