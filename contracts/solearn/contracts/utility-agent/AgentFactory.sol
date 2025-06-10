@@ -8,14 +8,19 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     address _implementation;
-    // collection => agentId => agent address
-    mapping(address => mapping(uint256 => address)) public agents;
+    address _collection;
+
+    // agentId => agent address
+    mapping(bytes32 => address) public agents;
+    // nftId => agentId
+    mapping(uint256 => bytes32) public collectionIdToAgentId;
+    // agentName => isRegistered
     mapping(string => bool) public isNameRegistered;
 
     // Modifier
-    modifier onlyAgentOwner(address collection, uint256 agentId) {
+    modifier onlyAgentOwner(uint256 collectionId) {
         require(
-            IERC721(collection).ownerOf(agentId) == msg.sender,
+            IERC721(_collection).ownerOf(collectionId) == msg.sender || msg.sender == _collection,
             "Unauthorized"
         );
         _;
@@ -23,85 +28,66 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
 
     function initialize(
         address owner,
-        address implementation
+        address implementation,
+        address collection
     ) public initializer {
+        require(owner != address(0), "Invalid owner");
+        require(implementation != address(0), "Invalid implementation");
+        require(collection != address(0), "Invalid collection");
+
         __Ownable_init();
         _transferOwnership(owner);
         _implementation = implementation;
+        _collection = collection;
     }
 
-    function createAgent(
-        uint256 agentId,
-        address collection,
-        string calldata agentName
-        // string calldata codeLanguage,
-        // IEAI721Intelligence.CodePointer[] memory pointers,
-        // address[] calldata depsAgents
-    ) external onlyAgentOwner(collection, agentId) returns (address agent) {
+      function createAgent(
+        bytes32 agentId,
+        string calldata agentName,
+        string calldata codeLanguage,
+        IEAI721Intelligence.CodePointer[] memory pointers,
+        address[] calldata depsAgents,
+        uint256 nftId
+    ) external onlyAgentOwner(nftId) returns (address agent) {
+        require(agentId != bytes32(0) && collectionIdToAgentId[nftId] == bytes32(0), "Invalid agent id");
         require(!isNameRegistered[agentName], "Agent name already registered");
         require(
-            agents[collection][agentId] == address(0),
+            agents[agentId] == address(0),
             "Agent already exists"
         );
 
+        collectionIdToAgentId[nftId] = agentId;
         isNameRegistered[agentName] = true;
         agent = address(new AgentProxy());
         AgentUpgradeable(agent).initialize(
-            agentName
-            // codeLanguage,
-            // pointers,
-            // depsAgents
+            nftId,
+            agentName,
+            codeLanguage,
+            pointers,
+            depsAgents
         );
 
-        agents[collection][agentId] = agent;
+        agents[agentId] = agent;
 
-        emit AgentCreated(collection, agentId, agent);
+        emit AgentCreated(_collection, agentId, agent);
     }
 
     function publishAgentCode(
-        uint256 agentId,
-        address collection,
-        string memory codeLanguage,
+        bytes32 agentId,
         IEAI721Intelligence.CodePointer[] calldata pointers,
-        address[] calldata depsAgents,
-        uint256[] calldata depsAgentCollectionIds
+        address[] calldata depsAgents
     )
         external
-        onlyAgentOwner(collection, agentId)
-        returns (uint16 agentVersion, uint16 collectionVersion)
+        onlyAgentOwner(AgentUpgradeable(agents[agentId]).getCollectionId())
+        returns (uint16 agentVersion)
     {
-        address agent = agents[collection][agentId];
+        address agent = agents[agentId];
         require(agent != address(0), "Agent does not exist");
 
-        collectionVersion = IEAI721Intelligence(collection)
-            .currentVersion(agentId);
-        agentVersion = AgentUpgradeable(agents[collection][agentId])
-            .getCurrentVersion();
-
-        if (collectionVersion > agentVersion) {
-            collectionVersion = IEAI721Intelligence(collection).publishAgentCode(
-                agentId,
-                codeLanguage,
-                pointers,
-                depsAgentCollectionIds
-            );
-            agentVersion = AgentUpgradeable(agents[collection][agentId]).syncAgent(
-                collectionVersion,
-                pointers,
-                depsAgents
-            );
-        } else if (collectionVersion == agentVersion) {
-            collectionVersion = IEAI721Intelligence(collection).publishAgentCode(
-                agentId,
-                codeLanguage,
-                pointers,
-                depsAgentCollectionIds
-            );
-            agentVersion = AgentUpgradeable(agents[collection][agentId]).publishAgentCode(
-                pointers,
-                depsAgents
-            );
-        }
+        agentVersion = AgentUpgradeable(agents[agentId]).publishAgentCode(
+            pointers,
+            depsAgents
+        );
     }
 
     function setImplementation(address implementation) external onlyOwner {
@@ -112,5 +98,9 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
 
     function getImplementation() external view returns (address) {
         return _implementation;
+    }
+
+    function getCollection() external view returns (address) {
+        return _collection;
     }
 }

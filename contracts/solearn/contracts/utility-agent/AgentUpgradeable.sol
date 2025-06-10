@@ -12,6 +12,7 @@ contract AgentUpgradeable is IAgent, Initializable {
     uint16 private _currentVersion;
     address private _factory;
     string private _agentName;
+    uint256 private _collectionId;
 
     mapping(uint256 version => uint256) private _pointersNum;
     mapping(uint256 version => mapping(uint256 => IEAI721Intelligence.CodePointer))
@@ -31,15 +32,18 @@ contract AgentUpgradeable is IAgent, Initializable {
     }
 
     function initialize(
-        string memory agentName
-        // string memory codeLanguage,
-        // IEAI721Intelligence.CodePointer[] calldata pointers,
-        // address[] calldata depsAgents
+        uint256 collectionId,
+        string memory agentName,
+        string memory codeLanguage,
+        IEAI721Intelligence.CodePointer[] calldata pointers,
+        address[] calldata depsAgents
     ) external payable initializer {
-        // _codeLanguage = codeLanguage;
-        // _publishAgentCode(1, pointers, depsAgents);
+        _codeLanguage = codeLanguage;
         _factory = msg.sender;
         _agentName = agentName;
+        _collectionId = collectionId;
+
+        _publishAgentCode(1, pointers, depsAgents);
     }
 
     function publishAgentCode(
@@ -180,5 +184,9 @@ contract AgentUpgradeable is IAgent, Initializable {
 
     function getAgentName() external view returns (string memory) {
         return _agentName;
+    }
+
+    function getCollectionId() external view returns (uint256) {
+        return _collectionId;
     }
 }

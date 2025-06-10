@@ -12,9 +12,13 @@ async function main() {
     console.log("AgentUpgradeable deployed to:", agentUpgradeable.address);
 
     const contract = await ethers.getContractFactory("AgentFactory");
-    console.log("AgentFactory.deploying ...")
-    const proxy = await upgrades.deployProxy(contract, [deployer.address, agentUpgradeable.address], {
-        initializer: 'initialize(address,address)',
+    console.log("AgentFactory.deploying ...");
+
+    // NOTE: base testnet only
+    const collection = "0x6E1dca69ed528159AC3Bac6DD8fa15240089caeE";
+
+    const proxy = await upgrades.deployProxy(contract, [deployer.address, agentUpgradeable.address, collection], {
+        initializer: 'initialize(address,address,address)',
     });
     await proxy.deployed();
     console.log("AgentFactory deployed at proxy:", proxy.address);

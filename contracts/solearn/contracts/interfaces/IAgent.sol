@@ -41,4 +41,6 @@ interface IAgent {
     function getCodeLanguage() external view returns (string memory);
 
     function getCurrentVersion() external view returns (uint16);
+
+    function getCollectionId() external view returns (uint256);
 }
