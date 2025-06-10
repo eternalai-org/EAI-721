@@ -38,10 +38,10 @@ class CryptoAIData {
 
 
     async deploy() {
-        if (this.network == "mainnet") {
-            console.log("not run local");
-            return;
-        }
+        // if (this.network == "mainnet") {
+        //     console.log("not run local");
+        //     return;
+        // }
 
         const contract = await ethers.getContractFactory("OnchainArtData");
         console.log("OnchainArtData.deploying ...")
