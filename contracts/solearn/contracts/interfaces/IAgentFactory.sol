@@ -17,6 +17,7 @@ interface IAgentFactory {
 
     function publishAgentCode(
         bytes32 agentId,
+        string calldata codeLanguage,
         IEAI721Intelligence.CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) external returns (uint16 agentVersion);

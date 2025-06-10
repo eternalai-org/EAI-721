@@ -26,6 +26,7 @@ interface IAgent {
     error InvalidVersion();
 
     function publishAgentCode(
+        string calldata codeLanguage,
         IEAI721Intelligence.CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) external returns (uint16 version);

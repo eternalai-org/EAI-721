@@ -42,26 +42,17 @@ contract AgentUpgradeable is IAgent, Initializable {
         _factory = msg.sender;
         _agentName = agentName;
         _collectionId = collectionId;
-
-        _publishAgentCode(1, pointers, depsAgents);
+    
+        _publishAgentCode(_bumpVersion(), pointers, depsAgents);
     }
 
     function publishAgentCode(
+        string calldata codeLanguage,
         IEAI721Intelligence.CodePointer[] calldata pointers,
         address[] calldata depsAgents
     ) external virtual onlyFactory returns (uint16) {
+        _codeLanguage = codeLanguage;
         uint16 version = _bumpVersion();
-
-        return _publishAgentCode(version, pointers, depsAgents);
-    }
-
-    function syncAgent(
-        uint16 version,
-        IEAI721Intelligence.CodePointer[] calldata pointers,
-        address[] calldata depsAgents
-    ) external virtual onlyFactory returns (uint16) {
-        emit AgentSynced(_currentVersion, version);
-        _currentVersion = version;
 
         return _publishAgentCode(version, pointers, depsAgents);
     }

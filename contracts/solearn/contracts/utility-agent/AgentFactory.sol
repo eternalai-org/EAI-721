@@ -74,6 +74,7 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
 
     function publishAgentCode(
         bytes32 agentId,
+        string calldata codeLanguage,
         IEAI721Intelligence.CodePointer[] calldata pointers,
         address[] calldata depsAgents
     )
@@ -85,6 +86,7 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         require(agent != address(0), "Agent does not exist");
 
         agentVersion = AgentUpgradeable(agents[agentId]).publishAgentCode(
+            codeLanguage,
             pointers,
             depsAgents
         );
