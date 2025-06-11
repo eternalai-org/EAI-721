@@ -18,11 +18,11 @@ contract OnchainArtData is Ownable, IOnchainArtData {
     bytes16 internal constant _HEX_SYMBOLS = "0123456789abcdef";
     string private constant svgDataType = "data:image/svg+xml;utf8,";
     string internal constant SVG_HEADER =
-        "<svg xmlns='http://www.w3.org/2000/svg' shape-rendering='crispEdges' viewBox='0 0 24 24'>";
+        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>";
     string internal constant SVG_FOOTER = "</svg>";
     string internal constant SVG_RECT = "<rect x='";
     string internal constant SVG_Y = "' y='";
-    string internal constant SVG_WIDTH = "' width='1' height='1' fill='#";
+    string internal constant SVG_WIDTH = "' width='1' height='1' fill='%23";
     string internal constant SVG_CLOSE_RECT = "'/>";
     // placeholder
     string private constant htmlDataType = "data:text/html;base64,";
@@ -137,37 +137,20 @@ contract OnchainArtData is Ownable, IOnchainArtData {
             unlockedTokens[tokenId].tokenID > 0,
             Errors.TOKEN_ID_NOT_EXISTED
         );
-        // result = string(
-        //     abi.encodePacked(
-        //         '{"name": "CryptoAgent #',
-        //         Strings.toString(tokenId),
-        //         '",',
-        //         '"description": "The first-ever PFP collection for AI agents.",',
-        //         '"image": "',
-        //         cryptoAIImageHtml(tokenId),
-        //         ',',
-        //         '"attributes": ',
-        //         agentAttributes(tokenId),
-        //         "}"
-        //     )
-        // );
-
         result = string(
             abi.encodePacked(
                 '{"name": "CryptoAgent #',
                 Strings.toString(tokenId),
                 '",',
                 '"description": "The first-ever PFP collection for AI agents.",',
-                '"background_color": "#636B96",',
-                '"image": "',
-                agentImageSvg(tokenId),
-                '",',
+                '"image": "ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
+                Strings.toString(tokenId),
+                '.png",',
                 '"attributes": ',
                 agentAttributes(tokenId),
                 "}"
             )
         );
-
     }
 
     function addDNA(
@@ -483,8 +466,7 @@ contract OnchainArtData is Ownable, IOnchainArtData {
             }
         }
         result = string(
-            // abi.encodePacked(svgDataType, SVG_HEADER, svg, SVG_FOOTER)
-            abi.encodePacked(SVG_HEADER, svg, SVG_FOOTER)
+            abi.encodePacked(svgDataType, SVG_HEADER, svg, SVG_FOOTER)
         );
     }
 }
