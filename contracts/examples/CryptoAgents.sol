@@ -106,18 +106,6 @@ contract CryptoAgents is
         returns (string memory)
     {
         return EAI721Identity.tokenURI(agentId);
-        // string memory svgData = agentImageSvg(agentId);
-
-        // // Replace IPFS image reference with inline SVG
-        // string memory ipfsImageRef = string(
-        //     abi.encodePacked(
-        //         "ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/",
-        //         LibString.toString(agentId),
-        //         ".png"
-        //     )
-        // );
-
-        // return LibString.replace(baseUri, ipfsImageRef, svgData);
     }
 
     function agentAttributes(
