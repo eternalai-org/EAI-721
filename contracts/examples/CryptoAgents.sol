@@ -10,6 +10,7 @@ import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
 import {EAI721Tokenization} from "../extensions/EAI721Tokenization.sol";
 import {Rating} from "../utils/Rating.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
+import {LibString} from "solady/src/utils/LibString.sol";
 
 contract CryptoAgents is
     Initializable,
@@ -115,8 +116,28 @@ contract CryptoAgents is
 
     function agentImageSvg(
         uint256 agentId
-    ) external view returns (string memory) {
-        return IOnchainArtData(agentDataAddr()).agentImageSvg(agentId);
+    ) public view returns (string memory) {
+        // Get the base SVG from the agent data contract
+        string memory baseSvg = IOnchainArtData(agentDataAddr()).agentImageSvg(
+            agentId
+        );
+
+        // Remove the data URI prefix if present
+        string memory cleanSvg = LibString.replace(
+            baseSvg,
+            "data:image/svg+xml;utf8,",
+            ""
+        );
+
+        // Add background rectangle and improve rendering
+        string memory svgWithBackground = LibString.replace(
+            cleanSvg,
+            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>",
+            "<svg xmlns='http://www.w3.org/2000/svg' shape-rendering='crispEdges' viewBox='0 0 24 24'><rect width='24' height='24' fill='#636B96' />"
+        );
+
+        // Convert URL-encoded color codes to standard hex format
+        return LibString.replace(svgWithBackground, "%23", "#");
     }
 
     function agentImage(uint256 agentId) external view returns (bytes memory) {
