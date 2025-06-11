@@ -1,0 +1,872 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x9e3C18dE3E6459287bDb68F8Baa1687bca67fCAE",
+    "txHash": "0x137302d569b83b14475e597d6965e4bdefad274116093db3e5cad11191cc4189"
+  },
+  "proxies": [
+    {
+      "address": "0x0D914335461F790786755684Ce873eF33fDdfDE9",
+      "txHash": "0xce7022a621fba99239c738ae589418174b20f83a2211574b4ebd7cdfb28a74fc",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xB6b7967b8d5af95EBf79e60e070ff7a129232B5c",
+      "txHash": "0x345ffc48e03ef23ffcb4e1598b4593193dd0b0a3f714365aedef2397ed751150",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x9cb1D4000b9D36616F54a144C73fEAB0202AD996",
+      "txHash": "0x0b90ff1d8137ae6cb138c6d5655c1b475fb0763d13b3fdee94629a12005f2d1a",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "be1bc4b951f5112ad9e872f898b040164c01eeae0ed57f398a8c9bf095d98614": {
+      "address": "0xbEa2D4300951057a3D97d5d2FdF04e0F64756370",
+      "txHash": "0xb0bb79812bfa5422d40fab7ae80b916ff4cd86c9ce7ce71a55bfd3f9324a1ced",
+      "layout": {
+        "solcVersion": "0.8.22",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:40"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_implementation",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:10"
+          },
+          {
+            "label": "agents",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_address))",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:12"
+          },
+          {
+            "label": "isNameRegistered",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_mapping(t_string_memory_ptr,t_bool)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:13"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_mapping(t_uint256,t_address))": {
+            "label": "mapping(address => mapping(uint256 => address))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_bool)": {
+            "label": "mapping(string => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          },
+          "t_string_storage": {
+            "label": "string"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "27c60d8854d55ae1ec9e73a9344bc454082806ea5a68917853ba0a156d25b240": {
+      "address": "0x381d5Dc3d78EC7fc26cB31958398d83F343918D0",
+      "txHash": "0x40e054223583a29b495f083d273f8c69ad9c10c8048bdd4ea6ed01790bbaee19",
+      "layout": {
+        "solcVersion": "0.8.22",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:40"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_implementation",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:10"
+          },
+          {
+            "label": "_collection",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:11"
+          },
+          {
+            "label": "agents",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_mapping(t_bytes32,t_address)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:14"
+          },
+          {
+            "label": "collectionIdToAgentId",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_uint256,t_bytes32)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:16"
+          },
+          {
+            "label": "isNameRegistered",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_string_memory_ptr,t_bool)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:18"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_address)": {
+            "label": "mapping(bytes32 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_bool)": {
+            "label": "mapping(string => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_bytes32)": {
+            "label": "mapping(uint256 => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          },
+          "t_string_storage": {
+            "label": "string"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "75fdda2a19196121c0a0d15f670d5c1f5f71ef33061a9bbce3e17f46669b1432": {
+      "address": "0x9Cd4a0FC593D1F5832601C10a1644A4C675c591E",
+      "txHash": "0xcc9b9c97638f0b01734c78fb9f069ddb6954a7ddab14d9383f1d782d6e2adee1",
+      "layout": {
+        "solcVersion": "0.8.22",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:40"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_implementation",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:10"
+          },
+          {
+            "label": "_collection",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:11"
+          },
+          {
+            "label": "agents",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_mapping(t_bytes32,t_address)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:14"
+          },
+          {
+            "label": "collectionIdToAgentId",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_uint256,t_bytes32)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:16"
+          },
+          {
+            "label": "isNameRegistered",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_string_memory_ptr,t_bool)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:18"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_address)": {
+            "label": "mapping(bytes32 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_bool)": {
+            "label": "mapping(string => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_bytes32)": {
+            "label": "mapping(uint256 => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          },
+          "t_string_storage": {
+            "label": "string"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "d3210bf4b47b3bc4ef8d1d4c0c1c1f534c4fb7b13b9bd513c601a0280cf84b24": {
+      "address": "0x0C3459d0f6dFe640bA0575621180Efc725Ea5E28",
+      "txHash": "0xca4b7bb48ea62ea9aae9a434c6a6755fb62112d98885c9589d3f4ec4fdf1d2bb",
+      "layout": {
+        "solcVersion": "0.8.22",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:40"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_implementation",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:10"
+          },
+          {
+            "label": "_collection",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:11"
+          },
+          {
+            "label": "agents",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_mapping(t_bytes32,t_address)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:14"
+          },
+          {
+            "label": "collectionIdToAgentId",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_uint256,t_bytes32)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:16"
+          },
+          {
+            "label": "isNameRegistered",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_string_memory_ptr,t_bool)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:18"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_address)": {
+            "label": "mapping(bytes32 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_bool)": {
+            "label": "mapping(string => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_bytes32)": {
+            "label": "mapping(uint256 => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          },
+          "t_string_storage": {
+            "label": "string"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "d78137bc3fbec8804229516799bf407035f6aee14e0f36af602c28354e4e42c7": {
+      "address": "0x03b772D92a3E08dBFaa847240968224FE580C1Ba",
+      "txHash": "0x6c749af4eb8cccae4ee453e3c2401f6bbb78c862177d0e264379d7f6cdc616c4",
+      "layout": {
+        "solcVersion": "0.8.22",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:40"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_implementation",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:10"
+          },
+          {
+            "label": "_collection",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:11"
+          },
+          {
+            "label": "agents",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_mapping(t_bytes32,t_address)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:14"
+          },
+          {
+            "label": "collectionIdToAgentId",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_uint256,t_bytes32)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:16"
+          },
+          {
+            "label": "isNameRegistered",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_string_memory_ptr,t_bool)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:18"
+          },
+          {
+            "label": "agentNames",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_mapping(t_bytes32,t_string_storage)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:20"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_address)": {
+            "label": "mapping(bytes32 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_string_storage)": {
+            "label": "mapping(bytes32 => string)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_bool)": {
+            "label": "mapping(string => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_bytes32)": {
+            "label": "mapping(uint256 => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "715828b75d3008761bca5445d565ddb77ac67bf6ac1abb5bc72a580cbe2deb18": {
+      "address": "0x9BB8a845aA5Ac09dBFac812F2312C5D999DCe010",
+      "txHash": "0x463441d0091df92be248dff62449eac0cf8310693022fe77c867aac2fae86c4b",
+      "layout": {
+        "solcVersion": "0.8.22",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:40"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_implementation",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:10"
+          },
+          {
+            "label": "_collection",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:11"
+          },
+          {
+            "label": "agents",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_mapping(t_bytes32,t_address)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:14"
+          },
+          {
+            "label": "collectionIdToAgentId",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_uint256,t_bytes32)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:16"
+          },
+          {
+            "label": "isNameRegistered",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_string_memory_ptr,t_bool)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:18"
+          },
+          {
+            "label": "agentNames",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_mapping(t_bytes32,t_string_storage)",
+            "contract": "AgentFactory",
+            "src": "contracts/solearn/contracts/utility-agent/AgentFactory.sol:20"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_address)": {
+            "label": "mapping(bytes32 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_string_storage)": {
+            "label": "mapping(bytes32 => string)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_bool)": {
+            "label": "mapping(string => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_bytes32)": {
+            "label": "mapping(uint256 => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {}
+      }
+    }
+  }
+}
