@@ -31,6 +31,8 @@ interface IAgent {
         address[] calldata depsAgents
     ) external returns (uint16 version);
 
+    function setAgentName(string calldata agentName) external;
+
     function getDepsAgents(
         uint16 version
     ) external view returns (address[] memory);

@@ -57,6 +57,10 @@ contract AgentUpgradeable is IAgent, Initializable {
         return _publishAgentCode(version, pointers, depsAgents);
     }
 
+    function setAgentName(string calldata agentName) external virtual onlyFactory {
+        _agentName = agentName;
+    }
+
     function _publishAgentCode(
         uint16 version,
         IEAI721Intelligence.CodePointer[] calldata pointers,

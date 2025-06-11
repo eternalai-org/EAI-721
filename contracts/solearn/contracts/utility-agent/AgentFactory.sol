@@ -16,6 +16,8 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     mapping(uint256 => bytes32) public collectionIdToAgentId;
     // agentName => isRegistered
     mapping(string => bool) public isNameRegistered;
+    // agentId => agentName
+    mapping(bytes32 => string) private agentNames;
 
     // Modifier
     modifier onlyAgentOwner(uint256 collectionId) {
@@ -92,6 +94,25 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         );
     }
 
+    function setAgentName(
+        bytes32 agentId, 
+        string calldata agentName) 
+        external 
+        onlyAgentOwner(AgentUpgradeable(agents[agentId]).getCollectionId())
+    {
+        require(!isNameRegistered[agentName], "Agent name already set");
+
+        // If the agent name is already registered, unregister it
+        if (isNameRegistered[agentNames[agentId]]) {
+            isNameRegistered[agentNames[agentId]] = false;
+        }
+
+        agentNames[agentId] = agentName;
+        isNameRegistered[agentName] = true;
+
+        emit AgentNameSet(agentId, agentName);
+    }
+
     function setImplementation(address implementation) external onlyOwner {
         _implementation = implementation;
 
@@ -104,5 +125,9 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
 
     function getCollection() external view returns (address) {
         return _collection;
+    }
+
+    function getAgentName(bytes32 agentId) external view returns (string memory) {
+        return agentNames[agentId];
     }
 }
