@@ -59,7 +59,12 @@ abstract contract EAI721Intelligence is
     function agentName(
         uint256 agentId
     ) public view virtual returns (string memory) {
-        return IAgentFactory(agentFactory).getAgentName(_collectionIdToAgentId(agentId));
+        string memory name = IAgentFactory(agentFactory).getAgentName(_collectionIdToAgentId(agentId));
+
+        if (bytes(name).length == 0) {
+            return _name[agentId];
+        }
+        return name;
     }
 
     // {IEAI721AgentAbility-publishAgentCode}
