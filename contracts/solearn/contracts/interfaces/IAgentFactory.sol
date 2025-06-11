@@ -6,6 +6,12 @@ interface IAgentFactory {
     event AgentCreated(address collection, bytes32 agentId, address indexed agent);
     event ImplementationSet(address indexed implementation);
 
+    function collectionIdToAgentId(uint256 nftId) external view returns (bytes32);
+
+    function isNameRegistered(string calldata agentName) external view returns (bool);
+
+    function agents(bytes32 agentId) external view returns (address);
+
     function createAgent(
         bytes32 agentId,
         string calldata agentName,
