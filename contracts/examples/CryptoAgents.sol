@@ -11,8 +11,6 @@ import {EAI721Tokenization} from "../extensions/EAI721Tokenization.sol";
 import {Rating} from "../utils/Rating.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
 import {LibString} from "solady/src/utils/LibString.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-
 
 contract CryptoAgents is
     Initializable,
@@ -107,14 +105,19 @@ contract CryptoAgents is
         override(ERC721Upgradeable, EAI721Identity)
         returns (string memory)
     {
-        string memory uri = EAI721Identity.tokenURI(agentId);
-        string memory svgFinal = agentImageSvg(agentId);
+        string memory baseUri = EAI721Identity.tokenURI(agentId);
+        string memory svgData = agentImageSvg(agentId);
 
-        string memory ipfs = string(abi.encodePacked("ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/", Strings.toString(agentId), ".png"));
+        // Replace IPFS image reference with inline SVG
+        string memory ipfsImageRef = string(
+            abi.encodePacked(
+                "ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/",
+                LibString.toString(agentId),
+                ".png"
+            )
+        );
 
-        string memory replaceToSvg = LibString.replace(uri, ipfs, svgFinal);
-
-        return replaceToSvg;
+        return LibString.replace(baseUri, ipfsImageRef, svgData);
     }
 
     function agentAttributes(
@@ -126,15 +129,27 @@ contract CryptoAgents is
     function agentImageSvg(
         uint256 agentId
     ) public view returns (string memory) {
+        // Get the base SVG from the agent data contract
+        string memory baseSvg = IOnchainArtData(agentDataAddr()).agentImageSvg(
+            agentId
+        );
 
-        string memory svgFinal = IOnchainArtData(agentDataAddr()).agentImageSvg(agentId);
+        // Remove the data URI prefix if present
+        string memory cleanSvg = LibString.replace(
+            baseSvg,
+            "data:image/svg+xml;utf8,",
+            ""
+        );
 
-        string memory deleteBase64 = LibString.replace(svgFinal, "data:image/svg+xml;utf8,", "");
+        // Add background rectangle and improve rendering
+        string memory svgWithBackground = LibString.replace(
+            cleanSvg,
+            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>",
+            "<svg xmlns='http://www.w3.org/2000/svg' shape-rendering='crispEdges' viewBox='0 0 24 24'><rect width='24' height='24' fill='#636B96' />"
+        );
 
-        string memory headerSVG = LibString.replace(deleteBase64, "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>", "<svg xmlns='http://www.w3.org/2000/svg' shape-rendering='crispEdges' viewBox='0 0 24 24'><rect width='24' height='24' fill='#636B96' />");
-
-        string memory replaceColor = LibString.replace(headerSVG, "%23", "#");
-        return replaceColor;
+        // Convert URL-encoded color codes to standard hex format
+        return LibString.replace(svgWithBackground, "%23", "#");
     }
 
     function agentImage(uint256 agentId) external view returns (bytes memory) {
