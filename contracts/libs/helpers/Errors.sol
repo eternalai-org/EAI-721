@@ -9,7 +9,6 @@ library Errors {
 
     string public constant SUCCESS = "0";
 
-    address public constant ZERO_ADDR = address(0x0);
 
     // common errors
     string public constant INV_ADD = "100";

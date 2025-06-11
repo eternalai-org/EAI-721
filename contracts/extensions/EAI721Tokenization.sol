@@ -2,10 +2,10 @@
 
 pragma solidity ^0.8.0;
 
-import {IEAI721Tokenization} from "../interfaces/IEAI721Tokenization.sol";
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {IEAI721Tokenization} from "../interfaces/IEAI721Tokenization.sol";
 
-abstract contract EAI721Tokenization is IEAI721Tokenization, Initializable, ERC721Upgradeable {
+abstract contract EAI721Tokenization is Initializable, ERC721Upgradeable, IEAI721Tokenization  {
     // agentId => AI token address
     mapping(uint256 => address) private _aiTokens;
 

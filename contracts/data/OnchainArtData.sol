@@ -3,13 +3,16 @@ pragma solidity ^0.8.12;
 
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
+import "../interfaces/IEAI721Intelligence.sol";
+import "../interfaces/IEAI721Tokenization.sol";
+import "../interfaces/IEAI721Monetization.sol";
 import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
-import "../interfaces/IEAI721Intelligence.sol";
 
-contract OnchainArtData is IOnchainArtData {
+contract OnchainArtData is Ownable, IOnchainArtData {
     uint256 public constant TOKEN_LIMIT = 0x2710;
     uint8 internal constant GRID_SIZE = 0x18;
     bytes16 internal constant _HEX_SYMBOLS = "0123456789abcdef";
@@ -28,8 +31,6 @@ contract OnchainArtData is IOnchainArtData {
 
     // elements
     string[6] private partsName;
-    // deployer
-    address public _deployer;
     // crypto ai agent address
     address public _cryptoAIAgentAddr;
     // seal flag
@@ -58,59 +59,46 @@ contract OnchainArtData is IOnchainArtData {
         _;
     }
 
-    modifier onlyDeployer() {
-        require(msg.sender == _deployer, Errors.ONLY_DEPLOYER);
-        _;
-    }
-
     modifier onlyAIAgentContract() {
         require(msg.sender == _cryptoAIAgentAddr, Errors.ONLY_AGENT_CONTRACT);
         _;
     }
 
-    constructor(address deployer) {
+    constructor() Ownable() {
         partsName = ["dna", "Collar", "Head", "Eyes", "Mouth", "Earring"];
-        _deployer = deployer;
-    }
-
-    function changeDeployer(address newAdm) external onlyDeployer unsealed {
-        require(newAdm != Errors.ZERO_ADDR, Errors.INV_ADD);
-        if (_deployer != newAdm) {
-            _deployer = newAdm;
-        }
     }
 
     function changePlaceHolderScript(
         string memory content
-    ) external onlyDeployer unsealed {
+    ) external onlyOwner unsealed {
         PLACEHOLDER_SCRIPT = content;
     }
 
     function changePlaceHolderImg(
         string memory content
-    ) external onlyDeployer unsealed {
+    ) external onlyOwner unsealed {
         PLACEHOLDER_IMG = content;
     }
 
     function changeCryptoAIAgentAddress(
         address newAddr
-    ) external onlyDeployer unsealed {
-        require(newAddr != Errors.ZERO_ADDR, Errors.INV_ADD);
+    ) external onlyOwner unsealed {
+        require(newAddr != address(0), Errors.INV_ADD);
         if (_cryptoAIAgentAddr != newAddr) {
             _cryptoAIAgentAddr = newAddr;
         }
     }
 
-    function sealContract() external unsealed onlyDeployer {
+    function sealContract() external unsealed onlyOwner {
         _contractSealed = true;
     }
 
-    function unSealContract() external _sealed onlyDeployer {
+    function unSealContract() external _sealed onlyOwner {
         _contractSealed = false;
     }
 
     function mintAgent(uint256 tokenId) external onlyAIAgentContract _sealed {
-        require(_cryptoAIAgentAddr != Errors.ZERO_ADDR, Errors.INV_ADD);
+        require(_cryptoAIAgentAddr != address(0), Errors.INV_ADD);
         require(unlockedTokens[tokenId].tokenID == 0, Errors.TOKEN_ID_UNLOCKED);
         unlockedTokens[tokenId].tokenID = tokenId;
     }
@@ -149,33 +137,26 @@ contract OnchainArtData is IOnchainArtData {
             unlockedTokens[tokenId].tokenID > 0,
             Errors.TOKEN_ID_NOT_EXISTED
         );
-        if (unlockedTokens[tokenId].weight == 0) {
-            result = string(
-                abi.encodePacked(
-                    '{"image": "',
-                    PLACEHOLDER_IMG,
-                    '", "animation_url": "',
-                    cryptoAIImageHtml(tokenId),
-                    '"}'
-                )
-            );
-        } else {
-            result = string(
-                abi.encodePacked(
-                    '{"image": "',
-                    cryptoAIImageSvg(tokenId),
-                    '", "attributes": ',
-                    cryptoAIAttributes(tokenId),
-                    "}"
-                )
-            );
-        }
+        result = string(
+            abi.encodePacked(
+                '{"name": "CryptoAgent #',
+                Strings.toString(tokenId),
+                '",',
+                '"description": "The first-ever PFP collection for AI agents.",',
+                '"image": "ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
+                Strings.toString(tokenId),
+                '.png",',
+                '"attributes": ',
+                agentAttributes(tokenId),
+                "}"
+            )
+        );
     }
 
     function addDNA(
         string[] memory _names,
         uint16[] memory rarities
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         DNA_TYPES.names = _names;
     }
 
@@ -184,7 +165,7 @@ contract OnchainArtData is IOnchainArtData {
         string[] memory _DNAName,
         uint16[] memory _rarities,
         uint16[][] memory _positions
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         items[_DNAType].names = _DNAName;
         items[_DNAType].positions = _positions;
     }
@@ -194,7 +175,7 @@ contract OnchainArtData is IOnchainArtData {
         string[] memory _names,
         uint256[] memory _rarities,
         uint16[][] memory _positions
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         items[_itemType].names = _names;
         items[_itemType].positions = _positions;
     }
@@ -204,23 +185,27 @@ contract OnchainArtData is IOnchainArtData {
         string[] memory _names,
         uint256[] memory _rarities,
         uint16[][] memory _positions
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         // Get existing data
         string[] memory existingNames = items[_itemType].names;
         uint16[][] memory existingPositions = items[_itemType].positions;
 
         // Create new arrays with combined length
-        string[] memory newNames = new string[](existingNames.length + _names.length);
-        uint16[][] memory newPositions = new uint16[][](existingPositions.length + _positions.length);
+        string[] memory newNames = new string[](
+            existingNames.length + _names.length
+        );
+        uint16[][] memory newPositions = new uint16[][](
+            existingPositions.length + _positions.length
+        );
 
         // Copy existing data
-        for(uint i = 0; i < existingNames.length; i++) {
+        for (uint i = 0; i < existingNames.length; i++) {
             newNames[i] = existingNames[i];
             newPositions[i] = existingPositions[i];
         }
 
         // Append new data
-        for(uint i = 0; i < _names.length; i++) {
+        for (uint i = 0; i < _names.length; i++) {
             newNames[existingNames.length + i] = _names[i];
             newPositions[existingPositions.length + i] = _positions[i];
         }
@@ -230,13 +215,11 @@ contract OnchainArtData is IOnchainArtData {
         items[_itemType].positions = newPositions;
     }
 
-    function setPalettes(
-        uint8[][] memory _pallets
-    ) public onlyDeployer unsealed {
+    function setPalettes(uint8[][] memory _pallets) public onlyOwner unsealed {
         palettes = _pallets;
     }
 
-    function cryptoAIAttributesValue(
+    function agentAttributesValue(
         uint256 tokenId
     ) public view returns (string[] memory) {
         string[] memory attrs = new string[](partsName.length);
@@ -255,7 +238,7 @@ contract OnchainArtData is IOnchainArtData {
         return attrs;
     }
 
-    function cryptoAIAttributes(
+    function agentAttributes(
         uint256 tokenId
     ) public view returns (string memory text) {
         bytes memory byteString;
@@ -289,16 +272,38 @@ contract OnchainArtData is IOnchainArtData {
         }
 
         byteString = abi.encodePacked(
-            '{"trait_type": "ORIGIN"',
+            '{"trait_type": "Intelligence"',
             ',"value":"',
-            Strings.toString(IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1 ? 0 : 1),
-            '"},'
-            , byteString
+            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 0
+                ? "Yes"
+                : "Not yet",
+            '"},',
+            byteString
         );
-        count++;
 
         byteString = abi.encodePacked(
-            '{"trait_type": "attributes"',
+            '{"trait_type": "Tokenization"',
+            ',"value":"',
+            IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(tokenId) !=
+                address(0)
+                ? "Yes"
+                : "Not yet",
+            '"},',
+            byteString
+        );
+
+        byteString = abi.encodePacked(
+            '{"trait_type": "Monetization"',
+            ',"value":"',
+            IEAI721Monetization(_cryptoAIAgentAddr).subscriptionFee(tokenId) > 0
+                ? "Yes"
+                : "Not yet",
+            '"},',
+            byteString
+        );
+
+        byteString = abi.encodePacked(
+            '{"trait_type": "Number of Attributes"',
             ',"value":"',
             Strings.toString(count),
             '"},',
@@ -308,7 +313,7 @@ contract OnchainArtData is IOnchainArtData {
         text = string(abi.encodePacked("[", string(byteString), "]"));
     }
 
-    function cryptoAIImage(uint256 tokenId) public view returns (bytes memory) {
+    function agentImage(uint256 tokenId) public view returns (bytes memory) {
         require(
             unlockedTokens[tokenId].tokenID > 0 &&
                 unlockedTokens[tokenId].weight > 0,
@@ -396,29 +401,20 @@ contract OnchainArtData is IOnchainArtData {
     ) public view returns (string memory result) {
         return
             string(
-                abi.encodePacked(
-                    PLACEHOLDER_SCRIPT,
-                    Strings.toString(tokenId)
-                )
+                abi.encodePacked(PLACEHOLDER_SCRIPT, Strings.toString(tokenId))
             );
     }
 
-    function cryptoAIImageSvg(
+    function agentImageSvg(
         uint256 tokenId
-    )
-        public
-        view
-        returns (
-            string memory result
-        )
-    {
+    ) public view returns (string memory result) {
         require(
             unlockedTokens[tokenId].tokenID > 0 &&
                 unlockedTokens[tokenId].weight > 0,
             Errors.TOKEN_ID_NOT_UNLOCKED
         );
 
-        bytes memory pixels = cryptoAIImage(tokenId);
+        bytes memory pixels = agentImage(tokenId);
         string memory svg = "";
         bytes memory buffer = new bytes(8);
         uint p;

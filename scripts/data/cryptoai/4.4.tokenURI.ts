@@ -3,10 +3,10 @@ import { CryptoAIData } from "./cryptoAIData";
 import { initConfig } from "./index";
 
 async function main() {
-  // if (process.env.NETWORK != "local") {
-  //     console.log("wrong network");
-  //     return;
-  // }
+  if (process.env.NETWORK != "local") {
+      console.log("wrong network");
+      return;
+  }
 
   let config = await initConfig();
   const dataContract = new CryptoAIData(

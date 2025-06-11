@@ -2,13 +2,19 @@ import { initConfig } from "../../data/cryptoai";
 import { CryptoAI } from "./cryptoAI";
 
 async function main() {
-  // if (process.env.NETWORK != "base_mainnet") {
-  //     console.log("wrong network");
-  //     return;
+  // if (process.env.NETWORK != "mainnet") {
+  //   console.log("wrong network");
+  //   return;
   // }
 
   let config = await initConfig();
 
+
+  const args = process.argv.slice(2) as string[];
+  if (args.length == 0) {
+    console.log("missing key");
+  }
+  const key = args[0];
   const dataContract = new CryptoAI(
     process.env.NETWORK,
     process.env.PRIVATE_KEY,
@@ -18,7 +24,7 @@ async function main() {
   await dataContract.allowAdmin(
     config.contractAddress,
     0,
-    process.env.PUBLIC_KEY,
+    key,
     true
   );
 }

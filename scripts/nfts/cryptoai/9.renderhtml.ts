@@ -33,6 +33,16 @@ async function main() {
     await fs.writeFile(filePath, svgContent, "utf8");
     console.log(`Token ${i} processed and saved to ${filePath}`);
   }
+
+  // const data = await dataContract.tokenURI(
+  //   config.contractAddress,
+  //   parseInt(args[0])
+  // );
+  // const json = JSON.parse(data);
+  // const svgContent = parseSVGData(json.image);
+  // const filePath = path.join(outputDir, `${parseInt(args[0])}.svg`);
+  // await fs.writeFile(filePath, svgContent, "utf8");
+  // console.log(`Token ${parseInt(args[0])} processed and saved to ${filePath}`);
 }
 
 main().catch((error) => {

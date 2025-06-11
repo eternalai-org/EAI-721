@@ -10,7 +10,7 @@ async function main() {
     await initConfig();
 
     const dataContract = new CryptoAIData(process.env.NETWORK, process.env.PRIVATE_KEY, process.env.PUBLIC_KEY);
-    const address = await dataContract.deploy(process.env.PUBLIC_KEY)
+    const address = await dataContract.deploy()
     console.log('CryptoAIData contract address:', address);
     const temp = await dataContract.getDeployer(address);
     console.log("deployer address:", temp);
