@@ -10,6 +10,7 @@ import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
 import {EAI721Tokenization} from "../extensions/EAI721Tokenization.sol";
 import {Rating} from "../utils/Rating.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
+import {LibString} from "solady/src/utils/LibString.sol";
 
 contract CryptoAgents is
     Initializable,
@@ -104,7 +105,9 @@ contract CryptoAgents is
         override(ERC721Upgradeable, EAI721Identity)
         returns (string memory)
     {
-        return EAI721Identity.tokenURI(agentId);
+        string memory uri = EAI721Identity.tokenURI(agentId);
+
+        return LibString.replace(uri, "https://", "https://ipfs.io/ipfs/");
     }
 
     function agentAttributes(
