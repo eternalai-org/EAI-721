@@ -110,6 +110,9 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         agentNames[agentId] = agentName;
         isNameRegistered[agentName] = true;
 
+        // call setAgentName on the agent
+        AgentUpgradeable(agents[agentId]).setAgentName(agentName);
+
         emit AgentNameSet(agentId, agentName);
     }
 
