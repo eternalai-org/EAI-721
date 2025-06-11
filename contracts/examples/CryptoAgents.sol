@@ -11,6 +11,8 @@ import {EAI721Tokenization} from "../extensions/EAI721Tokenization.sol";
 import {Rating} from "../utils/Rating.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
 import {LibString} from "solady/src/utils/LibString.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+
 
 contract CryptoAgents is
     Initializable,
@@ -106,8 +108,13 @@ contract CryptoAgents is
         returns (string memory)
     {
         string memory uri = EAI721Identity.tokenURI(agentId);
+        string memory svgFinal = agentImageSvg(agentId);
 
-        return LibString.replace(uri, "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>", "<svg xmlns='http://www.w3.org/2000/svg' shape-rendering='crispEdges' viewBox='0 0 24 24'>");
+        string memory ipfs = string(abi.encodePacked("ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/", Strings.toString(agentId), ".png"));
+
+        string memory replaceToSvg = LibString.replace(uri, ipfs, svgFinal);
+
+        return replaceToSvg;
     }
 
     function agentAttributes(
@@ -118,8 +125,16 @@ contract CryptoAgents is
 
     function agentImageSvg(
         uint256 agentId
-    ) external view returns (string memory) {
-        return IOnchainArtData(agentDataAddr()).agentImageSvg(agentId);
+    ) public view returns (string memory) {
+
+        string memory svgFinal = IOnchainArtData(agentDataAddr()).agentImageSvg(agentId);
+
+        string memory deleteBase64 = LibString.replace(svgFinal, "data:image/svg+xml;utf8,", "");
+
+        string memory headerSVG = LibString.replace(deleteBase64, "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>", "<svg xmlns='http://www.w3.org/2000/svg' shape-rendering='crispEdges' viewBox='0 0 24 24'><rect width='24' height='24' fill='#636B96' />");
+
+        string memory replaceColor = LibString.replace(headerSVG, "%23", "#");
+        return replaceColor;
     }
 
     function agentImage(uint256 agentId) external view returns (bytes memory) {
