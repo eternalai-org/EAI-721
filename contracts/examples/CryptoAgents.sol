@@ -107,7 +107,7 @@ contract CryptoAgents is
     {
         string memory uri = EAI721Identity.tokenURI(agentId);
 
-        return LibString.replace(uri, "https://", "https://ipfs.io/ipfs/");
+        return LibString.replace(uri, "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>", "<svg xmlns='http://www.w3.org/2000/svg' shape-rendering='crispEdges' viewBox='0 0 24 24'>");
     }
 
     function agentAttributes(
