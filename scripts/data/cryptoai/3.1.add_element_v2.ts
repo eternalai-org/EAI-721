@@ -13,7 +13,6 @@ async function main() {
     console.log("missing key");
   }
   const key = args[0];
-  console.log("___key", key);
 
   try {
     let configaaa = await initConfig();

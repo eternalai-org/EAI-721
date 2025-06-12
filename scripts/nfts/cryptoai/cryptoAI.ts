@@ -14,8 +14,8 @@ class CryptoAI {
         this.senderPrivateKey = senderPrivateKey;
         this.senderPublicKey = senderPublicKey;
 
-        console.log("senderPrivateKey", senderPrivateKey);
-        console.log("senderPublicKey", senderPublicKey);
+        // console.log("senderPrivateKey", senderPrivateKey);
+        // console.log("senderPublicKey", senderPublicKey);
     }
 
     async deployUpgradeable(name: string,

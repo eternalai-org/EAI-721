@@ -52,7 +52,13 @@ abstract contract EAI721Intelligence is
         uint256 agentId,
         string calldata name
     ) public virtual onlyAgentOwner(agentId) {
-       IAgentFactory(agentFactory).setAgentName(_collectionIdToAgentId(agentId), name);
+        bytes32 agentIdBytes = _collectionIdToAgentId(agentId);
+
+        if (agentIdBytes == bytes32(0)) {
+            _name[agentId] = name;
+        } else {
+            IAgentFactory(agentFactory).setAgentName(agentIdBytes, name);
+        }
     }
 
     // {IEAI721AgentAbility-agentName}
@@ -62,7 +68,7 @@ abstract contract EAI721Intelligence is
         address agent = _collectionIdToAgentAddress(agentId);
 
         if (agent == address(0)) {
-            return _name[agentId]; 
+            return _name[agentId];
         } else {
             return IAgent(agent).getAgentName();
         }
@@ -76,43 +82,47 @@ abstract contract EAI721Intelligence is
         address[] calldata depsAgentsIn
     ) public virtual onlyAgentOwner(agentId) returns (uint16) {
         bytes32 agentIdBytes = _collectionIdToAgentId(agentId);
-        return IAgentFactory(agentFactory).publishAgentCode(agentIdBytes, codeLanguageIn, pointersIn, depsAgentsIn);
+        return
+            IAgentFactory(agentFactory).publishAgentCode(
+                agentIdBytes,
+                codeLanguageIn,
+                pointersIn,
+                depsAgentsIn
+            );
     }
 
-    function _collectionIdToAgentId(uint256 collectionId) internal view returns (bytes32) {
+    function _collectionIdToAgentId(
+        uint256 collectionId
+    ) internal view returns (bytes32) {
         return IAgentFactory(agentFactory).collectionIdToAgentId(collectionId);
     }
 
-     function _collectionIdToAgentAddress(uint256 collectionId) internal view returns (address) {
-        return IAgentFactory(agentFactory).agents(_collectionIdToAgentId(collectionId));
+    function _collectionIdToAgentAddress(
+        uint256 collectionId
+    ) internal view returns (address) {
+        return
+            IAgentFactory(agentFactory).agents(
+                _collectionIdToAgentId(collectionId)
+            );
     }
 
     // {IEAI721AgentAbility-depsAgents}
     function depsAgents(
         uint256 agentId,
         uint16 version
-    )
-        public
-        view
-        virtual
-        returns (address[] memory)
-    {
-        return IAgent(_collectionIdToAgentAddress(agentId)).getDepsAgents(version);
+    ) public view virtual returns (address[] memory) {
+        return
+            IAgent(_collectionIdToAgentAddress(agentId)).getDepsAgents(version);
     }
 
     // {IEAI721AgentAbility-agentCode}
     function agentCode(
         uint256 agentId,
         uint16 version
-    )
-        public
-        view
-        virtual
-        returns (string memory code)
-    {
-        return IAgent(_collectionIdToAgentAddress(agentId)).getAgentCode(version);
+    ) public view virtual returns (string memory code) {
+        return
+            IAgent(_collectionIdToAgentAddress(agentId)).getAgentCode(version);
     }
-
 
     // {IEAI721AgentAbility-currentVersion}
     function currentVersion(
