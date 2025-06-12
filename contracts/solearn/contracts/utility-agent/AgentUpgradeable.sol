@@ -43,7 +43,9 @@ contract AgentUpgradeable is IAgent, Initializable {
         _agentName = agentName;
         _collectionId = collectionId;
     
-        _publishAgentCode(_bumpVersion(), pointers, depsAgents);
+        if (pointers.length > 0) {
+            _publishAgentCode(_bumpVersion(), pointers, depsAgents);
+        }
     }
 
     function publishAgentCode(

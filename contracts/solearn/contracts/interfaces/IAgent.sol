@@ -46,4 +46,6 @@ interface IAgent {
     function getCurrentVersion() external view returns (uint16);
 
     function getCollectionId() external view returns (uint256);
+
+    function getAgentName() external view returns (string memory);
 }
