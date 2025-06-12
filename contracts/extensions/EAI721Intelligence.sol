@@ -59,6 +59,8 @@ abstract contract EAI721Intelligence is
         } else {
             IAgentFactory(agentFactory).setAgentName(agentIdBytes, name);
         }
+
+        emit AgentNameSet(agentId, name);
     }
 
     // {IEAI721AgentAbility-agentName}

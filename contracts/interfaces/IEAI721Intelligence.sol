@@ -24,6 +24,11 @@ interface IEAI721Intelligence {
         CodePointer newPointer
     );
 
+    event AgentNameSet(
+        uint256 indexed agentId,
+        string name
+    );
+
     // --- Errors ---
     error EAI721IntelligenceAuth();
     error DigestAlreadyUsed();
