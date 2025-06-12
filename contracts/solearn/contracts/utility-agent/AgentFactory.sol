@@ -43,7 +43,7 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         _collection = collection;
     }
 
-      function createAgent(
+    function createAgent(
         bytes32 agentId,
         string calldata agentName,
         string calldata codeLanguage,
@@ -51,15 +51,15 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         address[] calldata depsAgents,
         uint256 nftId
     ) external onlyAgentOwner(nftId) returns (address agent) {
-        require(agentId != bytes32(0) && collectionIdToAgentId[nftId] == bytes32(0), "Invalid agent id");
-        require(!isNameRegistered[agentName], "Agent name already registered");
         require(
-            agents[agentId] == address(0),
-            "Agent already exists"
+            agentId != bytes32(0) && collectionIdToAgentId[nftId] == bytes32(0),
+            "Invalid agent id"
         );
+        // require(!isNameRegistered[agentName], "Agent name already registered");
+        require(agents[agentId] == address(0), "Agent already exists");
 
         collectionIdToAgentId[nftId] = agentId;
-        isNameRegistered[agentName] = true;
+        // isNameRegistered[agentName] = true;
         agent = address(new AgentProxy());
         AgentUpgradeable(agent).initialize(
             nftId,
@@ -95,20 +95,21 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     }
 
     function setAgentName(
-        bytes32 agentId, 
-        string calldata agentName) 
-        external 
+        bytes32 agentId,
+        string calldata agentName
+    )
+        external
         onlyAgentOwner(AgentUpgradeable(agents[agentId]).getCollectionId())
     {
-        require(!isNameRegistered[agentName], "Agent name already set");
+        // require(!isNameRegistered[agentName], "Agent name already set");
 
         // If the agent name is already registered, unregister it
-        if (isNameRegistered[agentNames[agentId]]) {
-            isNameRegistered[agentNames[agentId]] = false;
-        }
+        // if (isNameRegistered[agentNames[agentId]]) {
+        //     isNameRegistered[agentNames[agentId]] = false;
+        // }
 
         agentNames[agentId] = agentName;
-        isNameRegistered[agentName] = true;
+        // isNameRegistered[agentName] = true;
 
         // call setAgentName on the agent
         AgentUpgradeable(agents[agentId]).setAgentName(agentName);
