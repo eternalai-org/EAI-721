@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
@@ -18,8 +18,6 @@ contract AgentUpgradeable is IAgent, Initializable {
     mapping(uint256 version => mapping(uint256 => IEAI721Intelligence.CodePointer))
         private _codePointers;
     mapping(uint256 version => address[]) private _depsAgents;
-
-    uint256[50] private __gap;
 
     modifier checkVersion(uint16 version) {
         _validateVersion(version);
@@ -42,7 +40,7 @@ contract AgentUpgradeable is IAgent, Initializable {
         _factory = msg.sender;
         _agentName = agentName;
         _collectionId = collectionId;
-    
+
         if (pointers.length > 0) {
             _publishAgentCode(_bumpVersion(), pointers, depsAgents);
         }
@@ -59,7 +57,9 @@ contract AgentUpgradeable is IAgent, Initializable {
         return _publishAgentCode(version, pointers, depsAgents);
     }
 
-    function setAgentName(string calldata agentName) external virtual onlyFactory {
+    function setAgentName(
+        string calldata agentName
+    ) external virtual onlyFactory {
         _agentName = agentName;
     }
 
@@ -119,7 +119,9 @@ contract AgentUpgradeable is IAgent, Initializable {
         string memory mainScripts = "";
 
         for (uint256 pIdx = 0; pIdx < len; pIdx++) {
-            IEAI721Intelligence.CodePointer memory p = _codePointers[version][pIdx];
+            IEAI721Intelligence.CodePointer memory p = _codePointers[version][
+                pIdx
+            ];
 
             string memory codeChunk = _getCodeByPointer(p);
 
@@ -186,4 +188,9 @@ contract AgentUpgradeable is IAgent, Initializable {
     function getCollectionId() external view returns (uint256) {
         return _collectionId;
     }
+
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     */
+    uint256[50] private __gap;
 }

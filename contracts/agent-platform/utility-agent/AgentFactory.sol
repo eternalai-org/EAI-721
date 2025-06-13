@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
-import {IAgentFactory, IAgent, IEAI721Intelligence} from "../interfaces/IAgentFactory.sol";
+
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {IAgentFactory, IAgent, IEAI721Intelligence} from "../interfaces/IAgentFactory.sol";
 import {AgentUpgradeable} from "./AgentUpgradeable.sol";
 import {AgentProxy} from "./AgentProxy.sol";
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     address _implementation;
@@ -22,7 +23,8 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     // Modifier
     modifier onlyAgentOwner(uint256 collectionId) {
         require(
-            IERC721(_collection).ownerOf(collectionId) == msg.sender || msg.sender == _collection,
+            IERC721(_collection).ownerOf(collectionId) == msg.sender ||
+                msg.sender == _collection,
             "Unauthorized"
         );
         _;
@@ -55,11 +57,9 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
             agentId != bytes32(0) && collectionIdToAgentId[nftId] == bytes32(0),
             "Invalid agent id"
         );
-        // require(!isNameRegistered[agentName], "Agent name already registered");
         require(agents[agentId] == address(0), "Agent already exists");
 
         collectionIdToAgentId[nftId] = agentId;
-        // isNameRegistered[agentName] = true;
         agent = address(new AgentProxy());
         AgentUpgradeable(agent).initialize(
             nftId,
@@ -101,15 +101,7 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         external
         onlyAgentOwner(AgentUpgradeable(agents[agentId]).getCollectionId())
     {
-        // require(!isNameRegistered[agentName], "Agent name already set");
-
-        // If the agent name is already registered, unregister it
-        // if (isNameRegistered[agentNames[agentId]]) {
-        //     isNameRegistered[agentNames[agentId]] = false;
-        // }
-
         agentNames[agentId] = agentName;
-        // isNameRegistered[agentName] = true;
 
         // call setAgentName on the agent
         AgentUpgradeable(agents[agentId]).setAgentName(agentName);
@@ -118,6 +110,7 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     }
 
     function setImplementation(address implementation) external onlyOwner {
+        require(implementation != address(0), "Invalid implementation");
         _implementation = implementation;
 
         emit ImplementationSet(implementation);
@@ -131,7 +124,9 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         return _collection;
     }
 
-    function getAgentName(bytes32 agentId) external view returns (string memory) {
+    function getAgentName(
+        bytes32 agentId
+    ) external view returns (string memory) {
         return agentNames[agentId];
     }
 }

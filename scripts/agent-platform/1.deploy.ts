@@ -5,6 +5,7 @@ async function main() {
     const [deployer] = await ethers.getSigners();
     console.log("Deploying contracts with the account:", deployer.address);
 
+    // Deploy implementation contract
     const AgentUpgradeable = await ethers.getContractFactory("AgentUpgradeable");
     const agentUpgradeable = await AgentUpgradeable.deploy();
     await agentUpgradeable.deployed();

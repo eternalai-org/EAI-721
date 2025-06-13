@@ -3,10 +3,10 @@
 pragma solidity ^0.8.0;
 
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {IAgentFactory} from "../agent-platform/interfaces/IAgentFactory.sol";
+import {IAgent} from "../agent-platform/interfaces/IAgent.sol";
 import {IEAI721Intelligence} from "../interfaces/IEAI721Intelligence.sol";
 import "../libs/helpers/File.sol";
-import {IAgentFactory} from "../solearn/contracts/interfaces/IAgentFactory.sol";
-import {IAgent} from "../solearn/contracts/interfaces/IAgent.sol";
 
 abstract contract EAI721Intelligence is
     Initializable,
