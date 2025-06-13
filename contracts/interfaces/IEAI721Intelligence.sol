@@ -24,6 +24,11 @@ interface IEAI721Intelligence {
         CodePointer newPointer
     );
 
+    event AgentNameSet(
+        uint256 indexed agentId,
+        string name
+    );
+
     // --- Errors ---
     error EAI721IntelligenceAuth();
     error DigestAlreadyUsed();
@@ -58,16 +63,16 @@ interface IEAI721Intelligence {
         uint256 agentId,
         string calldata codeLanguage,
         CodePointer[] calldata pointers,
-        uint256[] calldata depsAgents
+        address[] calldata depsAgents
     ) external returns (uint16);
 
     /**
      * @dev Retrieves the dependent agent IDs for a specific agent and version.
      * @param agentId The unique identifier of the agent.
      * @param version The version number of the agent's code.
-     * @return An array of dependent agent IDs.
+     * @return An array of dependent agent addresses.
      */
-    function depsAgents(uint256 agentId, uint16 version) external view returns (uint256[] memory);
+    function depsAgents(uint256 agentId, uint16 version) external view returns (address[] memory);
 
     /**
      * @dev Retrieves the code of a specific agent for a given version.

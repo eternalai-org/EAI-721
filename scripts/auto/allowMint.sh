@@ -1,6 +1,7 @@
 #!/bin/bash
 
-yarn ts:run scripts/nfts/cryptoai/4.allowAdmin.ts "0x1D272FcA4EAdCc2d68072018A43cDdFfC00cADdE"
+yarn ts:run scripts/nfts/cryptoai/4.allowAdmin.ts "0xCcc8564Cae9f75F81728445300B6e63B70c93E46"
+# yarn ts:run scripts/nfts/cryptoai/4.allowAdmin.ts "0x1D272FcA4EAdCc2d68072018A43cDdFfC00cADdE"
 # yarn ts:run scripts/nfts/cryptoai/4.allowAdmin.ts "0x7e153A40d24Bf37DF3EC8Fb900157E3bCbaEA03d"
 # yarn ts:run scripts/nfts/cryptoai/4.allowAdmin.ts "0x8ED58fc1331F92e663fB12A15B02af111d6a49d7"
 # yarn ts:run scripts/nfts/cryptoai/4.allowAdmin.ts "0x1D272FcA4EAdCc2d68072018A43cDdFfC00cADdE"

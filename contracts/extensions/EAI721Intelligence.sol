@@ -3,6 +3,8 @@
 pragma solidity ^0.8.0;
 
 import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {IAgentFactory} from "../agent-platform/interfaces/IAgentFactory.sol";
+import {IAgent} from "../agent-platform/interfaces/IAgent.sol";
 import {IEAI721Intelligence} from "../interfaces/IEAI721Intelligence.sol";
 import "../libs/helpers/File.sol";
 
@@ -33,20 +35,8 @@ abstract contract EAI721Intelligence is
 
     address public agentFactory;
 
-    // --- Modifiers ---
-    modifier checkVersion(uint256 agentId, uint16 version) virtual {
-        _validateVersion(agentId, version);
-        _;
-    }
-
     modifier onlyAgentOwner(uint256 agentId) virtual {
         if (msg.sender != ownerOf(agentId)) revert EAI721IntelligenceAuth();
-        _;
-    }
-
-    modifier onlyAgentOwnerOrFactory(uint256 agentId) virtual {
-        if (msg.sender != ownerOf(agentId) && msg.sender != agentFactory)
-            revert EAI721IntelligenceAuth();
         _;
     }
 
@@ -62,14 +52,28 @@ abstract contract EAI721Intelligence is
         uint256 agentId,
         string calldata name
     ) public virtual onlyAgentOwner(agentId) {
-        _name[agentId] = name;
+        bytes32 agentIdBytes = _collectionIdToAgentId(agentId);
+
+        if (agentIdBytes == bytes32(0)) {
+            _name[agentId] = name;
+        } else {
+            IAgentFactory(agentFactory).setAgentName(agentIdBytes, name);
+        }
+
+        emit AgentNameSet(agentId, name);
     }
 
     // {IEAI721AgentAbility-agentName}
     function agentName(
         uint256 agentId
     ) public view virtual returns (string memory) {
-        return _name[agentId];
+        address agent = _collectionIdToAgentAddress(agentId);
+
+        if (agent == address(0)) {
+            return _name[agentId];
+        } else {
+            return IAgent(agent).getAgentName();
+        }
     }
 
     // {IEAI721AgentAbility-publishAgentCode}
@@ -77,157 +81,61 @@ abstract contract EAI721Intelligence is
         uint256 agentId,
         string calldata codeLanguageIn,
         CodePointer[] calldata pointersIn,
-        uint256[] calldata depsAgentsIn
-    ) public virtual onlyAgentOwnerOrFactory(agentId) returns (uint16) {
+        address[] calldata depsAgentsIn
+    ) public virtual onlyAgentOwner(agentId) returns (uint16) {
+        bytes32 agentIdBytes = _collectionIdToAgentId(agentId);
         return
-            _publishAgentCode(
-                agentId,
+            IAgentFactory(agentFactory).publishAgentCode(
+                agentIdBytes,
                 codeLanguageIn,
                 pointersIn,
                 depsAgentsIn
             );
     }
 
-    function _publishAgentCode(
-        uint256 agentId,
-        string calldata codeLanguageIn,
-        CodePointer[] calldata pointersIn,
-        uint256[] calldata depsAgentsIn
-    ) internal virtual returns (uint16) {
-        if (pointersIn.length == 0) revert InvalidData();
-
-        _codeLanguage[agentId] = codeLanguageIn;
-        uint16 version = _bumpVersion(agentId);
-
-        uint256 pLen = pointersIn.length;
-        for (uint256 i = 0; i < pLen; i++) {
-            if (bytes(pointersIn[i].fileName).length == 0) {
-                revert InvalidData();
-            }
-            _addNewCodePointer(agentId, version, pointersIn[i]);
-        }
-
-        uint256 depsLen = depsAgentsIn.length;
-        for (uint256 i = 0; i < depsLen; i++) {
-            if (depsAgentsIn[i] == 0 || depsAgentsIn[i] > TOKEN_LIMIT) {
-                revert InvalidDependency();
-            }
-            _depsAgents[agentId][version].push(depsAgentsIn[i]);
-        }
-
-        return version;
+    function _collectionIdToAgentId(
+        uint256 collectionId
+    ) internal view returns (bytes32) {
+        return IAgentFactory(agentFactory).collectionIdToAgentId(collectionId);
     }
 
-    function _bumpVersion(uint256 agentId) private returns (uint16) {
-        return ++_currentVersion[agentId];
-    }
-
-    function _addNewCodePointer(
-        uint256 agentId,
-        uint16 version,
-        CodePointer calldata pointer
-    ) internal virtual {
-        uint256 pNum = _pointersNumber(agentId, version);
-
-        _codePointers[agentId][version][pNum] = pointer;
-
-        emit CodePointerCreated(agentId, version, pNum, pointer);
-        _pointersNum[agentId][version]++;
+    function _collectionIdToAgentAddress(
+        uint256 collectionId
+    ) internal view returns (address) {
+        return
+            IAgentFactory(agentFactory).agents(
+                _collectionIdToAgentId(collectionId)
+            );
     }
 
     // {IEAI721AgentAbility-depsAgents}
     function depsAgents(
         uint256 agentId,
         uint16 version
-    )
-        public
-        view
-        virtual
-        checkVersion(agentId, version)
-        returns (uint256[] memory)
-    {
-        return _depsAgents[agentId][version];
+    ) public view virtual returns (address[] memory) {
+        return
+            IAgent(_collectionIdToAgentAddress(agentId)).getDepsAgents(version);
     }
 
     // {IEAI721AgentAbility-agentCode}
     function agentCode(
         uint256 agentId,
         uint16 version
-    )
-        public
-        view
-        virtual
-        checkVersion(agentId, version)
-        returns (string memory code)
-    {
-        uint256 len = _pointersNumber(agentId, version);
-        string memory libsCode = "";
-        string memory mainScripts = "";
-
-        for (uint256 pIdx = 0; pIdx < len; pIdx++) {
-            CodePointer memory p = _codePointers[agentId][version][pIdx];
-
-            string memory codeChunk = _codeByPointer(p);
-
-            if (p.fileType == FileType.LIBRARY) {
-                libsCode = _concatStrings(libsCode, codeChunk);
-            } else if (p.fileType == FileType.MAIN_SCRIPT) {
-                mainScripts = _concatStrings(mainScripts, codeChunk);
-            }
-        }
-
-        if (bytes(libsCode).length == 0 && bytes(mainScripts).length == 0)
-            return "";
-
-        return _concatStrings(libsCode, mainScripts);
-    }
-
-    function _concatStrings(
-        string memory a,
-        string memory b
-    ) internal pure virtual returns (string memory) {
-        return string(abi.encodePacked(a, "\n", b));
-    }
-
-    function _codeByPointer(
-        CodePointer memory p
-    ) internal view virtual returns (string memory logic) {
-        if (keccak256(bytes(_storageMode(p))) == IPFS_SIG) {
-            logic = p.fileName; // return the IPFS hash
-        } else {
-            logic = IFileStore(p.retrieveAddress).getFile(p.fileName).read();
-        }
-    }
-
-    function _storageMode(
-        CodePointer memory p
-    ) internal view virtual returns (string memory) {
-        if (p.retrieveAddress != address(0)) {
-            return "fs";
-        }
-        return "ipfs";
-    }
-
-    function _pointersNumber(
-        uint256 agentId,
-        uint16 version
-    ) internal view virtual returns (uint256) {
-        return _pointersNum[agentId][version];
+    ) public view virtual returns (string memory code) {
+        return
+            IAgent(_collectionIdToAgentAddress(agentId)).getAgentCode(version);
     }
 
     // {IEAI721AgentAbility-currentVersion}
     function currentVersion(
         uint256 agentId
     ) public view virtual returns (uint16) {
-        return _currentVersion[agentId];
-    }
+        address agent = _collectionIdToAgentAddress(agentId);
 
-    function _validateVersion(
-        uint256 agentId,
-        uint16 version
-    ) internal view virtual {
-        if (version > _currentVersion[agentId]) {
-            revert InvalidVersion();
+        if (agent == address(0)) {
+            return 0;
+        } else {
+            return IAgent(agent).getCurrentVersion();
         }
     }
 
@@ -235,7 +143,8 @@ abstract contract EAI721Intelligence is
     function codeLanguage(
         uint256 agentId
     ) public view virtual returns (string memory) {
-        return _codeLanguage[agentId];
+        // return _codeLanguage[agentId];
+        return IAgent(_collectionIdToAgentAddress(agentId)).getCodeLanguage();
     }
 
     /**
