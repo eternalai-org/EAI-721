@@ -23,7 +23,7 @@ abstract contract EAI721Intelligence is
     address constant delegateRegistry =
         0x00000000000000447e69651d841bD8D104Bed493;
     bytes32 constant DELEGATE_RIGHT_ERC721 =
-        0x0000000000000000000000000000000000000000000000000000000000000111;
+        0x0000000000000000000000000000000000000000000000000000000000000000;
 
     // --- Storage ---
     mapping(uint256 agentId => string) private _codeLanguage; // e.g., "python", "javascript"...
@@ -43,7 +43,7 @@ abstract contract EAI721Intelligence is
 
     modifier onlyAgentOwner(uint256 agentId) virtual {
         address agentOwner = ownerOf(agentId);
-        
+
         if (
             msg.sender != agentOwner &&
             !checkAgentDelegate(msg.sender, agentOwner, agentId)
