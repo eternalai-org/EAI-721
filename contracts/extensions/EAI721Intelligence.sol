@@ -6,6 +6,8 @@ import {ERC721Upgradeable, Initializable} from "@openzeppelin/contracts-upgradea
 import {IAgentFactory} from "../agent-platform/interfaces/IAgentFactory.sol";
 import {IAgent} from "../agent-platform/interfaces/IAgent.sol";
 import {IEAI721Intelligence} from "../interfaces/IEAI721Intelligence.sol";
+import {IDelegateRegistry} from "../interfaces/IDelegateRegistry.sol";
+
 import "../libs/helpers/File.sol";
 
 abstract contract EAI721Intelligence is
@@ -18,6 +20,10 @@ abstract contract EAI721Intelligence is
     // --- Constants ---
     uint256 private constant TOKEN_LIMIT = 10000;
     bytes32 private constant IPFS_SIG = keccak256(bytes("ipfs"));
+    address constant delegateRegistry =
+        0x00000000000000447e69651d841bD8D104Bed493;
+    bytes32 constant DELEGATE_RIGHT_ERC721 =
+        0x0000000000000000000000000000000000000000000000000000000000000111;
 
     // --- Storage ---
     mapping(uint256 agentId => string) private _codeLanguage; // e.g., "python", "javascript"...
@@ -36,8 +42,29 @@ abstract contract EAI721Intelligence is
     address public agentFactory;
 
     modifier onlyAgentOwner(uint256 agentId) virtual {
-        if (msg.sender != ownerOf(agentId)) revert EAI721IntelligenceAuth();
+        address agentOwner = ownerOf(agentId);
+        
+        if (
+            msg.sender != agentOwner &&
+            !checkAgentDelegate(msg.sender, agentOwner, agentId)
+        ) revert EAI721IntelligenceAuth();
+
         _;
+    }
+
+    function checkAgentDelegate(
+        address to,
+        address from,
+        uint256 agentId
+    ) public view returns (bool) {
+        return
+            IDelegateRegistry(delegateRegistry).checkDelegateForERC721(
+                to,
+                from,
+                address(this),
+                agentId,
+                DELEGATE_RIGHT_ERC721
+            );
     }
 
     // --- Initialization ---

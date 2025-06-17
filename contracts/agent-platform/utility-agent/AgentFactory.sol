@@ -22,11 +22,17 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
 
     // Modifier
     modifier onlyAgentOwner(uint256 collectionId) {
-        require(
-            IERC721(_collection).ownerOf(collectionId) == msg.sender ||
-                msg.sender == _collection,
-            "Unauthorized"
-        );
+        address nftOwner = IERC721(_collection).ownerOf(collectionId);
+        if (
+            nftOwner != msg.sender &&
+            msg.sender != _collection &&
+            !IEAI721Intelligence(_collection).checkAgentDelegate(
+                msg.sender,
+                nftOwner,
+                collectionId
+            )
+        ) revert("Unauthorized");
+
         _;
     }
 
