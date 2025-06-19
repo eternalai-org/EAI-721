@@ -33,7 +33,13 @@ contract CryptoAgents is
     // -- modifiers --
     modifier onlyAgentOwner(uint256 agentId)
         override(EAI721Intelligence, EAI721Tokenization, EAI721Monetization) {
-        if (msg.sender != ownerOf(agentId)) revert Unauthenticated();
+        address agentOwner = ownerOf(agentId);
+
+        if (
+            msg.sender != agentOwner &&
+            !checkAgentDelegate(msg.sender, agentOwner, agentId)
+        ) revert Unauthenticated();
+
         _;
     }
 
