@@ -6,8 +6,13 @@ import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Own
 import {IAgentFactory, IAgent, IEAI721Intelligence} from "../interfaces/IAgentFactory.sol";
 import {AgentUpgradeable} from "./AgentUpgradeable.sol";
 import {AgentProxy} from "./AgentProxy.sol";
+import {IFileStore} from "../interfaces/IFileStore.sol";
 
 contract AgentFactory is IAgentFactory, OwnableUpgradeable {
+    // single safe factory
+    address public constant SINGLE_SAFE_FACTORY = 0x914d7Fec6aaC8cd542e72Bca78B30650d45643d7;
+    address public constant FIE_STORE = 0xFe1411d6864592549AdE050215482e4385dFa0FB;
+
     address _implementation;
     address _collection;
 
@@ -94,6 +99,52 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         require(agent != address(0), "Agent does not exist");
 
         agentVersion = AgentUpgradeable(agents[agentId]).publishAgentCode(
+            codeLanguage,
+            pointers,
+            depsAgents
+        );
+    }
+
+    function publishAgentCodeSingleTx(
+        bytes32 agentId,
+        string calldata codeLanguage,
+        address[] calldata depsAgents,
+        bytes[] calldata datas, // salt and data
+        string calldata fileName,
+        IEAI721Intelligence.FileType fileType,
+        bytes memory metadata
+    )         
+        external
+        onlyAgentOwner(AgentUpgradeable(agents[agentId]).getCollectionId())
+        returns (uint16 agentVersion)
+    {
+        require(datas.length > 0, "Datas is empty");
+
+        // init addresses array memory with datas length
+        address[] memory pointerAddresses = new address[](datas.length);
+
+        // loop through datas and set pointers
+        for (uint256 i = 0; i < datas.length; i++) {
+            // call single safe factory
+            (bool success, bytes memory pointerAddrBytes) = SINGLE_SAFE_FACTORY.call(datas[i]);
+            require(success, "Single safe factory call failed");
+            pointerAddresses[i] = address(uint160(bytes20(pointerAddrBytes)));
+        }
+
+        // call fie store
+        IFileStore(FIE_STORE).createFileFromPointers(fileName, pointerAddresses, metadata);
+
+        // call agent
+        IEAI721Intelligence.CodePointer[] memory pointers = new IEAI721Intelligence.CodePointer[](1);
+        pointers[0] = IEAI721Intelligence.CodePointer({
+            retrieveAddress: FIE_STORE,
+            fileType: fileType,
+            fileName: fileName
+        });
+
+        address agent = agents[agentId];
+        require(agent != address(0), "Agent does not exist");
+        agentVersion = AgentUpgradeable(agent).publishAgentCode(
             codeLanguage,
             pointers,
             depsAgents
