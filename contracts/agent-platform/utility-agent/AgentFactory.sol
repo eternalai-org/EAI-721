@@ -7,6 +7,7 @@ import {IAgentFactory, IAgent, IEAI721Intelligence} from "../interfaces/IAgentFa
 import {AgentUpgradeable} from "./AgentUpgradeable.sol";
 import {AgentProxy} from "./AgentProxy.sol";
 import {IFileStore} from "../interfaces/IFileStore.sol";
+import {Create2} from "@openzeppelin/contracts/utils/Create2.sol";
 
 contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     // single safe factory
@@ -56,14 +57,14 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         _collection = collection;
     }
 
-    function createAgent(
+    function _createAgent(
         bytes32 agentId,
         string calldata agentName,
         string calldata codeLanguage,
         IEAI721Intelligence.CodePointer[] memory pointers,
         address[] calldata depsAgents,
         uint256 nftId
-    ) external onlyAgentOwner(nftId) returns (address agent) {
+    ) internal returns (address agent) {
         require(
             agentId != bytes32(0) && collectionIdToAgentId[nftId] == bytes32(0),
             "Invalid agent id"
@@ -82,7 +83,18 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
 
         agents[agentId] = agent;
 
-        emit AgentCreated(_collection, agentId, agent);
+        emit AgentCreated(_collection, agentId, agent);   
+    }
+
+    function createAgent(
+        bytes32 agentId,
+        string calldata agentName,
+        string calldata codeLanguage,
+        IEAI721Intelligence.CodePointer[] memory pointers,
+        address[] calldata depsAgents,
+        uint256 nftId
+    ) external onlyAgentOwner(nftId) returns (address agent) {
+        agent = _createAgent(agentId, agentName, codeLanguage, pointers, depsAgents, nftId);
     }
 
     function publishAgentCode(
@@ -105,6 +117,68 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         );
     }
 
+    function _publishAgentCodeSingleTx(
+        bytes[] calldata datas, // salt and data
+        string calldata fileName,
+        bytes memory metadata
+    ) internal {
+        require(datas.length > 0, "Datas is empty");
+
+        // init addresses array memory with datas length
+        address[] memory pointerAddresses = new address[](datas.length);
+
+        // loop through datas and set pointers
+        for (uint256 i = 0; i < datas.length; i++) {
+            // check length of datas[i]
+            require(datas[i].length > 32, "Invalid data");
+            // check contract address is not empty 
+            address computedAddress = Create2.computeAddress(bytes32(datas[i][0:32]), keccak256(datas[i][32:]), SINGLE_SAFE_FACTORY);
+            require(computedAddress != address(0), "Invalid computed address");
+
+            if (computedAddress.code.length > 0) {
+                pointerAddresses[i] = computedAddress;
+            } else {
+                // call single safe factory
+                (bool success, bytes memory pointerAddrBytes) = SINGLE_SAFE_FACTORY.call(datas[i]);
+                require(success, "Single safe factory call failed");
+                pointerAddresses[i] = address(uint160(bytes20(pointerAddrBytes)));
+                require(computedAddress == pointerAddresses[i], "Mismatch address");
+            }
+        }
+
+        // call fie store
+        IFileStore(FIE_STORE).createFileFromPointers(fileName, pointerAddresses, metadata);
+    }
+
+    function createAgentSingleTx(
+        bytes32 agentId,
+        string calldata agentName,
+        string calldata codeLanguage,
+        address[] calldata depsAgents,
+        uint256 nftId,
+        bytes[] calldata datas, // salt and data
+        string calldata fileName,
+        IEAI721Intelligence.FileType fileType,
+        bytes memory metadata
+    ) external onlyAgentOwner(nftId) returns (address agent) {
+        // publish agent code
+        _publishAgentCodeSingleTx(
+            datas,
+            fileName,
+            metadata
+        );
+
+        IEAI721Intelligence.CodePointer[] memory pointers = new IEAI721Intelligence.CodePointer[](1);
+        pointers[0] = IEAI721Intelligence.CodePointer({
+            retrieveAddress: FIE_STORE,
+            fileType: fileType,
+            fileName: fileName
+        });
+
+        // create agent
+        agent = _createAgent(agentId, agentName, codeLanguage, pointers, depsAgents, nftId);
+    }
+
     function publishAgentCodeSingleTx(
         bytes32 agentId,
         string calldata codeLanguage,
@@ -118,22 +192,12 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         onlyAgentOwner(AgentUpgradeable(agents[agentId]).getCollectionId())
         returns (uint16 agentVersion)
     {
-        require(datas.length > 0, "Datas is empty");
-
-        // init addresses array memory with datas length
-        address[] memory pointerAddresses = new address[](datas.length);
-
-        // loop through datas and set pointers
-        for (uint256 i = 0; i < datas.length; i++) {
-            // call single safe factory
-            (bool success, bytes memory pointerAddrBytes) = SINGLE_SAFE_FACTORY.call(datas[i]);
-            require(success, "Single safe factory call failed");
-            pointerAddresses[i] = address(uint160(bytes20(pointerAddrBytes)));
-        }
-
-        // call fie store
-        IFileStore(FIE_STORE).createFileFromPointers(fileName, pointerAddresses, metadata);
-
+        _publishAgentCodeSingleTx(
+            datas,
+            fileName,
+            metadata
+        );
+        
         // call agent
         IEAI721Intelligence.CodePointer[] memory pointers = new IEAI721Intelligence.CodePointer[](1);
         pointers[0] = IEAI721Intelligence.CodePointer({
