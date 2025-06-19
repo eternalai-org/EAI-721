@@ -3,21 +3,24 @@ const { ethers, upgrades } = require("hardhat");
 
 async function main() {
     const [deployer] = await ethers.getSigners();
-    // console.log("Upgrade contracts with the account:", deployer.address);
+    console.log("Upgrade contracts with the account:", deployer.address);
 
-    // const AgentUpgradeable = await ethers.getContractFactory("AgentUpgradeable");
-    // const agentUpgradeable = await AgentUpgradeable.deploy();
-    // await agentUpgradeable.deployed();
+    const AgentUpgradeable = await ethers.getContractFactory("AgentUpgradeable");
+    const agentUpgradeable = await AgentUpgradeable.deploy();
+    await agentUpgradeable.deployed();
 
-    // console.log("AgentUpgradeable deployed to:", agentUpgradeable.address);
+    console.log("AgentUpgradeable deployed to:", agentUpgradeable.address);
 
-    const contractUpdated = await ethers.getContractFactory("AgentFactory");
-    const proxy = await upgrades.upgradeProxy(process.env.AGENT_FACTORY_ADDRESS, contractUpdated);
-    console.log('AgentFactory upgraded on tx address ' + proxy.address);
+    // const contractUpdated = await ethers.getContractFactory("AgentFactory");
+    // const proxy = await upgrades.upgradeProxy(process.env.AGENT_FACTORY_ADDRESS, contractUpdated);
+    // console.log('AgentFactory upgraded on tx address ' + proxy.address);
+
+    const proxyFactory = await ethers.getContractFactory("AgentFactory");
+    const proxy = await proxyFactory.attach(process.env.AGENT_FACTORY_ADDRESS);
 
     // set new implementation
-    // const tx = await proxy.setImplementation(agentUpgradeable.address);
-    // console.log('AgentFactory implementation set on tx address ' + await tx);
+    const tx = await proxy.setImplementation(agentUpgradeable.address);
+    console.log('AgentFactory implementation set on tx address ' + (await tx.wait()).transactionHash);
 }
 
 main().catch(error => {

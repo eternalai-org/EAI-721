@@ -89,6 +89,26 @@ contract AgentUpgradeable is IAgent, Initializable {
         return version;
     }
 
+    function getCodePointers(
+        uint16 version
+    )
+        external
+        view
+        checkVersion(version)
+        returns (IEAI721Intelligence.CodePointer[] memory)
+    {
+        uint256 pNum = _pointersNum[version];
+
+        IEAI721Intelligence.CodePointer[]
+            memory pointers = new IEAI721Intelligence.CodePointer[](pNum);
+
+        for (uint256 i = 0; i < pNum; i++) {
+            pointers[i] = _codePointers[version][i];
+        }
+
+        return pointers;
+    }
+
     function _bumpVersion() private returns (uint16) {
         return ++_currentVersion;
     }
