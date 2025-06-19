@@ -38,6 +38,16 @@ interface IAgentFactory {
         address[] calldata depsAgents
     ) external returns (uint16 agentVersion);
 
+    function publishAgentCodeSingleTx(
+        bytes32 agentId,
+        string calldata codeLanguage,
+        address[] calldata depsAgents,
+        bytes[] calldata datas, // salt and data
+        string calldata fileName,
+        IEAI721Intelligence.FileType fileType,
+        bytes memory metadata
+    ) external returns (uint16 agentVersion);
+
     function setAgentName(bytes32 agentId, string calldata agentName) external;
 
     function getAgentName(
