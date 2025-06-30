@@ -1,0 +1,41 @@
+{
+  "alien": {
+    "counter": 11
+  },
+  "kong": {
+    "counter": 55
+  },
+  "x-type": {
+    "counter": 109
+  },
+  "neo-human-01": {
+    "counter": 655
+  },
+  "neo-human-02": {
+    "counter": 655
+  },
+  "neo-human-03": {
+    "counter": 655
+  },
+  "neo-human-04": {
+    "counter": 655
+  },
+  "neo-human-05": {
+    "counter": 655
+  },
+  "robot-01": {
+    "counter": 1310
+  },
+  "robot-02": {
+    "counter": 1310
+  },
+  "robot-03": {
+    "counter": 1310
+  },
+  "robot-04": {
+    "counter": 1310
+  },
+  "robot-05": {
+    "counter": 1310
+  }
+}

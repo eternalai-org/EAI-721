@@ -103,7 +103,6 @@ async function main() {
         {
           trait_type: 'DNA',
           value: traits[0],
-          
         },
               
       ]
