@@ -2,10 +2,10 @@ import { initConfig } from "../../data/cryptoai";
 import { CryptoAI } from "./cryptoAI";
 
 async function main() {
-  // if (process.env.NETWORK != "mainnet") {
-  //   console.log("wrong network");
-  //   return;
-  // }
+  if (process.env.NETWORK != "mainnet") {
+    console.log("wrong network");
+    return;
+  }
 
   let config = await initConfig();
 
@@ -21,11 +21,10 @@ async function main() {
     process.env.PUBLIC_KEY
   );
   // Add address of user want to mint
-  await dataContract.allowAdmin(
+  await dataContract.setFactory(
     config.contractAddress,
     0,
-    key,
-    true
+    "0x313FED7629F92c585A71C21Fe386638815C072E6"
   );
 }
 

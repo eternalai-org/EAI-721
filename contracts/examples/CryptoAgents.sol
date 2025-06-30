@@ -3,15 +3,18 @@
 pragma solidity ^0.8.0;
 
 import {ERC2981Upgradeable} from "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {EAI721Intelligence, ERC721Upgradeable, Initializable} from "../extensions/EAI721Intelligence.sol";
 import {EAI721Identity, IOnchainArtData} from "../extensions/EAI721Identity.sol";
 import {EAI721Monetization} from "../extensions/EAI721Monetization.sol";
 import {EAI721Tokenization} from "../extensions/EAI721Tokenization.sol";
 import {Rating} from "../utils/Rating.sol";
 import {Errors} from "../libs/helpers/Errors.sol";
+import {LibString} from "solady/src/utils/LibString.sol";
 
 contract CryptoAgents is
     Initializable,
+    OwnableUpgradeable,
     EAI721Intelligence,
     EAI721Identity,
     EAI721Monetization,
@@ -20,37 +23,33 @@ contract CryptoAgents is
     Rating
 {
     // --- Constants ---
-    uint256 public constant TOKEN_SUPPLY_LIMIT = 10000;
+    uint256 private constant TOKEN_SUPPLY_LIMIT = 10000;
 
     // -- errors --
     error Unauthenticated();
     error InvalidTokenId();
+    error InvalidFactoryAddress();
 
     // -- modifiers --
     modifier onlyAgentOwner(uint256 agentId)
         override(EAI721Intelligence, EAI721Tokenization, EAI721Monetization) {
-        if (msg.sender != ownerOf(agentId)) revert Unauthenticated();
+        address agentOwner = ownerOf(agentId);
+
+        if (
+            msg.sender != agentOwner &&
+            !checkAgentDelegate(msg.sender, agentOwner, agentId)
+        ) revert Unauthenticated();
+
         _;
     }
 
     // -- events --
     event AdminAllowed(address indexed admin, bool allowed);
-    event DeployerChanged(
-        address indexed oldDeployer,
-        address indexed newDeployer
-    );
     event AgentDataAddressChanged(address indexed newAddr);
 
     // -- state variables --
-    // deployer
-    address private _deployer;
     // admins
     mapping(address => bool) private _admins;
-
-    modifier onlyDeployer() {
-        require(msg.sender == _deployer, Errors.ONLY_DEPLOYER);
-        _;
-    }
 
     modifier onlyAdmin() {
         require(_admins[msg.sender], Errors.ONLY_ADMIN_ALLOWED);
@@ -60,13 +59,9 @@ contract CryptoAgents is
     function initialize(
         string memory name_,
         string memory symbol_,
-        address deployer_,
         address defaultRoyaltyReceiver_
     ) public initializer {
-        require(deployer_ != address(0), Errors.INV_ADD);
-
-        _deployer = deployer_;
-
+        __Ownable_init();
         __ERC721_init(name_, symbol_);
         __EAI721Intelligence_init();
         __EAI721Identity_init();
@@ -78,19 +73,7 @@ contract CryptoAgents is
         _setDefaultRoyalty(defaultRoyaltyReceiver_, 500);
     }
 
-    function changeDeployer(address newDeployer) external onlyDeployer {
-        require(newDeployer != address(0), Errors.INV_ADD);
-        if (_deployer != newDeployer) {
-            emit DeployerChanged(_deployer, newDeployer);
-            _deployer = newDeployer;
-        }
-    }
-
-    function deployer() external view returns (address) {
-        return _deployer;
-    }
-
-    function allowAdmin(address newAdm, bool allow) external onlyDeployer {
+    function allowAdmin(address newAdm, bool allow) external onlyOwner {
         require(newAdm != address(0), Errors.INV_ADD);
         _admins[newAdm] = allow;
         emit AdminAllowed(newAdm, allow);
@@ -100,7 +83,7 @@ contract CryptoAgents is
         return _admins[admin];
     }
 
-    function changeAgentDataAddress(address newAddr) external onlyDeployer {
+    function changeAgentDataAddress(address newAddr) external onlyOwner {
         require(newAddr != address(0), Errors.INV_ADD);
 
         _setAgentDataAddr(newAddr);
@@ -139,8 +122,32 @@ contract CryptoAgents is
 
     function agentImageSvg(
         uint256 agentId
-    ) external view returns (string memory) {
-        return IOnchainArtData(agentDataAddr()).agentImageSvg(agentId);
+    ) public view returns (string memory) {
+        // Get the base SVG from the agent data contract
+        string memory baseSvg = IOnchainArtData(agentDataAddr()).agentImageSvg(
+            agentId
+        );
+
+        // Remove the data URI prefix if present
+        string memory cleanSvg = LibString.replace(
+            baseSvg,
+            "data:image/svg+xml;utf8,",
+            ""
+        );
+
+        // Add background rectangle and improve rendering
+        string memory svgWithBackground = LibString.replace(
+            cleanSvg,
+            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>",
+            "<svg xmlns='http://www.w3.org/2000/svg' shape-rendering='crispEdges' viewBox='0 0 24 24'><rect width='24' height='24' fill='#636B96' />"
+        );
+
+        // Convert URL-encoded color codes to standard hex format
+        return LibString.replace(svgWithBackground, "%23", "#");
+    }
+
+    function agentImage(uint256 agentId) external view returns (bytes memory) {
+        return IOnchainArtData(agentDataAddr()).agentImage(agentId);
     }
 
     function setDefaultRoyalty(
@@ -177,6 +184,12 @@ contract CryptoAgents is
         return
             ERC721Upgradeable.supportsInterface(interfaceId) ||
             ERC2981Upgradeable.supportsInterface(interfaceId);
+    }
+
+    function setAgentFactory(address factory) public virtual onlyOwner {
+        if (factory == address(0)) revert InvalidFactoryAddress();
+
+        agentFactory = factory;
     }
 
     uint256[50] private __gap;

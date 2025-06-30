@@ -3,7 +3,7 @@ pragma solidity ^0.8.12;
 
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "../interfaces/IEAI721Intelligence.sol";
 import "../interfaces/IEAI721Tokenization.sol";
@@ -12,7 +12,7 @@ import "../interfaces/IOnchainArtData.sol";
 import "../libs/structs/CryptoAIStructs.sol";
 import "../libs/helpers/Errors.sol";
 
-contract OnchainArtData is IOnchainArtData {
+contract OnchainArtData is Ownable, IOnchainArtData {
     uint256 public constant TOKEN_LIMIT = 0x2710;
     uint8 internal constant GRID_SIZE = 0x18;
     bytes16 internal constant _HEX_SYMBOLS = "0123456789abcdef";
@@ -31,8 +31,6 @@ contract OnchainArtData is IOnchainArtData {
 
     // elements
     string[6] private partsName;
-    // deployer
-    address public _deployer;
     // crypto ai agent address
     address public _cryptoAIAgentAddr;
     // seal flag
@@ -61,54 +59,41 @@ contract OnchainArtData is IOnchainArtData {
         _;
     }
 
-    modifier onlyDeployer() {
-        require(msg.sender == _deployer, Errors.ONLY_DEPLOYER);
-        _;
-    }
-
     modifier onlyAIAgentContract() {
         require(msg.sender == _cryptoAIAgentAddr, Errors.ONLY_AGENT_CONTRACT);
         _;
     }
 
-    constructor(address deployer) {
+    constructor() Ownable() {
         partsName = ["dna", "Collar", "Head", "Eyes", "Mouth", "Earring"];
-        _deployer = deployer;
-    }
-
-    function changeDeployer(address newAdm) external onlyDeployer unsealed {
-        require(newAdm != address(0), Errors.INV_ADD);
-        if (_deployer != newAdm) {
-            _deployer = newAdm;
-        }
     }
 
     function changePlaceHolderScript(
         string memory content
-    ) external onlyDeployer unsealed {
+    ) external onlyOwner unsealed {
         PLACEHOLDER_SCRIPT = content;
     }
 
     function changePlaceHolderImg(
         string memory content
-    ) external onlyDeployer unsealed {
+    ) external onlyOwner unsealed {
         PLACEHOLDER_IMG = content;
     }
 
     function changeCryptoAIAgentAddress(
         address newAddr
-    ) external onlyDeployer unsealed {
+    ) external onlyOwner unsealed {
         require(newAddr != address(0), Errors.INV_ADD);
         if (_cryptoAIAgentAddr != newAddr) {
             _cryptoAIAgentAddr = newAddr;
         }
     }
 
-    function sealContract() external unsealed onlyDeployer {
+    function sealContract() external unsealed onlyOwner {
         _contractSealed = true;
     }
 
-    function unSealContract() external _sealed onlyDeployer {
+    function unSealContract() external _sealed onlyOwner {
         _contractSealed = false;
     }
 
@@ -158,12 +143,10 @@ contract OnchainArtData is IOnchainArtData {
                 Strings.toString(tokenId),
                 '",',
                 '"description": "The first-ever PFP collection for AI agents.",',
-                '"image_data": "ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
+                '"image": "ipfs://bafybeibqwfzmw2vsg4ycmvyrdkd6ea6lsdnfuuypx5r7yixfppap6knr5a/',
                 Strings.toString(tokenId),
                 '.png",',
-                '"image": "',
-                agentImageSvg(tokenId),
-                '", "attributes": ',
+                '"attributes": ',
                 agentAttributes(tokenId),
                 "}"
             )
@@ -173,7 +156,7 @@ contract OnchainArtData is IOnchainArtData {
     function addDNA(
         string[] memory _names,
         uint16[] memory rarities
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         DNA_TYPES.names = _names;
     }
 
@@ -182,7 +165,7 @@ contract OnchainArtData is IOnchainArtData {
         string[] memory _DNAName,
         uint16[] memory _rarities,
         uint16[][] memory _positions
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         items[_DNAType].names = _DNAName;
         items[_DNAType].positions = _positions;
     }
@@ -192,7 +175,7 @@ contract OnchainArtData is IOnchainArtData {
         string[] memory _names,
         uint256[] memory _rarities,
         uint16[][] memory _positions
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         items[_itemType].names = _names;
         items[_itemType].positions = _positions;
     }
@@ -202,7 +185,7 @@ contract OnchainArtData is IOnchainArtData {
         string[] memory _names,
         uint256[] memory _rarities,
         uint16[][] memory _positions
-    ) public onlyDeployer unsealed {
+    ) public onlyOwner unsealed {
         // Get existing data
         string[] memory existingNames = items[_itemType].names;
         uint16[][] memory existingPositions = items[_itemType].positions;
@@ -232,9 +215,7 @@ contract OnchainArtData is IOnchainArtData {
         items[_itemType].positions = newPositions;
     }
 
-    function setPalettes(
-        uint8[][] memory _pallets
-    ) public onlyDeployer unsealed {
+    function setPalettes(uint8[][] memory _pallets) public onlyOwner unsealed {
         palettes = _pallets;
     }
 
@@ -291,21 +272,11 @@ contract OnchainArtData is IOnchainArtData {
         }
 
         byteString = abi.encodePacked(
-            '{"trait_type": "Origin"',
-            ',"value":"',
-            IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 1
-                ? "no"
-                : "yes",
-            '"},',
-            byteString
-        );
-
-        byteString = abi.encodePacked(
             '{"trait_type": "Intelligence"',
             ',"value":"',
             IEAI721Intelligence(_cryptoAIAgentAddr).currentVersion(tokenId) > 0
-                ? "yes"
-                : "no",
+                ? "Yes"
+                : "Not yet",
             '"},',
             byteString
         );
@@ -315,8 +286,8 @@ contract OnchainArtData is IOnchainArtData {
             ',"value":"',
             IEAI721Tokenization(_cryptoAIAgentAddr).aiToken(tokenId) !=
                 address(0)
-                ? "yes"
-                : "no",
+                ? "Yes"
+                : "Not yet",
             '"},',
             byteString
         );
@@ -325,14 +296,14 @@ contract OnchainArtData is IOnchainArtData {
             '{"trait_type": "Monetization"',
             ',"value":"',
             IEAI721Monetization(_cryptoAIAgentAddr).subscriptionFee(tokenId) > 0
-                ? "yes"
-                : "no",
+                ? "Yes"
+                : "Not yet",
             '"},',
             byteString
         );
 
         byteString = abi.encodePacked(
-            '{"trait_type": "Number of attributes"',
+            '{"trait_type": "Number of Attributes"',
             ',"value":"',
             Strings.toString(count),
             '"},',
@@ -342,28 +313,7 @@ contract OnchainArtData is IOnchainArtData {
         text = string(abi.encodePacked("[", string(byteString), "]"));
     }
 
-    function fractionalStr(
-        uint fractionalPart,
-        uint8 dec
-    ) internal pure returns (string memory res) {
-        while (fractionalPart > 0 && dec > 0) {
-            if (fractionalPart % 10 == 0) {
-                fractionalPart /= 10;
-                dec--;
-            } else {
-                break;
-            }
-        }
-
-        res = Strings.toString(fractionalPart);
-        if (bytes(res).length < dec) {
-            for (uint i = bytes(res).length; i < dec; i++) {
-                res = string(abi.encodePacked("0", res));
-            }
-        }
-    }
-
-    function cryptoAIImage(uint256 tokenId) public view returns (bytes memory) {
+    function agentImage(uint256 tokenId) public view returns (bytes memory) {
         require(
             unlockedTokens[tokenId].tokenID > 0 &&
                 unlockedTokens[tokenId].weight > 0,
@@ -464,7 +414,7 @@ contract OnchainArtData is IOnchainArtData {
             Errors.TOKEN_ID_NOT_UNLOCKED
         );
 
-        bytes memory pixels = cryptoAIImage(tokenId);
+        bytes memory pixels = agentImage(tokenId);
         string memory svg = "";
         bytes memory buffer = new bytes(8);
         uint p;

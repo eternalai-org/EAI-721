@@ -15,8 +15,8 @@ class CryptoAIData {
         this.senderPrivateKey = senderPrivateKey;
         this.senderPublicKey = senderPublicKey;
 
-        console.log("senderPrivateKey", senderPrivateKey);
-        console.log("senderPublicKey", senderPublicKey);
+        // console.log("senderPrivateKey", senderPrivateKey);
+        // console.log("senderPublicKey", senderPublicKey);
     }
 
     async deployUpgradeable(deployerAddr: any
@@ -37,16 +37,15 @@ class CryptoAIData {
     }
 
 
-    async deploy(deployerAddr: any
-    ) {
-        // if (this.network == "local") {
+    async deploy() {
+        // if (this.network == "mainnet") {
         //     console.log("not run local");
         //     return;
         // }
 
         const contract = await ethers.getContractFactory("OnchainArtData");
         console.log("OnchainArtData.deploying ...")
-        const deployed = await contract.deploy(deployerAddr);
+        const deployed = await contract.deploy();
         await deployed.deployed();
         console.log("OnchainArtData deployed to:", deployed.address);
         return deployed.address;
@@ -152,7 +151,7 @@ class CryptoAIData {
             nonce: nonce,
         }
 
-        const val: any = await temp?.nftContract.methods._deployer().call(tx);
+        const val: any = await temp?.nftContract.methods.owner().call(tx);
         return val;
     }
 
@@ -327,7 +326,7 @@ class CryptoAIData {
         return val;
     }
 
-    async cryptoAIImage(contractAddress: any, token: number) {
+    async agentImage(contractAddress: any, token: number) {
         let temp = this.getContract(contractAddress);
         const nonce = await temp?.web3.eth.getTransactionCount(this.senderPublicKey, "latest") //get latest nonce
 
@@ -338,7 +337,7 @@ class CryptoAIData {
             nonce: nonce,
         }
 
-        const val: any = await temp?.nftContract.methods.cryptoAIImage(token).call(tx);
+        const val: any = await temp?.nftContract.methods.agentImage(token).call(tx);
         return val;
     }
 
