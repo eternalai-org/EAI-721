@@ -298,7 +298,7 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         returns (uint16 agentVersion)
     {
         require(ownerV2[agentId] == msg.sender, "Unauthorized");
-        
+
         _publishAgentCodeSingleTx(
             datas,
             fileName,
@@ -320,6 +320,37 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
             pointers,
             depsAgents
         );
+    }
+
+    function createAgentSingleTxV2(
+        bytes32 agentId,
+        string calldata agentName,
+        string calldata codeLanguage,
+        address[] calldata depsAgents,
+        bytes[] calldata datas, // salt and data
+        string calldata fileName,
+        IEAI721Intelligence.FileType fileType,
+        bytes memory metadata
+    ) external returns (address agent) {
+        uint nftId = uint256(agentId);
+        require(IERC721(_collection).ownerOf(nftId) == address(0), "NFT must not exist or burned");
+
+        // publish agent code
+        _publishAgentCodeSingleTx(
+            datas,
+            fileName,
+            metadata
+        );
+
+        IEAI721Intelligence.CodePointer[] memory pointers = new IEAI721Intelligence.CodePointer[](1);
+        pointers[0] = IEAI721Intelligence.CodePointer({
+            retrieveAddress: FIE_STORE,
+            fileType: fileType,
+            fileName: fileName
+        });
+
+        // create agent
+        agent = _createAgent(agentId, agentName, codeLanguage, pointers, depsAgents, nftId);
     }
 
     function setImplementation(address implementation) external onlyOwner {
