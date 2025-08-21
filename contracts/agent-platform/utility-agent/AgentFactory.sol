@@ -26,6 +26,10 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
     // agentId => agentName
     mapping(bytes32 => string) private agentNames;
 
+    // this section for agent no need to be owned by a NFT
+    // nft id => agent address
+    mapping (bytes32 => address) public ownerV2;
+
     // Modifier
     modifier onlyAgentOwner(uint256 collectionId) {
         address nftOwner = IERC721(_collection).ownerOf(collectionId);
@@ -228,6 +232,94 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         AgentUpgradeable(agents[agentId]).setAgentName(agentName);
 
         emit AgentNameSet(agentId, agentName);
+    }
+
+    // @notice V2 functions for agents not owned by NFTs
+    function createAgentV2(
+        bytes32 agentId,
+        string calldata agentName,
+        string calldata codeLanguage,
+        IEAI721Intelligence.CodePointer[] memory pointers,
+        address[] calldata depsAgents
+    ) external returns (address agent) {
+        uint nftId = uint256(agentId);
+        require(IERC721(_collection).ownerOf(nftId) == address(0), "NFT must not exist or burned");
+
+        agent = _createAgent(agentId, agentName, codeLanguage, pointers, depsAgents, nftId);
+        ownerV2[agentId] = msg.sender;
+    }
+
+    function publishAgentCodeV2(
+        bytes32 agentId,
+        string calldata codeLanguage,
+        IEAI721Intelligence.CodePointer[] calldata pointers,
+        address[] calldata depsAgents
+    )
+        external
+        returns (uint16 agentVersion)
+    {
+        require(ownerV2[agentId] == msg.sender, "Unauthorized");
+
+        address agent = agents[agentId];
+        require(agent != address(0), "Agent does not exist");
+
+        agentVersion = AgentUpgradeable(agents[agentId]).publishAgentCode(
+            codeLanguage,
+            pointers,
+            depsAgents
+        );
+    }
+
+    function setAgentNameV2(
+        bytes32 agentId,
+        string calldata agentName
+    )
+        external
+    {
+        require(ownerV2[agentId] == msg.sender, "Unauthorized");
+        agentNames[agentId] = agentName;
+
+        // call setAgentName on the agent
+        AgentUpgradeable(agents[agentId]).setAgentName(agentName);
+
+        emit AgentNameSet(agentId, agentName);
+    }
+
+    function publishAgentCodeSingleTxV2(
+        bytes32 agentId,
+        string calldata codeLanguage,
+        address[] calldata depsAgents,
+        bytes[] calldata datas, // salt and data
+        string calldata fileName,
+        IEAI721Intelligence.FileType fileType,
+        bytes memory metadata
+    )         
+        external
+        returns (uint16 agentVersion)
+    {
+        require(ownerV2[agentId] == msg.sender, "Unauthorized");
+        
+        _publishAgentCodeSingleTx(
+            datas,
+            fileName,
+            metadata
+        );
+        
+        // call agent
+        IEAI721Intelligence.CodePointer[] memory pointers = new IEAI721Intelligence.CodePointer[](1);
+        pointers[0] = IEAI721Intelligence.CodePointer({
+            retrieveAddress: FIE_STORE,
+            fileType: fileType,
+            fileName: fileName
+        });
+
+        address agent = agents[agentId];
+        require(agent != address(0), "Agent does not exist");
+        agentVersion = AgentUpgradeable(agent).publishAgentCode(
+            codeLanguage,
+            pointers,
+            depsAgents
+        );
     }
 
     function setImplementation(address implementation) external onlyOwner {
