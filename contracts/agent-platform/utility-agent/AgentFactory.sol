@@ -351,6 +351,7 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
 
         // create agent
         agent = _createAgent(agentId, agentName, codeLanguage, pointers, depsAgents, nftId);
+        ownerV2[agentId] = msg.sender;
     }
 
     function setImplementation(address implementation) external onlyOwner {
