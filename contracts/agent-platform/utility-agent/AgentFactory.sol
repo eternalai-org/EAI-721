@@ -243,10 +243,12 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         address[] calldata depsAgents
     ) external returns (address agent) {
         uint nftId = uint256(agentId);
-        require(IERC721(_collection).ownerOf(nftId) == address(0), "NFT must not exist or burned");
-
-        agent = _createAgent(agentId, agentName, codeLanguage, pointers, depsAgents, nftId);
-        ownerV2[agentId] = msg.sender;
+        try IERC721(_collection).ownerOf(nftId) returns (address nftOwner) {
+            require(nftOwner == address(0), "NFT must not exist or burned");
+        } catch {
+            agent = _createAgent(agentId, agentName, codeLanguage, pointers, depsAgents, nftId);
+            ownerV2[agentId] = msg.sender;
+        }  
     }
 
     function publishAgentCodeV2(
@@ -333,25 +335,27 @@ contract AgentFactory is IAgentFactory, OwnableUpgradeable {
         bytes memory metadata
     ) external returns (address agent) {
         uint nftId = uint256(agentId);
-        require(IERC721(_collection).ownerOf(nftId) == address(0), "NFT must not exist or burned");
+        try IERC721(_collection).ownerOf(nftId) returns (address nftOwner) {
+            require(nftOwner == address(0), "NFT must not exist or burned");
+        } catch {
+            // publish agent code
+            _publishAgentCodeSingleTx(
+                datas,
+                fileName,
+                metadata
+            );
 
-        // publish agent code
-        _publishAgentCodeSingleTx(
-            datas,
-            fileName,
-            metadata
-        );
+            IEAI721Intelligence.CodePointer[] memory pointers = new IEAI721Intelligence.CodePointer[](1);
+            pointers[0] = IEAI721Intelligence.CodePointer({
+                retrieveAddress: FIE_STORE,
+                fileType: fileType,
+                fileName: fileName
+            });
 
-        IEAI721Intelligence.CodePointer[] memory pointers = new IEAI721Intelligence.CodePointer[](1);
-        pointers[0] = IEAI721Intelligence.CodePointer({
-            retrieveAddress: FIE_STORE,
-            fileType: fileType,
-            fileName: fileName
-        });
-
-        // create agent
-        agent = _createAgent(agentId, agentName, codeLanguage, pointers, depsAgents, nftId);
-        ownerV2[agentId] = msg.sender;
+            // create agent
+            agent = _createAgent(agentId, agentName, codeLanguage, pointers, depsAgents, nftId);
+            ownerV2[agentId] = msg.sender;
+        }
     }
 
     function setImplementation(address implementation) external onlyOwner {
